@@ -1,6 +1,5 @@
-// src/components/PortalRing.tsx
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import Link from 'next/link';
 
 type Panel = {
@@ -13,48 +12,65 @@ type Panel = {
   videoMp4?: string;
 };
 
+// 👇 Definición de los paneles
 const PANELS: Panel[] = [
-  { href: '/infantiles', topLabel: 'BLUE OCEAN',      title: 'INFANTIL',     subtitle: '', hue: 205, img: '/flyer/disney.png' },
-  { href: '/adultos',    topLabel: 'ORANGE SUNSET',   title: 'PELICULAS',    subtitle: '', hue:  35, img: '/flyer/peliculas.png' },
-  { href: '/series',     topLabel: 'VIOLET DAWN',     title: 'SERIES',       subtitle: '', hue: 265, img: '/flyer/series.png' },
-  { href: '/fashion',    topLabel: 'WHITE WATERFALL', title: 'FASHION TOUR', subtitle: '', hue: 210, img: '/flyer/fashion.png',
-    videoMp4: '/video/desfile-tour.mp4' },
-  { href: '/podcast',    topLabel: 'VIOLET DAWN',     title: 'PODCAST',      subtitle: '', hue: 265, img: '/flyer/podcast.png' },
-  { href: '/deportes',   topLabel: 'ORANGE SUNSET',   title: 'DEPORTES',     subtitle: '', hue:  28, img: '/flyer/futbol.png' },
-  { href: '/musica',     topLabel: 'BLUE DEEP',       title: 'MUSICA',       subtitle: '', hue: 195, img: '/flyer/musica.png' },
+  { href: '/infantiles', topLabel: 'BLUE OCEAN', title: 'INFANTIL', subtitle: '', hue: 205, img: '/flyer/disney.png' },
+  { href: '/adultos', topLabel: 'ORANGE SUNSET', title: 'PELICULAS', subtitle: '', hue: 35, img: '/flyer/peliculas.png' },
+  { href: '/series', topLabel: 'VIOLET DAWN', title: 'SERIES', subtitle: '', hue: 265, img: '/flyer/series.png' },
+  { href: '/fashion', topLabel: 'WHITE WATERFALL', title: 'FASHION TOUR', subtitle: '', hue: 210, img: '/flyer/fashion.png', videoMp4: '/video/desfile-tour.mp4' },
+  { href: '/podcast', topLabel: 'VIOLET DAWN', title: 'PODCAST', subtitle: '', hue: 265, img: '/flyer/podcast.png' },
+  { href: '/deportes', topLabel: 'ORANGE SUNSET', title: 'DEPORTES', subtitle: '', hue: 28, img: '/flyer/futbol.png' },
+  { href: '/musica', topLabel: 'BLUE DEEP', title: 'MUSICA', subtitle: '', hue: 195, img: '/flyer/musica.png' },
 ];
 
 export default function PortalRing() {
-  const VISIBLE = 7, ARC = 135, START = -ARC / 2;
-  const STEP = ARC / (VISIBLE - 1);
-  const RADIUS = 900;
-  const W = 320, H = 540;
-
+  // --- hooks declarados primero ---
+  const [vw, setVw] = useState<number | null>(null);
   const [offset, setOffset] = useState(0);
   const [animShift, setAnimShift] = useState(0);
   const [busy, setBusy] = useState(false);
-  const ROT_MS = 200, DRAG_THRESHOLD = 28;
+  const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({});
+
+  useEffect(() => {
+    const apply = () => setVw(window.innerWidth);
+    apply();
+    window.addEventListener('resize', apply, { passive: true });
+    return () => window.removeEventListener('resize', apply);
+  }, []);
+
+  if (vw === null) return null;
+
+  // --- breakpoints ---
+  const { VISIBLE, ARC, RADIUS, W, H, DRAG_THRESHOLD } = useMemo(() => {
+    const isSm = vw <= 480;
+    const isMd = vw > 480 && vw <= 768;
+
+    const W = isSm ? 160 : isMd ? 220 : 320;       // más chico en mobile
+    const H = Math.round(W * (540 / 320));
+    const RADIUS = isSm ? 340 : isMd ? 520 : 900;  // más compacto
+    const VISIBLE = isSm ? 3 : isMd ? 5 : 7;       // menos paneles
+    const ARC = isSm ? 100 : isMd ? 120 : 135;
+    const DRAG_THRESHOLD = isSm ? 15 : 25;
+
+    return { VISIBLE, ARC, RADIUS, W, H, DRAG_THRESHOLD };
+  }, [vw]);
+
+  const START = -ARC / 2;
+  const STEP = ARC / (VISIBLE - 1);
+  const ROT_MS = 200;
 
   const rotate = (dir: 1 | -1) => {
     if (busy) return;
     setBusy(true);
-    setAnimShift(s => s + dir * STEP);
+    setAnimShift((s) => s + dir * STEP);
     window.setTimeout(() => {
-      setOffset(o => (o - dir + PANELS.length) % PANELS.length);
+      setOffset((o) => (o - dir + PANELS.length) % PANELS.length);
       setAnimShift(0);
       setBusy(false);
     }, ROT_MS);
   };
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight') rotate(1);
-      if (e.key === 'ArrowLeft')  rotate(-1);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
-
+  // --- drag / wheel handlers ---
   const drag = useRef<{ down: boolean; x: number; startX: number }>({ down: false, x: 0, startX: 0 });
   const onPointerDown = (e: React.PointerEvent) => { drag.current = { down: true, x: e.clientX, startX: e.clientX }; };
   const onPointerMove = (e: React.PointerEvent) => {
@@ -67,23 +83,22 @@ export default function PortalRing() {
     if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) { e.preventDefault(); rotate(e.deltaX > 0 ? 1 : -1); }
   };
 
-  const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({});
-
   return (
     <section className="ring-scene container" aria-label="Categorías destacadas (carrusel 3D)">
-      <h2 className="ring-heading relative -top-2 md:-top-11 mx-auto max-w-5xl px-4 text-center font-semibold tracking-[0.01em] text-text/90">
+      <h2 className="ring-heading relative mx-auto max-w-5xl px-4 text-center font-semibold tracking-[0.01em] text-text/90
+                     text-lg sm:text-xl md:text-2xl -top-1 md:-top-8 lg:-top-11">
         Descubrí BY)))U PLAY
       </h2>
 
       <div
-        className="ring-stage relative select-none touch-pan-y -mt-6 md:-mt-10 lg:-mt-14"
+        className="ring-stage relative select-none touch-pan-y -mt-2 md:-mt-10 lg:-mt-14"
         role="region" aria-roledescription="carousel"
         onContextMenu={(e) => e.preventDefault()}
         onPointerDown={onPointerDown} onPointerMove={onPointerMove}
         onPointerUp={onPointerUp} onPointerLeave={onPointerUp} onPointerCancel={onPointerUp}
         onWheel={onWheel}
       >
-        <div className="ring-video" aria-hidden="true" style={{ ['--bgY' as any]: '60%' }}>
+        <div className="ring-video" aria-hidden="true" style={{ ['--bgY' as any]: '60%' }} >
           <img src="/flyer/prohibido.png" alt="" className="ring-video-el" loading="eager" decoding="async" />
         </div>
 
@@ -104,18 +119,16 @@ export default function PortalRing() {
               aria-disabled={!isReady}
               tabIndex={isReady ? 0 : -1}
               className={`ring-item group ${!isReady ? 'ring-item--disabled' : ''}`}
-              style={
-                {
-                  ['--angle' as any]: `${angle}deg`,
-                  ['--radius' as any]: `${RADIUS}px`,
-                  ['--w' as any]: `${W}px`,
-                  ['--h' as any]: `${H}px`,
-                  ['--hue' as any]: String(panel.hue),
-                  ['--scale' as any]: String(scale),
-                  ['--z' as any]: String(z),
-                  ['--refAlpha' as any]: String(refAlpha),
-                } as React.CSSProperties
-              }
+              style={{
+                ['--angle' as any]: `${angle}deg`,
+                ['--radius' as any]: `${RADIUS}px`,
+                ['--w' as any]: `${W}px`,
+                ['--h' as any]: `${H}px`,
+                ['--hue' as any]: String(panel.hue),
+                ['--scale' as any]: String(scale),
+                ['--z' as any]: String(z),
+                ['--refAlpha' as any]: String(refAlpha),
+              } as React.CSSProperties}
               onClick={(e) => {
                 const moved = Math.abs(drag.current.x - drag.current.startX);
                 if (!isReady || busy || moved > 8) e.preventDefault();
@@ -126,28 +139,13 @@ export default function PortalRing() {
               }}
               onTouchStart={() => { if (panel.videoMp4) videoRefs.current[i]?.play().catch(() => {}); }}
             >
-              <div className={`ring-panel portal-card ${!isReady ? 'is-dimmed' : ''}`}>
-                <img src={panel.img} alt={panel.title} className="ring-img portal-arch" draggable={false} loading="lazy" decoding="async" />
-                <div className="ring-window portal-arch" />
-                {!isReady && <div className="ring-cloudPhoto portal-arch" aria-hidden="true" />}
-                {panel.videoMp4 && (
-                  <video
-                    ref={(el) => { if (el) videoRefs.current[i] = el; }}
-                    className="absolute inset-0 w-full h-full object-cover portal-arch opacity-0 transition-opacity duration-500 pointer-events-none group-hover:opacity-100"
-                    muted loop playsInline preload="auto" tabIndex={-1}
-                  >
-                    <source src={panel.videoMp4} type="video/mp4" />
-                  </video>
-                )}
+              <div className="ring-panel portal-card">
+                <img src={panel.img} alt={panel.title} className="ring-img portal-arch" draggable={false} />
                 <span className="ring-topLabel">{panel.topLabel}</span>
               </div>
-
-              {/* Etiqueta externa */}
               <div className="ring-label" aria-hidden="true">
                 <span className="ring-label-text">{panel.title}</span>
               </div>
-
-              {/* Solo la orilla (el reflejo viene por CSS) */}
               <div className="ring-shore" aria-hidden="true" />
             </Link>
           );
