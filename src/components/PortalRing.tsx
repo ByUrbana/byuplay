@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 type Panel = {
   href: string;
@@ -30,6 +31,7 @@ export default function PortalRing() {
   const [animShift, setAnimShift] = useState(0);
   const [busy, setBusy] = useState(false);
   const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({});
+  const drag = useRef<{ down: boolean; x: number; startX: number }>({ down: false, x: 0, startX: 0 });
 
   useEffect(() => {
     const apply = () => setVw(window.innerWidth);
@@ -38,10 +40,13 @@ export default function PortalRing() {
     return () => window.removeEventListener('resize', apply);
   }, []);
 
-  if (vw === null) return null;
-
   // --- breakpoints ---
   const { VISIBLE, ARC, RADIUS, W, H, DRAG_THRESHOLD } = useMemo(() => {
+    if (vw === null) {
+      // Valores padrão quando vw ainda não foi definido
+      return { VISIBLE: 7, ARC: 135, RADIUS: 900, W: 320, H: 540, DRAG_THRESHOLD: 28 };
+    }
+    
     const isSm = vw <= 480;
     const isMd = vw > 480 && vw <= 768;
 
@@ -54,6 +59,8 @@ export default function PortalRing() {
 
     return { VISIBLE, ARC, RADIUS, W, H, DRAG_THRESHOLD };
   }, [vw]);
+
+  if (vw === null) return null;
 
   const START = -ARC / 2;
   const STEP = ARC / (VISIBLE - 1);
@@ -71,7 +78,6 @@ export default function PortalRing() {
   };
 
   // --- drag / wheel handlers ---
-  const drag = useRef<{ down: boolean; x: number; startX: number }>({ down: false, x: 0, startX: 0 });
   const onPointerDown = (e: React.PointerEvent) => { drag.current = { down: true, x: e.clientX, startX: e.clientX }; };
   const onPointerMove = (e: React.PointerEvent) => {
     if (!drag.current.down || busy) return;
@@ -99,7 +105,7 @@ export default function PortalRing() {
         onWheel={onWheel}
       >
         <div className="ring-video" aria-hidden="true" style={{ ['--bgY' as any]: '60%' }} >
-          <img src="/flyer/prohibido.png" alt="" className="ring-video-el" loading="eager" decoding="async" />
+          <Image src="/flyer/prohibido.png" alt="" className="ring-video-el" fill priority />
         </div>
 
         {Array.from({ length: VISIBLE }).map((_, i) => {
@@ -140,7 +146,7 @@ export default function PortalRing() {
               onTouchStart={() => { if (panel.videoMp4) videoRefs.current[i]?.play().catch(() => {}); }}
             >
               <div className="ring-panel portal-card">
-                <img src={panel.img} alt={panel.title} className="ring-img portal-arch" draggable={false} />
+                <Image src={panel.img} alt={panel.title} className="ring-img portal-arch" fill />
                 <span className="ring-topLabel">{panel.topLabel}</span>
               </div>
               <div className="ring-label" aria-hidden="true">
