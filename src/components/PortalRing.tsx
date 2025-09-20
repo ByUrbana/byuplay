@@ -41,23 +41,23 @@ export default function PortalRing() {
   }, []);
 
   // --- breakpoints ---
-  const { VISIBLE, ARC, RADIUS, W, H, DRAG_THRESHOLD } = useMemo(() => {
+  const { VISIBLE, ARC, RADIUS, W, H, DRAG_THRESHOLD, isMobile } = useMemo(() => {
     if (vw === null) {
       // Valores padrão quando vw ainda não foi definido
-      return { VISIBLE: 7, ARC: 135, RADIUS: 900, W: 320, H: 540, DRAG_THRESHOLD: 28 };
+      return { VISIBLE: 7, ARC: 135, RADIUS: 900, W: 320, H: 540, DRAG_THRESHOLD: 28, isMobile: false };
     }
     
-    const isSm = vw <= 480;
-    const isMd = vw > 480 && vw <= 768;
+    const isSm = vw <= 640;  // Mudança para 640px como breakpoint principal
+    const isMd = vw > 640 && vw <= 768;
 
-    const W = isSm ? 160 : isMd ? 220 : 320;       // más chico en mobile
+    const W = isSm ? 200 : isMd ? 240 : 320;       // Aumentei o tamanho em mobile
     const H = Math.round(W * (540 / 320));
-    const RADIUS = isSm ? 340 : isMd ? 520 : 900;  // más compacto
-    const VISIBLE = isSm ? 3 : isMd ? 5 : 7;       // menos paneles
-    const ARC = isSm ? 100 : isMd ? 120 : 135;
-    const DRAG_THRESHOLD = isSm ? 15 : 25;
+    const RADIUS = isSm ? 280 : isMd ? 520 : 900;  // Menor raio para mobile
+    const VISIBLE = isSm ? 3 : isMd ? 5 : 7;       // Menos painéis em mobile
+    const ARC = isSm ? 120 : isMd ? 120 : 135;     // Aumentei o arco para mobile
+    const DRAG_THRESHOLD = isSm ? 20 : 25;
 
-    return { VISIBLE, ARC, RADIUS, W, H, DRAG_THRESHOLD };
+    return { VISIBLE, ARC, RADIUS, W, H, DRAG_THRESHOLD, isMobile: isSm };
   }, [vw]);
 
   if (vw === null) return null;
@@ -158,6 +158,32 @@ export default function PortalRing() {
         })}
 
         <div className="ring-water" />
+        
+        {/* Controles de navegação para mobile */}
+        {isMobile && (
+          <div className="ring-controls">
+            <button
+              onClick={() => rotate(-1)}
+              disabled={busy}
+              className="ring-control-btn ring-control-prev"
+              aria-label="Anterior"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            <button
+              onClick={() => rotate(1)}
+              disabled={busy}
+              className="ring-control-btn ring-control-next"
+              aria-label="Próximo"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

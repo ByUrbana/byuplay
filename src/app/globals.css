@@ -376,15 +376,94 @@ body{
   .ring-panel{ --w: 280px; --h: 420px; }
 }
 @media (max-width:820px){
-  .ring-stage{ height:380px; }
-  .ring-item{ bottom:64px; }
-  .ring-panel{ --w: 240px; --h: 360px; }
+  .ring-stage{ 
+    height: 420px; 
+    perspective: 1100px;
+    transform: rotateX(9deg);
+  }
+  .ring-item{ 
+    bottom: 70px; 
+    filter: drop-shadow(0 22px 28px rgba(0,0,0,.45));
+  }
+  .ring-panel{ 
+    --w: 240px; 
+    --h: 360px; 
+  }
 }
 @media (max-width:640px){
-  .ring-stage{ height:360px; perspective:1200px; transform:none; }
-  .ring-item{ position:static; transform:none; filter:none; display:inline-block; margin:.75rem; bottom:0; }
-  .ring-panel{ --w: min(76vw, 320px); --h: clamp(300px, 62vw, 360px); }
-  .ring-water{ display:none; }
+  .ring-stage{ 
+    height: 400px; 
+    perspective: 1000px; 
+    transform: rotateX(8deg);  /* Mantém a perspectiva 3D */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ring-item{ 
+    position: absolute;  /* Mantém position absolute para o carrossel */
+    left: 50%; 
+    bottom: 60px;  /* Ajustado para mobile */
+    transform-origin: 50% 100%;
+    transform: translateX(-50%) rotateY(var(--angle)) translateZ(calc(-1 * var(--radius))) scale(calc(var(--scale,1) * var(--hover,1)));
+    z-index: var(--z,1);
+    will-change: transform;
+    transition: transform .18s ease;
+    filter: drop-shadow(0 20px 25px rgba(0,0,0,.40));
+    width: var(--w);
+    height: var(--h);
+  }
+  .ring-panel{ 
+    --w: 200px;  /* Tamanho fixo para mobile */
+    --h: 300px; 
+  }
+  .ring-water{ 
+    display: none; 
+  }
+  /* Ajustes para labels em mobile */
+  .ring-label{
+    bottom: calc(var(--h) + 8px);
+  }
+  .ring-label-text{
+    font-size: .7rem;
+    padding: .25rem .5rem;
+  }
+  
+  /* Controles de navegação para mobile */
+  .ring-controls{
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1rem;
+    z-index: 10;
+  }
+  
+  .ring-control-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(0,0,0,.6);
+    border: 1px solid rgba(255,255,255,.2);
+    color: white;
+    cursor: pointer;
+    transition: all .2s ease;
+    backdrop-filter: blur(10px);
+  }
+  
+  .ring-control-btn:hover:not(:disabled){
+    background: rgba(0,0,0,.8);
+    border-color: rgba(255,255,255,.4);
+    transform: scale(1.05);
+  }
+  
+  .ring-control-btn:disabled{
+    opacity: .5;
+    cursor: not-allowed;
+  }
 }
 
 /* ===================== Fondo, logo, botón ===================== */
@@ -962,7 +1041,7 @@ body{
     opacity: .35;                /* la copia es más tenue */
     transform: translateZ(0);
     animation: cloudFloat 14s ease-in-out infinite alternate;
-  }-
+  }
   @keyframes cloudFloat{
     from{ transform: translate(0, 0) scale(1.02); }
     to  { transform: translate(2%, -1.5%) scale(1.03); }
