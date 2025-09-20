@@ -1,0 +1,1155 @@
+@import "tailwindcss";
+
+/* ===================== PALETA GLOBAL ===================== */
+:root{
+  --bg:            0 18 40;
+  --surface:       4 28 62;
+  --surface-2:     8 44 96;
+
+  --brand:        68 114 196;
+  --brand-2:       7 101 235;
+  --brand-3:       6 110 244;
+
+  --highlight-1: 155 197 249;
+  --highlight-2: 196 232 251;
+
+  --text:         232 240 255;
+  --text-dim:     188 205 230;
+}
+
+/* ===================== Básicos ===================== */
+:root { color-scheme: dark; }
+html, body { overflow-x: hidden; }
+body{
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: rgb(var(--text));
+  background: rgb(var(--bg));
+}
+.scroll-hide::-webkit-scrollbar,
+.row-scroll::-webkit-scrollbar { display: none; }
+.scroll-hide{ -ms-overflow-style:none; scrollbar-width:none; }
+.row-scroll{ -ms-overflow-style:none; scrollbar-width:none; }
+
+/* ===================== Ventana con arco (cúpula) ===================== */
+.portal-arch{
+  position: relative;
+  --arch: 86%;
+  border-radius: 28px;
+  clip-path: path("M 0 calc(var(--arch)) Q 50% 0 100% calc(var(--arch)) L 100% 100% L 0 100% Z");
+}
+@supports (-webkit-mask: none) or (mask: none){
+  .portal-arch{
+    clip-path: none;
+    -webkit-mask:
+      radial-gradient(135% 115% at 50% calc(-12% + var(--arch)), #000 99%, transparent 100%) top/100% calc(var(--arch) + 1px) no-repeat,
+      linear-gradient(#000,#000) bottom/100% calc(100% - var(--arch)) no-repeat;
+            mask:
+      radial-gradient(135% 115% at 50% calc(-12% + var(--arch)), #000 99%, transparent 100%) top/100% calc(var(--arch) + 1px) no-repeat,
+      linear-gradient(#000,#000) bottom/100% calc(100% - var(--arch)) no-repeat;
+    -webkit-mask-composite: source-over;
+            mask-composite: add;
+  }
+}
+
+/* ===================== Tarjeta de vidrio ===================== */
+.portal-card{
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 28px;
+  background:
+    radial-gradient(130% 90% at 50% -18%, rgb(var(--highlight-2) / .10), transparent 60%),
+    linear-gradient(to bottom, rgb(var(--surface)) 0%, rgb(var(--surface-2)) 35%, rgb(var(--bg)) 100%);
+  border: 1px solid rgb(var(--highlight-1) / .18);
+  box-shadow: inset 0 1px 0 rgb(var(--highlight-2) / .12);
+}
+.portal-card::before{
+  content:""; position:absolute; inset:0;
+  background:
+    radial-gradient(65% 50% at 50% 12%, rgb(var(--highlight-2) / .15), transparent 70%),
+    conic-gradient(from -30deg at 50% 0%, rgb(var(--brand-2) / .20), transparent 65%);
+  mix-blend-mode: screen; pointer-events:none; opacity:.9;
+}
+.portal-card::after{
+  content:""; position:absolute; inset:0;
+  box-shadow:
+    inset 0 105px 180px rgba(0,0,0,.40),
+    inset 0 -110px 190px rgba(0,0,0,.55),
+    inset 0 0 0 1px rgb(var(--highlight-1) / .12);
+  background: radial-gradient(60% 80% at 50% 108%, rgb(var(--brand-2) / .20), transparent 70%);
+  pointer-events:none; opacity:.9;
+}
+
+/* ===================== Escena (carrusel + agua) ===================== */
+.ring-scene.container{
+  position: relative;
+  max-width: none; width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  padding: 152px clamp(12px, 3vw, 48px) 64px;
+  overflow: hidden;
+  background: radial-gradient(90% 70% at 50% 0%, rgb(var(--brand) / .10), transparent 70%);
+  margin-top: 0; margin-bottom: 2rem;
+}
+@media (min-width:768px){ .ring-scene.container{ margin-bottom: 3rem; } }
+
+/* Título */
+.ring-heading{
+  font-weight: 200;
+  font-size: clamp(1.25rem, 1.05rem + 1vw, 1.75rem);
+  line-height: 1.15; letter-spacing: .01em;
+  color: rgb(var(--text) / .92);
+  margin: 0 auto 1.1rem;
+  text-align: center;
+}
+.ring-heading::after{
+  content:""; display:block; width:54px; height:2px; margin:.5rem auto 0; border-radius:999px;
+  background: linear-gradient(90deg, rgb(var(--brand) / .85), rgb(var(--brand-2) / .85));
+  opacity:.75;
+}
+
+/* Cámara/perspectiva (más alta) */
+.ring-stage{
+  position: relative;
+  height: clamp(520px, 58vh, 720px);  /* <- antes 420px */
+  perspective: 1150px;
+  transform-style: preserve-3d;
+  transform: rotateX(10deg);
+  isolation: isolate;
+  width: 100%;
+  overflow: visible;
+  --lift: 105px; 
+}
+
+@media (max-width:1100px){
+  .ring-stage{ height: clamp(480px, 52vh, 640px); }
+}
+@media (max-width:820px){
+  .ring-stage{ height: 420px; }  /* mantenemos en tablets */
+}
+@media (max-width:640px){
+  .ring-stage{ height: 360px; }  /* móvil igual que antes */
+}
+
+/* Tarjetas del anillo */
+.ring-item{
+  position: absolute; left:50%; bottom: var(--lift, 1px); transform-origin: 50% 100%;
+  transform: translateX(-50%) rotateY(var(--angle)) translateZ(calc(-1 * var(--radius))) scale(calc(var(--scale,1) * var(--hover,1)));
+  z-index: var(--z,1);
+  will-change: transform;
+  transition: transform .18s ease;
+  filter: drop-shadow(0 26px 30px rgba(0,0,0,.40));
+  isolation: isolate;
+  width: var(--w);
+  height: var(--h);
+}
+.ring-panel{
+  backface-visibility: hidden;
+  transform: translateZ(0.01px);
+  z-index: 2;
+}
+.ring-item:hover{ --hover: 1.06; }
+.ring-item:focus-visible{ --hover: 1.06; outline: none; }
+
+.ring-panel{
+  position: relative; width: var(--w,300px); height: var(--h,460px);
+  border-radius: 28px; overflow: hidden;
+  background:
+    linear-gradient(to bottom, rgb(var(--highlight-2) / .06), rgb(var(--bg) / .70)),
+    radial-gradient(120% 90% at 50% 0%, rgb(var(--brand) / .35) 0%, transparent 65%),
+    rgb(var(--surface));
+  border: 1px solid rgb(var(--highlight-1) / .18);
+  box-shadow: 0 40px 100px rgba(0,0,0,.45), inset 0 1px 0 rgb(var(--highlight-2) / .10);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.ring-panel .portal-arch{ position:absolute; inset:0; }
+
+.ring-img{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  filter: saturate(1.05) contrast(1.02) brightness(.95);
+}
+
+/* Halo interior */
+.ring-window{
+  position:absolute; inset:0;
+  background:
+    radial-gradient(130% 70% at 50% 0%, rgb(var(--brand-2) / .32), transparent 60%),
+    radial-gradient(70% 50% at 50% 8%,  rgb(var(--highlight-2) / .08), transparent 70%);
+  mix-blend-mode: screen; pointer-events:none;
+}
+
+/* ===== Labels fuera del rectángulo (estilo nav) ===== */
+.ring-label{
+  position:absolute;
+  left:50%;
+  bottom: calc(var(--h) + 14px);
+  transform: translateX(-50%);
+  z-index:5;
+  pointer-events:none;
+}
+.ring-label-text{
+  display:inline-block;
+  padding:.32rem .7rem;
+  border-radius:999px;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  font-weight:700;
+  font-size:.76rem;
+  line-height:1;
+  color: rgb(var(--text));
+  background: rgba(0,0,0,.45);
+  border: 1px solid rgb(var(--highlight-1) / .24);
+  box-shadow: 0 10px 24px rgba(0,0,0,.40), inset 0 1px 0 rgb(var(--highlight-2) / .15);
+  backdrop-filter: blur(6px);
+}
+@media (max-width:820px){
+  .ring-label{ bottom: calc(var(--h) + 10px); }
+  .ring-label-text{ font-size:.72rem; padding:.28rem .6rem; }
+}
+.ring-topLabel{ display:none; }
+
+/* ====== Contenedor del reflejo bajo cada tarjeta ====== */
+.ring-reflection{
+  position:absolute;
+  left:0; right:0; top:100%;
+  height:240px;
+  overflow:hidden;
+  pointer-events:none;
+  z-index:1;
+  contain:paint;
+}
+
+/* Ondas locales sutiles */
+.ring-ripples{
+  position:absolute;
+  top: calc(100% + 2px);
+  left:50%; transform:translateX(-50%);
+  width: calc(var(--w) * 1.18);
+  height: 120px;
+  z-index:1; pointer-events:none;
+  background:
+    radial-gradient(60% 120% at 50% -10%, rgba(255 255 255 / .10) 0 10%, transparent 35%),
+    repeating-radial-gradient(ellipse at 50% 0%, rgba(255 255 255 / .10) 0 2px, transparent 2px 10px);
+  mix-blend-mode: screen;
+  filter: blur(6px) saturate(1.15);
+  opacity:.18;
+  -webkit-mask-image: radial-gradient(100% 140% at 50% -10%, rgba(0,0,0,.9), transparent 70%);
+          mask-image: radial-gradient(100% 140% at 50% -10%, rgba(0,0,0,.9), transparent 70%);
+  animation: rings-breathe 9s ease-in-out infinite;
+}
+@keyframes rings-breathe{
+  from{ transform: translateX(-50%) scaleX(1.00); }
+  to  { transform: translateX(-50%) scaleX(1.06); }
+}
+
+/* Imagen reflejada con distorsión de agua */
+.ring-reflection .mirror-img{
+  position:absolute; inset:0;
+  width:100%; height:100%; object-fit:cover;
+  transform: scaleY(-1);
+  filter: url(#waterDistort) blur(4px) saturate(1.25);
+  opacity:.62;
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.96) 0%, transparent 78%);
+          mask-image: linear-gradient(to bottom, rgba(0,0,0,.96) 0%, transparent 78%);
+}
+
+
+/* ====== Orilla / espuma en la base de cada tarjeta ====== */
+.ring-shore{
+  position:absolute;
+  left:50%; top: calc(100% - 6px);
+  transform: translateX(-50%);
+  width: calc(var(--w) * 1.12);
+  height: 52px;               /* ← antes 512px */
+  z-index:1;
+  pointer-events:none;
+  background:
+    radial-gradient(70% 140% at 50% 0%, rgba(255,255,255,.32) 0 12%, transparent 38%),
+    repeating-radial-gradient(ellipse at 50% 10%, rgba(255,255,255,.18) 0 2px, transparent 2px 8px);
+  filter: blur(7px) saturate(1.15);
+  mix-blend-mode: screen;
+  opacity:.55;
+  -webkit-mask-image: radial-gradient(100% 150% at 50% 0%, rgba(0,0,0,.95), transparent 65%);
+          mask-image: radial-gradient(100% 150% at 50% 0%, rgba(0,0,0,.95), transparent 65%);
+  animation: shoreBreathe 8s ease-in-out infinite;
+}
+@keyframes shoreBreathe{
+  from{ transform: translateX(-50%) scaleX(1.00); opacity:.52; }
+  to  { transform: translateX(-50%) scaleX(1.06); opacity:.60; }
+}
+
+/* ====== Lámina de agua global (charco grande) ====== */
+.ring-water{
+  position:absolute;
+  left:50%; bottom:-10px;
+  transform: translateX(-50%) rotateX(10deg);
+  width: clamp(900px, 88vw, 1600px);
+  height: clamp(300px, 42vh, 600px);
+  z-index:1;                  /* ← sobre el video */
+  pointer-events:none;
+  overflow:hidden;
+  background:
+    radial-gradient(120% 170% at 50% 12%, rgba(7 101 235 / .28) 0 28%, transparent 64%),
+    radial-gradient(95% 150%  at 50% 40%, rgba(0 0 0 / .88) 0 58%, transparent 82%),
+    radial-gradient(180% 190% at 50% 120%, rgba(196 232 251 / .12) 0 22%, transparent 62%);
+  box-shadow:
+    inset 0 60px 160px rgba(0,0,0,.55),
+    inset 0 -50px 120px rgba(0,0,0,.55);
+  filter: saturate(1.08) contrast(1.08) blur(2px);
+  -webkit-mask: radial-gradient(90% 125% at 50% 16%, #000 60%, transparent 82%);
+          mask: radial-gradient(90% 125% at 50% 16%, #000 60%, transparent 82%);
+}
+.ring-water::before{
+  content:""; position:absolute; inset:-8% -6% auto -6%; height:82%;
+  background: repeating-radial-gradient(ellipse at 50% 28%, rgba(255 255 255 / .12) 0 10px, transparent 10px 22px);
+  filter: url(#waterDistort) blur(3px) saturate(1.2);
+  opacity:.42;
+  animation: waterDrift 20s linear infinite;
+}
+@keyframes waterDrift{
+  from{ transform: translateX(-3%); }
+  to  { transform: translateX( 3%); }
+}
+.ring-water::after{
+  content:""; position:absolute; left:50%; top:-6px; transform:translateX(-50%);
+  width:110%; height:160px;
+  background: radial-gradient(120% 80% at 50% 0%, rgba(7 101 235 / .40) 0 30%, transparent 75%);
+  filter: blur(22px);
+  mix-blend-mode: screen;
+  opacity:.52;
+}
+
+/* Capa de video detrás de los paneles */
+.ring-video{
+  position:absolute;
+  inset: -31% -4% -18% -4%;   /* <- se extiende más arriba/abajo y un poco a los lados */
+  z-index:0;
+  pointer-events:none;
+  overflow:hidden;
+  transform: translateZ(0);
+}
+
+.ring-video-el{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit: cover;
+  filter: brightness(.92) contrast(1.06) saturate(1.06);
+  -webkit-mask-image: radial-gradient(130% 90% at 50% 40%, #000 60%, transparent 95%);
+          mask-image: radial-gradient(130% 90% at 50% 40%, #000 60%, transparent 95%);
+}
+
+.ring-video::after{
+  content:"";
+  position:absolute; inset:0;
+  background:
+    radial-gradient(80% 60% at 50% 10%, rgba(7 101 235 / .25) 0 40%, transparent 70%),
+    linear-gradient(to bottom, rgba(0 0 0 / .15), rgba(0 0 0 / .35));
+  mix-blend-mode: screen;
+  pointer-events:none;
+}
+@media (prefers-reduced-motion: reduce){
+  .ring-video{ display:none; }
+}
+@media (max-width: 640px){
+  .ring-video-el{ opacity:0; } /* deja 0.35 si quieres que se note algo */
+}
+
+/* (Opcional) Cielo “soft” antiguo — lo desactivo al usar video */
+.ring-sky{ display:none; }
+
+/* Hover de tarjeta */
+.ring-item:hover .ring-panel{
+  transform: translateZ(24px);
+  box-shadow: 0 60px 90px rgba(0,0,0,.6), inset 0 1px 0 rgb(var(--highlight-2) / .06);
+  z-index: 3;
+}
+
+/* Motion-safe */
+@media (prefers-reduced-motion: reduce){
+  .ring-reflection .mirror-img{ filter: url(#waterDistort); }
+}
+
+/* ===================== Responsivo ===================== */
+@media (max-width:1100px){
+  .ring-stage{ height:440px; }
+  .ring-item{ bottom:72px; }
+  .ring-panel{ --w: 280px; --h: 420px; }
+}
+@media (max-width:820px){
+  .ring-stage{ height:380px; }
+  .ring-item{ bottom:64px; }
+  .ring-panel{ --w: 240px; --h: 360px; }
+}
+@media (max-width:640px){
+  .ring-stage{ height:360px; perspective:1200px; transform:none; }
+  .ring-item{ position:static; transform:none; filter:none; display:inline-block; margin:.75rem; bottom:0; }
+  .ring-panel{ --w: min(76vw, 320px); --h: clamp(300px, 62vw, 360px); }
+  .ring-water{ display:none; }
+}
+
+/* ===================== Fondo, logo, botón ===================== */
+.site-bg{
+  position: fixed; inset: -20vh -20vw; z-index: -1; pointer-events:none;
+  background:
+    radial-gradient(60% 50% at 88% 40%, rgb(var(--brand-2) / .36) 0 35%, transparent 60%),
+    radial-gradient(55% 60% at 50% 85%, rgb(var(--brand)) / .28 0 40%, transparent 70%),
+    radial-gradient(120% 100% at 50% 120%, rgb(var(--highlight-2) / .10) 0 20%, transparent 60%),
+    linear-gradient(180deg, rgb(var(--bg)) 0%, rgb(var(--bg)) 50%, rgb(var(--bg)) 100%);
+  filter: saturate(1.05) contrast(1.03);
+}
+.site-bg::after{
+  content:""; position:absolute; inset:0;
+  background-image: radial-gradient(rgba(255,255,255,.07) 1px, transparent 1px);
+  background-size: 2px 2px; opacity:.06; mix-blend-mode: screen;
+}
+.logo-wrap { letter-spacing: -0.01em; }
+.logo-by   { color: #c4e8fb; }
+.logo-glow{
+  filter: drop-shadow(0 6px 24px rgba(6,110,244,.35))
+          drop-shadow(0 1px 0 rgba(255,255,255,.12));
+}
+.group:hover .logo-glow{
+  filter: drop-shadow(0 8px 28px rgba(6,110,244,.45))
+          drop-shadow(0 1px 0 rgba(255,255,255,.16));
+}
+.btn-now{
+  display:inline-flex; align-items:center; gap:.5rem;
+  padding:.62rem 1rem; border-radius:999px;
+  background: linear-gradient(135deg, rgb(var(--brand-2)) 0%, rgb(var(--brand-3)) 100%);
+  color:#fff; font-weight:600;
+  border:1px solid rgb(var(--highlight-1) / .35);
+  box-shadow: 0 8px 22px rgba(6,110,244,.28), inset 0 1px 0 rgba(255,255,255,.18);
+  transition: filter .15s ease, transform .08s ease, box-shadow .15s ease;
+}
+.btn-now:hover{
+  filter: brightness(1.06) saturate(1.06);
+  box-shadow: 0 10px 26px rgba(6,110,244,.38), inset 0 1px 0 rgba(255,255,255,.2);
+}
+.btn-now:active{ transform: translateY(1px); }
+.btn-now .dot{
+  display:inline-block; width:.55rem; height:.55rem; border-radius:50%;
+  background: rgba(255,255,255,.9); box-shadow:0 0 10px rgba(255,255,255,.6);
+}
+
+
+
+
+/* === BORRAR LA SOMBRA AZUL DEL FONDO === */
+
+/* Apaga el charco elíptico global */
+.ring-water,
+.ring-water::before,
+.ring-water::after{
+  display: none !important;
+}
+
+/* Quita el tinte azulado que le poníamos al video de fondo */
+.ring-video::after{
+  background: none !important;
+}
+
+/* (Opcional) apaga brillos/ondas locales bajo cada tarjeta */
+.ring-reflection .mirror-glow{ display:none !important; }
+.ring-ripples{ display:none !important; }
+
+/* (Opcional) si el reflejo todavía te oscurece, bájalo un poco */
+.ring-reflection .mirror-img{
+  opacity:.30; /* prueba .28–.36 a gusto */
+}
+
+
+
+
+
+
+
+/* Asegurar que el título quede por encima del video y las tarjetas */
+.ring-heading{
+  position: relative;
+  z-index: 40;            /* más alto que el stage y el video */
+  text-shadow: 0 10px 30px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.06);
+}
+
+/* El contenedor del carrusel queda en una capa base */
+.ring-stage{
+  position: relative; 
+  z-index: 0;
+}
+
+/* La capa de video se mantiene debajo de todo dentro del stage */
+.ring-video{ 
+  z-index: 0; 
+}
+
+/* ===== Fashion theme (piel/nude + azul oscuro) ===== */
+.fashion-theme {
+  /* Fondo base oscuro del sitio (dejamos tu bg azul global) */
+  --bg: 0 18 40;         /* lo mantenemos para integrar con el resto */
+
+  /* Paleta Fashion (valores aproximados de tu imagen) */
+  --fx-sand: 230 191 175;   /* #E6BFAF */
+  --fx-blush: 222 186 169;  /* #DEBAA9 */
+  --fx-tan: 192 141 106;    /* #C08D6A */
+  --fx-ice: 168 192 217;    /* #A8C0D9 */
+  --fx-beige: 217 184 156;  /* #D9B89C */
+  --fx-rose: 166 115 86;    /* #A67356 */
+  --fx-brown: 122 77 50;    /* #7A4D32 */
+  --fx-choco: 113 59 47;    /* #713B2F */
+  --fx-navy: 14 30 49;      /* #0E1E31 aproximado */
+
+  --text: 232 240 255;      /* heredado, suficiente contraste */
+}
+
+/* Componentes/ayudas */
+.fashion-theme .fx-chip{
+  @apply inline-flex items-center rounded-full border px-3 py-1 text-[12px] transition;
+  border-color: rgba(255,255,255,.15);
+  background: rgba(0,0,0,.35);
+  color: rgba(255,255,255,.92);
+}
+.fashion-theme .fx-chip-muted{
+  @apply inline-flex items-center rounded-full px-3 py-1 text-[12px] transition;
+  color: rgba(255,255,255,.75);
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.25);
+}
+.fashion-theme .fx-btn-primary{
+  @apply inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition;
+  color:#0e1e31;
+  border: 1px solid rgba(255,255,255,.15);
+  background: linear-gradient(180deg,
+    rgb(var(--fx-sand)) 0%,
+    rgb(var(--fx-blush)) 55%,
+    rgb(var(--fx-tan)) 100%);
+  box-shadow: 0 10px 24px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.25);
+}
+.fashion-theme .fx-btn-primary:hover{ filter: brightness(1.05) saturate(1.05); }
+.fashion-theme .fx-btn-ghost{
+  @apply inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition;
+  color: rgb(var(--fx-navy));
+  border: 1px solid rgba(14,30,49,.25);
+  background: rgba(255,255,255,.65);
+}
+.fashion-theme .text-navy{ color: rgb(var(--fx-navy)); }
+
+/* HERO panel con degradé 'piel/nude' */
+.fashion-theme .fx-hero{
+  background:
+    radial-gradient(120% 120% at 50% 0%,
+      rgba(var(--fx-sand), .85) 0%,
+      rgba(var(--fx-blush), .85) 38%,
+      rgba(var(--fx-ice), .65) 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 40px 80px rgba(0,0,0,.35);
+}
+
+/* Video embebido en el hero (se enmascara suave) */
+.fashion-theme .fx-heroVideo{ position:absolute; inset:0; pointer-events:none; }
+.fashion-theme .fx-heroVideo-el{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  filter: contrast(1.05) saturate(1.05) brightness(.9);
+  -webkit-mask-image: radial-gradient(120% 120% at 50% -10%, #000 55%, transparent 95%);
+          mask-image: radial-gradient(120% 120% at 50% -10%, #000 55%, transparent 95%);
+}
+
+/* Cards de ediciones */
+.fashion-theme .fx-card{
+  @apply overflow-hidden rounded-2xl border backdrop-blur;
+  border-color: rgba(255,255,255,.12);
+  background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.75));
+  box-shadow: 0 30px 60px rgba(0,0,0,.25);
+}
+.fashion-theme .fx-thumb{ height: 200px; background: rgba(255,255,255,.6); }
+
+/* Chips de paleta */
+.fashion-theme .fx-swatch{
+  @apply rounded-xl border p-3 text-center text-xs font-semibold;
+  border-color: rgba(0,0,0,.08);
+  color: rgba(0,0,0,.65);
+}
+
+
+
+
+/* === THEME FASHION (colores basados en tu imagen) === */
+.ft-theme{
+  /* tonos piel / nude (claro → más intenso) */
+  --ft-cream-1: #EBC4B0;
+  --ft-cream-2: #DEB8A4;
+  --ft-nude-1:  #C38D6A;
+  --ft-terracotta:#A67356;
+
+  /* acentos oscuros */
+  --ft-navy:   #162334;   /* azul oscuro para títulos y remates */
+  --ft-brown1: #7A4D3B;
+  --ft-brown2: #753F2F;
+
+  /* apoyo */
+  --ft-bluegray:#A9C0CF;  /* celeste grisáceo de la grilla inferior */
+  --ft-text:   #0e1623;
+}
+
+/* HERO con fondo piel/nude y ligero glow */
+.ft-theme .ft-hero{
+  background:
+    radial-gradient(130% 120% at 50% 0%, rgba(255,255,255,.85), rgba(255,255,255,.55) 45%, transparent 65%),
+    linear-gradient(180deg, var(--ft-cream-1) 0%, var(--ft-cream-2) 50%, var(--ft-nude-1) 120%);
+  color: var(--ft-navy);
+  border: 1px solid rgba(255,255,255,.15);
+  box-shadow: 0 20px 50px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.35);
+}
+
+/* Tipografías dentro del tema */
+.ft-theme .ft-title{ color: var(--ft-navy); }
+.ft-theme .ft-subtitle{
+  color: rgb(var(--text));
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+/* Párrafos */
+.ft-theme .ft-body{
+  color: #223; /* muy oscuro, legible sobre fondos claros */
+  opacity: .9;
+}
+
+/* Botón principal en degradado nude/terracotta */
+.ft-theme .ft-btn-nude{
+  display:inline-flex; align-items:center; gap:.5rem;
+  padding:.7rem 1.2rem; border-radius:999px;
+  font-weight:600; color:#fff; text-decoration:none;
+  background: linear-gradient(135deg, var(--ft-cream-2) 0%, var(--ft-terracotta) 100%);
+  border:1px solid rgba(0,0,0,.08);
+  box-shadow: 0 10px 24px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.25);
+  transition: filter .15s ease, transform .05s ease;
+}
+.ft-theme .ft-btn-nude:hover{ filter: brightness(1.05) saturate(1.05); }
+.ft-theme .ft-btn-nude:active{ transform: translateY(1px); }
+
+/* Botón secundario con borde suave */
+.ft-theme .ft-btn-outline{
+  display:inline-flex; align-items:center; gap:.5rem;
+  padding:.7rem 1.1rem; border-radius:999px;
+  font-weight:600; text-decoration:none;
+  color: var(--ft-navy);
+  background: rgba(255,255,255,.7);
+  border:1px solid rgba(0,0,0,.08);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
+  transition: background .15s ease, transform .05s ease;
+}
+.ft-theme .ft-btn-outline:hover{ background: rgba(255,255,255,.85); }
+.ft-theme .ft-btn-outline:active{ transform: translateY(1px); }
+
+/* Cards de ediciones (superficie clara + footer translúcido) */
+.ft-theme .ft-card{
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.85) 0%, rgba(255,255,255,.72) 60%, rgba(255,255,255,.65) 100%);
+  border: 1px solid rgba(0,0,0,.06);
+  box-shadow: 0 20px 45px rgba(0,0,0,.20);
+}
+.ft-theme .ft-card-footer{
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.86) 0%, rgba(255,255,255,.75) 100%);
+  color: #1b2230;
+}
+
+/* Ajustes responsivos mínimos */
+@media (max-width: 640px){
+  .ft-theme .ft-hero{ padding: 1.25rem; }
+}
+
+
+
+/* ======== THEME Fashion Tour (nude + navy) ======== */
+.fashion-skin{
+  /* Paleta (los hex de tu imagen) */
+  --ft-ink:        14 25 33;    /* #0E1921  texto/navy oscuro */
+
+  --ft-cream-1:   235 196 175;  /* #EBC4AF  piel suave */
+  --ft-cream-2:   222 186 163;  /* #DEBAA3  nude */
+  --ft-tan:       196 141 106;  /* #C48D6A  tan */
+
+  --ft-blue:      168 192 217;  /* #A8C0D9  celeste pálido */
+  --ft-beige:     217 184 156;  /* #D9B89C  beige */
+  --ft-brown-1:   166 115  86;  /* #A67356  terracota */
+  --ft-brown-2:   122  77  50;  /* #7A4D32  marrón */
+  --ft-russet:    123  59  47;  /* #7B3B2F  rojizo */
+
+  --ft-navy-1:     14  28  33;  /* #0E1C21  navy */
+  --ft-navy-2:     22  35  52;  /* #162334  navy */
+
+  /* Fondo general de la página /fashion
+     (cubre el glow azul del sitio) */
+  color: rgb(var(--ft-ink));
+  background:
+    radial-gradient(140% 110% at 50% -10%, rgba(255,255,255,.55) 0 30%, transparent 60%),
+    linear-gradient(180deg,
+      rgb(var(--ft-cream-1)) 0%,
+      rgb(var(--ft-cream-2)) 32%,
+      rgb(var(--ft-tan))     62%,
+      rgb(var(--ft-beige))   100%);
+}
+
+/* Hero “pantalla de streaming” */
+.ft-hero{
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255,255,255,.55) 0 25%, transparent 60%),
+    linear-gradient(180deg,
+      #F5EEE9 0%,
+      #EBC4AF 35%,
+      #C48D6A 100%);
+  border: 1px solid rgba(14,25,33,.06);
+  box-shadow:
+    0 30px 80px rgba(14,25,33,.25),
+    inset 0 1px 0 rgba(255,255,255,.35);
+}
+
+/* Botón primario (nude) */
+.ft-btn-primary{
+  background: linear-gradient(180deg, #DEBAA3 0%, #C48D6A 95%);
+  color: rgb(var(--ft-ink));
+  border: 1px solid rgba(14,25,33,.12);
+  box-shadow: 0 10px 24px rgba(196,141,106,.35), inset 0 1px 0 rgba(255,255,255,.45);
+}
+.ft-btn-primary:hover{ filter: brightness(1.05) saturate(1.03); }
+
+/* Botón secundario (trazo navy) */
+.ft-btn-ghost{
+  color: rgb(var(--ft-ink));
+  border: 1px solid rgba(14,25,33,.28);
+  background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.35));
+}
+
+/* Tarjetas de “Ediciones anteriores” */
+.ft-card{
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.75) 0%, rgba(255,255,255,.55) 65%, rgba(235,196,175,.45) 100%);
+  border: 1px solid rgba(14,25,33,.08);
+  box-shadow: 0 16px 40px #0e19212e, inset 0 1px 0 rgba(255,255,255,.35);
+}
+
+/* Títulos y acentos */
+.ft-title{ color: rgb(var(--ft-ink)); }
+.ft-subtle{ color: rgba(14,25,33,.72); }
+
+/* Opcional: esconder el glow del sitio si existiera superpuesto */
+.fashion-skin .site-bg{ display:none; }
+
+
+
+
+
+/* Atenuación y neblina para paneles que aún no están listos */
+.ring-item--disabled { cursor: not-allowed; }
+
+.is-dimmed{
+  filter: saturate(.9) brightness(.9);
+}
+.is---dimmed .ring-img{
+  filter: blur(.7px) contrast(.95) saturate(.92) brightness(.92);
+}
+.is-dimmed .ring-window{ opacity:.35; }
+
+/* Velo tipo neblina */
+.ring-fog{
+  position:absolute; inset:0; border-radius:inherit; pointer-events:none; z-index:5;
+  background:
+    linear-gradient(to bottom, rgba(10,10,10,.20), rgba(10,10,10,.22)),
+    radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,.20), transparent 60%);
+  backdrop-filter: blur(2.5px);
+  mix-blend-mode: screen; opacity:.9;
+}
+
+/* (Opcional) atenúa también el reflejo de tarjetas no listas */
+.ring-item--disabled .ring-reflection .mirror-img{
+  filter: brightness(.88) saturate(.9) blur(.4px);
+}
+
+
+
+
+.ring-video > .ring-video-el { object-position: 80% 150% !important; }
+
+
+
+
+
+
+
+
+
+/* Nubes procedurales sobre cada tarjeta (excepto Fashion) */
+.ring-clouds{
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  mix-blend-mode: screen;  /* blanco ilumina, negro no afecta */
+  opacity: .9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999;            /* ajusta intensidad */
+  z-index: 2;              /* sobre la imagen, bajo el “window” */
+}
+
+
+/* Viñeta leve para dramatismo (puedes quitar si no la quieres) */
+.ring-clouds::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 80% at 50% 15%, rgba(0,0,0,.22), transparent 51115%),
+    linear-gradient(to bottom, rgba(0,0,0,.14), transparent 999115%);
+}
+
+@media (prefers-reduced-motion: reduce){
+  .ring-clouds{ opacity: .9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999; }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* === Reflejo por tarjeta (PortalRing) =============================== */
+.ring-item { position: absolute; }
+
+.ring-item .portal-arch { border-radius: 26px; }
+
+.ring-item .ring-panel {
+  position: relative;
+  width: var(--w);
+  height: var(--h);
+  transform: scale(var(--scale));
+  z-index: var(--z);
+}
+
+/* Línea de orilla justo debajo de la tarjeta */
+.ring-item .ring-shore{
+  position:absolute;
+  left:50%;
+  top:calc(var(--h) + 6px);
+  width:calc(var(--w) * 0.86);
+  height:2px;
+  transform:translateX(-50%);
+  background: radial-gradient(closest-side, rgba(180,220,255,.28), rgba(180,220,255,0));
+  filter: blur(1.2px);
+  pointer-events:none;
+  z-index: calc(var(--z) - 1);
+}
+
+/* Contenedor del reflejo */
+.ring-item .ring-reflection{
+  position:absolute;
+  left:50%;
+  top:0;
+  width:var(--w);
+  height:var(--h);
+  transform:
+    translateX(-50%)
+    translateY(calc(var(--h) + 10px))
+    scaleY(-1)
+    scale(var(--scale));
+  transform-origin: top center;
+  pointer-events:none;
+  z-index: calc(var(--z) - 2);
+  /* Opacidad por tarjeta (te la paso desde TSX con --refAlpha) */
+  opacity: var(--refAlpha, .28);
+
+  /* “Tint” y leve difuminado para simular agua */
+  filter: brightness(.85) saturate(.95) blur(0.8px);
+
+  /* Desvanecido hacia el fondo del agua */
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.55) 0%, rgba(0,0,0,.22) 40%, rgba(0,0,0,0) 100%);
+          mask-image: linear-gradient(to bottom, rgba(0,0,0,.55) 0%, rgba(0,0,0,.22) 40%, rgba(0,0,0,0) 100%);
+}
+
+/* Imagen espejada (usa la misma portada de la tarjeta) */
+.ring-item .ring-reflection .mirror-img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:26px;
+  display:block;
+}
+
+/* Brillo suave sobre el reflejo para que “pegue” con el agua */
+.ring-item .ring-reflection .mirror-glow{
+  position:absolute; inset:0;
+  -webkit-mask-image: radial-gradient(120% 90% at 50% 10%, rgba(0,0,0,.2), rgba(0,0,0,0) 70%);
+          mask-image: radial-gradient(120% 90% at 50% 10%, rgba(0,0,0,.2), rgba(0,0,0,0) 70%);
+  background: radial-gradient(120% 70% at 50% 0%, rgba(120,200,255,.18), rgba(120,200,255,0) 60%);
+  pointer-events:none;
+}
+
+/* Onditas sutiles sobre el reflejo */
+.ring-item .ring-reflection .ring-ripples{
+  position:absolute; inset:-2% -3% auto -3%;
+  height: 28%;
+  background:
+    radial-gradient(60% 120% at 50% 0%, rgba(255,255,255,.10), rgba(255,255,255,0) 70%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.04), rgba(255,255,255,.04) 2px, transparent 2px, transparent 6px);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.4), rgba(0,0,0,0) 85%);
+          mask-image: linear-gradient(to bottom, rgba(0,0,0,.4), rgba(0,0,0,0) 85%);
+  mix-blend-mode: screen;
+  animation: ringRipple 6s ease-in-out infinite;
+  pointer-events:none;
+}
+
+@keyframes ringRipple{
+  0%,100% { transform: translateY(0) }
+  50%     { transform: translateY(3px) }
+}
+
+/* — OPCIONAL (muy simple): reflejo automático del propio panel —
+   Si quisieras reflejar TODA la tarjeta (incluyendo cristales y nubes)
+   sin nodos extra, puedes activarlo así. Déjalo comentado si no lo usas. */
+/*
+.ring-item .ring-panel {
+  -webkit-box-reflect: below 10px
+    linear-gradient(transparent 0%, rgba(0,0,0,.18) 12%, rgba(0,0,0,.60) 55%, transparent 100%);
+}
+*/
+
+
+
+
+
+/* === Nubes con forma de flyer (encima de cada tarjeta) ================= */
+.ring-cloudPhoto{
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  /* blanco ilumina, negro no afecta */
+  mix-blend-mode: screen;
+  z-index: 6;        /* por encima del .ring-window */
+}
+
+/* Pongo dos “copias” de la imagen para darle vida suave */
+.ring-cloudPhoto,
+.ring-cloudPhoto::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image: url("/flyer/cocina.png");
+  background-size: cover;        /* ocupa todo el rectángulo */
+  background-position: center;   /* centrada */
+  background-repeat: no-repeat;
+  opacity: .55;                  /* ajusta intensidad global del humo */
+  filter: brightness(1.0) contrast(1.0);
+}
+
+/* leve movimiento respirando (opcional) */
+@media (prefers-reduced-motion: no-preference){
+  .ring-cloudPhoto::before{
+    opacity: .35;                /* la copia es más tenue */
+    transform: translateZ(0);
+    animation: cloudFloat 14s ease-in-out infinite alternate;
+  }-
+  @keyframes cloudFloat{
+    from{ transform: translate(0, 0) scale(1.02); }
+    to  { transform: translate(2%, -1.5%) scale(1.03); }
+  }
+}
+
+/* por si tenías el procedural anterior, lo apagamos */
+.ring-clouds{ display:none !important; }
+
+/* baja la atenuación extra para que no se “lave” la tarjeta */
+.is-dimmed{ filter: saturate(.98) brightness(.98); }
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* === Reflejo del panel completo (incluye humo/video/cristal) === */
+.ring-panel{
+  -webkit-box-reflect: below 12px
+    linear-gradient(
+      transparent 0,
+      rgba(0,0,0,.18) 14%,
+      rgba(0,0,0,.55) 60%,
+      transparent 100%
+    );
+}
+
+/* Evita duplicados si tenías el reflejo manual */
+.ring-reflection, .ring-ripples, .mirror-glow{ display:none !important; }
+
+/* (Opcional) ajusta la intensidad visual en los bordes bajo cada tarjeta */
+.ring-shore{ opacity:.55; } /* súbelo/bájalo a gusto */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@keyframes fadeSlide {
+  0%   { opacity: 0; transform: translateY(14px); }
+  10%  { opacity: 1; transform: translateY(0); }
+  90%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-8px); }
+}
+.animate-fadeSlide {
+  animation: fadeSlide 2.4s ease-in-out both;
+}
+
+/* (opcional) color de marca para la palabra animada */
+.text-brand-50 {
+  color: #ffffff; /* deja blanco; si querés tono rosado usá #e8c2b5 */
+}
+
+
+
+
+
+
+@keyframes fadeSlide {
+  0%   { opacity: 0; transform: translateY(14px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeSlide {
+  animation: fadeSlide .6s ease both;
+}
+
+/* Aseguramos que el fondo estrellado no tape el contenido */
+.fashion-skin { position: relative; }
+.fashion-skin::before,
+.fashion-skin::after { z-index: 0; }
+.fashion-skin > * { position: relative; z-index: 1; }
+
+
+
+
+
+/* ⭐ Fondo azul estrellado para toda la página de Fashion */
+.fashion-skin{
+  position: relative;                /* crea el contexto, sin z-index raros */
+  background-image:
+    radial-gradient(120% 70% at 50% -10%, rgba(0,38,110,.55), rgba(0,0,0,0) 60%),
+    url("/flyer/estrella.png");   /* tu flyer */
+  background-repeat: no-repeat, repeat;
+  background-size: 100% 100%, 700px 700px;  /* podés subir/bajar el tamaño de las estrellas */
+  background-position: center top, center;
+  background-attachment: scroll, fixed;    /* el flyer queda fijo al hacer scroll */
+  background-color: #00122d;               /* color de base por si no carga la imagen */
+  filter: saturate(110%);
+}
+
+
+
+
+
+
+
+/* Forzar íconos y texto del header en blanco dentro de la skin fashion */
+.fashion-skin header,
+.fashion-skin header * {
+  color: #fff !important;
+}
+.fashion-skin header svg {
+  stroke: currentColor; /* usa el color blanco heredado */
+}
+
+
+
+
+/* ===== Cards "Ediciones anteriores" – sin fondo gris y texto blanco ===== */
+.ft-card{
+  background-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  border: none !important;
+}
+.ft-card .ft-title{
+  color: #fff !important;
+}
+.ft-card .ft-subtle{
+  color: rgba(255,255,255,.85) !important;
+}
+
+
+
+
+
+
+
+/* ===== Cards "Ediciones anteriores": sin fondo gris y texto blanco ===== */
+.fashion-skin .ft-card {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+
+/* Por si alguna clase utilitaria mete un fondo en hijos */
+.fashion-skin .ft-card *[class*="bg-"] { background-color: transparent !important; }
+
+/* Texto blanco */
+.fashion-skin .ft-card .ft-title,
+.fashion-skin .ft-card h3 { color: #fff !important; }
+
+.fashion-skin .ft-card .ft-subtle,
+.fashion-skin .ft-card p { color: rgba(255,255,255,.92) !important; }
+
+
+
+/* Fondo de toda la sección fashion */
+.fashion-skin{
+  position: relative;
+  min-height: 100vh;
+  background:
+    radial-gradient(120% 85% at 50% 0%, rgba(10,35,90,.45), transparent 65%),
+    url("/flyer/desarrollover.jpg") center / cover no-repeat fixed,
+    #05132b;
+}
+@media (max-width:1024px){
+  .fashion-skin{ background-attachment: scroll; }
+}
+
+
+
+
+
+
+
+
+.byu-text {
+  font-family: 'Poppins', sans-serif; /* o la fuente que uses */
+  font-weight: 700; /* mismo peso que el texto */
+  font-size: 1em; /* asegura mismo tamaño */
+  letter-spacing: 0.02em; /* opcional, para separar un poco */
+}
