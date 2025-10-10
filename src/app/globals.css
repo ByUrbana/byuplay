@@ -1163,7 +1163,6 @@ body{
   position: relative;
   min-height: 100vh;
   background:
-    radial-gradient(120% 85% at 50% 0%, rgba(10,35,90,.45), transparent 65%),
     url("/flyer/desarrollover-bg.jpg") center / cover no-repeat fixed,
     #05132b;
 }
