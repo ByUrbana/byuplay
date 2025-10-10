@@ -72,7 +72,7 @@ export default function OrigenPage() {
                     <p>
                       La alianza entre <strong className="text-white font-semibold">Víctor Corso</strong>, Founder de{" "}
                       <strong className="text-white font-semibold">VLC Marketing</strong>, y{" "}
-                      <strong className="text-white font-semibold">Carlos "Charly" Vázquez</strong>, Founder de{" "}
+                      <strong className="text-white font-semibold">Carlos &quot;Charly&quot; Vázquez</strong>, Founder de{" "}
                       <strong className="text-white font-semibold">BY)))URBANA</strong>, nace con el propósito de unir lo
                       mejor de dos mundos.
                     </p>
