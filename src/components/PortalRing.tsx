@@ -1,7 +1,7 @@
-'use client';
-import React, { useEffect, useRef, useState, useMemo } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
+"use client";
+import React, { useEffect, useRef, useState, useMemo } from "react";
+import Link from "next/link";
+import Image from "next/image";
 
 type Panel = {
   href: string;
@@ -10,18 +10,68 @@ type Panel = {
   subtitle: string;
   hue: number;
   img: string;
-  videoMp4?: string;
+  // videoMp4 removido - vídeos só carregam em rotas específicas
 };
 
 // 👇 Definición de los paneles
 const PANELS: Panel[] = [
-  { href: '/infantiles', topLabel: 'BLUE OCEAN', title: 'INFANTIL', subtitle: '', hue: 205, img: '/flyer/disney.png' },
-  { href: '/adultos', topLabel: 'ORANGE SUNSET', title: 'PELICULAS', subtitle: '', hue: 35, img: '/flyer/peliculas.png' },
-  { href: '/series', topLabel: 'VIOLET DAWN', title: 'SERIES', subtitle: '', hue: 265, img: '/flyer/series.png' },
-  { href: '/fashion', topLabel: 'WHITE WATERFALL', title: 'FASHION TOUR', subtitle: '', hue: 210, img: '/flyer/fashion.png', videoMp4: '/video/desfile-tour.mp4' },
-  { href: '/podcast', topLabel: 'VIOLET DAWN', title: 'PODCAST', subtitle: '', hue: 265, img: '/flyer/podcast.png' },
-  { href: '/deportes', topLabel: 'ORANGE SUNSET', title: 'DEPORTES', subtitle: '', hue: 28, img: '/flyer/futbol.png' },
-  { href: '/musica', topLabel: 'BLUE DEEP', title: 'MUSICA', subtitle: '', hue: 195, img: '/flyer/musica.png' },
+  {
+    href: "/infantiles",
+    topLabel: "BLUE OCEAN",
+    title: "INFANTIL",
+    subtitle: "",
+    hue: 205,
+    img: "/flyer/disney.png",
+  },
+  {
+    href: "/adultos",
+    topLabel: "ORANGE SUNSET",
+    title: "PELICULAS",
+    subtitle: "",
+    hue: 35,
+    img: "/flyer/peliculas.png",
+  },
+  {
+    href: "/series",
+    topLabel: "VIOLET DAWN",
+    title: "SERIES",
+    subtitle: "",
+    hue: 265,
+    img: "/flyer/series.png",
+  },
+  {
+    href: "/fashion",
+    topLabel: "WHITE WATERFALL",
+    title: "FASHION",
+    subtitle: "",
+    hue: 210,
+    img: "/flyer/fashion.png",
+    // videoMp4 removido - só carrega quando acessar /fashion
+  },
+  {
+    href: "/podcast",
+    topLabel: "VIOLET DAWN",
+    title: "PODCAST",
+    subtitle: "",
+    hue: 265,
+    img: "/flyer/podcast.png",
+  },
+  {
+    href: "/deportes",
+    topLabel: "ORANGE SUNSET",
+    title: "DEPORTES",
+    subtitle: "",
+    hue: 28,
+    img: "/flyer/futbol.png",
+  },
+  {
+    href: "/musica",
+    topLabel: "BLUE DEEP",
+    title: "MUSICA",
+    subtitle: "",
+    hue: 195,
+    img: "/flyer/musica.png",
+  },
 ];
 
 export default function PortalRing() {
@@ -30,35 +80,48 @@ export default function PortalRing() {
   const [offset, setOffset] = useState(0);
   const [animShift, setAnimShift] = useState(0);
   const [busy, setBusy] = useState(false);
-  const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({});
-  const drag = useRef<{ down: boolean; x: number; startX: number }>({ down: false, x: 0, startX: 0 });
+  // videoRefs removido - vídeos só carregam em rotas específicas
+  const drag = useRef<{ down: boolean; x: number; startX: number }>({
+    down: false,
+    x: 0,
+    startX: 0,
+  });
 
   useEffect(() => {
     const apply = () => setVw(window.innerWidth);
     apply();
-    window.addEventListener('resize', apply, { passive: true });
-    return () => window.removeEventListener('resize', apply);
+    window.addEventListener("resize", apply, { passive: true });
+    return () => window.removeEventListener("resize", apply);
   }, []);
 
   // --- breakpoints ---
-  const { VISIBLE, ARC, RADIUS, W, H, DRAG_THRESHOLD, isMobile } = useMemo(() => {
-    if (vw === null) {
-      // Valores padrão quando vw ainda não foi definido
-      return { VISIBLE: 7, ARC: 135, RADIUS: 900, W: 320, H: 540, DRAG_THRESHOLD: 28, isMobile: false };
-    }
-    
-    const isSm = vw <= 640;  // Mudança para 640px como breakpoint principal
-    const isMd = vw > 640 && vw <= 768;
+  const { VISIBLE, ARC, RADIUS, W, H, DRAG_THRESHOLD, isMobile } =
+    useMemo(() => {
+      if (vw === null) {
+        // Valores padrão quando vw ainda não foi definido
+        return {
+          VISIBLE: 7,
+          ARC: 135,
+          RADIUS: 900,
+          W: 320,
+          H: 540,
+          DRAG_THRESHOLD: 28,
+          isMobile: false,
+        };
+      }
 
-    const W = isSm ? 200 : isMd ? 240 : 320;       // Aumentei o tamanho em mobile
-    const H = Math.round(W * (540 / 320));
-    const RADIUS = isSm ? 280 : isMd ? 520 : 900;  // Menor raio para mobile
-    const VISIBLE = isSm ? 3 : isMd ? 5 : 7;       // Menos painéis em mobile
-    const ARC = isSm ? 120 : isMd ? 120 : 135;     // Aumentei o arco para mobile
-    const DRAG_THRESHOLD = isSm ? 20 : 25;
+      const isSm = vw <= 640; // Mudança para 640px como breakpoint principal
+      const isMd = vw > 640 && vw <= 768;
 
-    return { VISIBLE, ARC, RADIUS, W, H, DRAG_THRESHOLD, isMobile: isSm };
-  }, [vw]);
+      const W = isSm ? 200 : isMd ? 240 : 320; // Aumentei o tamanho em mobile
+      const H = Math.round(W * (540 / 320));
+      const RADIUS = isSm ? 280 : isMd ? 520 : 900; // Menor raio para mobile
+      const VISIBLE = isSm ? 3 : isMd ? 5 : 7; // Menos painéis em mobile
+      const ARC = isSm ? 120 : isMd ? 120 : 135; // Aumentei o arco para mobile
+      const DRAG_THRESHOLD = isSm ? 20 : 25;
+
+      return { VISIBLE, ARC, RADIUS, W, H, DRAG_THRESHOLD, isMobile: isSm };
+    }, [vw]);
 
   if (vw === null) return null;
 
@@ -78,34 +141,65 @@ export default function PortalRing() {
   };
 
   // --- drag / wheel handlers ---
-  const onPointerDown = (e: React.PointerEvent) => { drag.current = { down: true, x: e.clientX, startX: e.clientX }; };
+  const onPointerDown = (e: React.PointerEvent) => {
+    drag.current = { down: true, x: e.clientX, startX: e.clientX };
+  };
   const onPointerMove = (e: React.PointerEvent) => {
     if (!drag.current.down || busy) return;
     const dx = e.clientX - drag.current.x;
-    if (Math.abs(dx) > DRAG_THRESHOLD) { rotate(dx < 0 ? 1 : -1); drag.current.x = e.clientX; }
+    if (Math.abs(dx) > DRAG_THRESHOLD) {
+      rotate(dx < 0 ? 1 : -1);
+      drag.current.x = e.clientX;
+    }
   };
-  const onPointerUp = () => { drag.current.down = false; };
+  const onPointerUp = () => {
+    drag.current.down = false;
+  };
   const onWheel = (e: React.WheelEvent) => {
-    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) { e.preventDefault(); rotate(e.deltaX > 0 ? 1 : -1); }
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      e.preventDefault();
+      rotate(e.deltaX > 0 ? 1 : -1);
+    }
   };
 
   return (
-    <section className="ring-scene container" aria-label="Categorías destacadas (carrusel 3D)">
-      <h2 className="ring-heading relative mx-auto max-w-5xl px-4 text-center font-semibold tracking-[0.01em] text-text/90
-                     text-lg sm:text-xl md:text-2xl -top-1 md:-top-8 lg:-top-11">
+    <section
+      className="ring-scene container"
+      aria-label="Categorías destacadas (carrusel 3D)"
+    >
+      <h2
+        className="ring-heading relative mx-auto max-w-5xl px-4 text-center font-semibold tracking-[0.01em] text-text/90
+                     text-lg sm:text-xl md:text-2xl -top-1 md:-top-8 lg:-top-11"
+      >
         Descubrí BY)))U PLAY
       </h2>
 
       <div
         className="ring-stage relative select-none touch-pan-y -mt-2 md:-mt-10 lg:-mt-14"
-        role="region" aria-roledescription="carousel"
+        role="region"
+        aria-roledescription="carousel"
         onContextMenu={(e) => e.preventDefault()}
-        onPointerDown={onPointerDown} onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp} onPointerLeave={onPointerUp} onPointerCancel={onPointerUp}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerLeave={onPointerUp}
+        onPointerCancel={onPointerUp}
         onWheel={onWheel}
       >
-        <div className="ring-video" aria-hidden="true" style={{ ['--bgY' as any]: '60%' }} >
-          <Image src="/flyer/prohibido.png" alt="" className="ring-video-el" fill priority />
+        <div
+          className="ring-video"
+          aria-hidden="true"
+          style={{ ["--bgY" as any]: "60%" }}
+        >
+          {/* <Image src="/flyer/prohibido.png" alt="" className="ring-video-el" fill priority /> */}
+          <Image 
+            src="/flyer/desarrollover-bg.jpg" 
+            alt="" 
+            className="ring-video-el" 
+            fill 
+            loading="eager"
+            sizes="100vw"
+          />
         </div>
 
         {Array.from({ length: VISIBLE }).map((_, i) => {
@@ -116,37 +210,52 @@ export default function PortalRing() {
           const scale = 0.985 - 0.035 * t;
           const z = 1000 - Math.round(Math.abs(angle) * 10);
           const refAlpha = Math.max(0.14, 0.38 - 0.22 * t);
-          const isReady = panel.href === '/fashion';
+          const isReady = panel.href === "/fashion";
 
           return (
             <Link
               key={`${panel.href}-${i}`}
-              href={isReady ? panel.href : '#'}
+              href={isReady ? panel.href : "#"}
               aria-disabled={!isReady}
               tabIndex={isReady ? 0 : -1}
-              className={`ring-item group ${!isReady ? 'ring-item--disabled' : ''}`}
-              style={{
-                ['--angle' as any]: `${angle}deg`,
-                ['--radius' as any]: `${RADIUS}px`,
-                ['--w' as any]: `${W}px`,
-                ['--h' as any]: `${H}px`,
-                ['--hue' as any]: String(panel.hue),
-                ['--scale' as any]: String(scale),
-                ['--z' as any]: String(z),
-                ['--refAlpha' as any]: String(refAlpha),
-              } as React.CSSProperties}
+              className={`ring-item group ${
+                !isReady ? "ring-item--disabled" : ""
+              }`}
+              style={
+                {
+                  ["--angle" as any]: `${angle}deg`,
+                  ["--radius" as any]: `${RADIUS}px`,
+                  ["--w" as any]: `${W}px`,
+                  ["--h" as any]: `${H}px`,
+                  ["--hue" as any]: String(panel.hue),
+                  ["--scale" as any]: String(scale),
+                  ["--z" as any]: String(z),
+                  ["--refAlpha" as any]: String(refAlpha),
+                } as React.CSSProperties
+              }
               onClick={(e) => {
                 const moved = Math.abs(drag.current.x - drag.current.startX);
                 if (!isReady || busy || moved > 8) e.preventDefault();
               }}
-              onMouseEnter={() => { if (panel.videoMp4) videoRefs.current[i]?.play().catch(() => {}); }}
-              onMouseLeave={() => {
-                if (panel.videoMp4) { const v = videoRefs.current[i]; v?.pause(); if (v) v.currentTime = 0; }
+              onMouseEnter={() => {
+                // Vídeo removido - só carrega em rotas específicas
               }}
-              onTouchStart={() => { if (panel.videoMp4) videoRefs.current[i]?.play().catch(() => {}); }}
+              onMouseLeave={() => {
+                // Vídeo removido - só carrega em rotas específicas
+              }}
+              onTouchStart={() => {
+                // Vídeo removido - só carrega em rotas específicas
+              }}
             >
               <div className="ring-panel portal-card">
-                <Image src={panel.img} alt={panel.title} className="ring-img portal-arch" fill />
+                <Image
+                  src={panel.img}
+                  alt={panel.title}
+                  className="ring-img portal-arch"
+                  fill
+                  loading="lazy"
+                  sizes="(max-width: 640px) 200px, (max-width: 768px) 240px, 320px"
+                />
                 <span className="ring-topLabel">{panel.topLabel}</span>
               </div>
               <div className="ring-label" aria-hidden="true">
@@ -158,7 +267,7 @@ export default function PortalRing() {
         })}
 
         <div className="ring-water" />
-        
+
         {/* Controles de navegação para mobile */}
         {isMobile && (
           <div className="ring-controls">
@@ -169,7 +278,13 @@ export default function PortalRing() {
               aria-label="Anterior"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path
+                  d="M15 18L9 12L15 6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </button>
             <button
@@ -179,7 +294,13 @@ export default function PortalRing() {
               aria-label="Próximo"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path
+                  d="M9 18L15 12L9 6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </button>
           </div>

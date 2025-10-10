@@ -90,20 +90,34 @@ export default function Header() {
           <ByMark right="CLUB" />
         </Link>
 
-        {/* ORIGEN — solo visible dentro de /fashion */}
-        {isFashion && (
-          <Link
-            href="/origen"
-            role="menuitem"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M12 2l4 7-4 13-4-13 4-7z" strokeWidth="2" />
-            </svg>
-            ORIGEN
-          </Link>
-        )}
+        {/* ORIGEN — siempre visible */}
+        <Link
+          href="/origen"
+          role="menuitem"
+          onClick={() => setOpen(false)}
+          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M12 2l4 7-4 13-4-13 4-7z" strokeWidth="2" />
+          </svg>
+          ORIGEN
+        </Link>
+
+        {/* DASHBOARD */}
+        <Link
+          href="/dashboard"
+          role="menuitem"
+          onClick={() => setOpen(false)}
+          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <rect x="3" y="3" width="7" height="7" strokeWidth="2" />
+            <rect x="14" y="3" width="7" height="7" strokeWidth="2" />
+            <rect x="14" y="14" width="7" height="7" strokeWidth="2" />
+            <rect x="3" y="14" width="7" height="7" strokeWidth="2" />
+          </svg>
+          DASHBOARD
+        </Link>
 
         {/* QUIÉNES SOMOS (externo) */}
         <a
@@ -157,7 +171,7 @@ export default function Header() {
             </svg>
           </button>
 
-          <button
+          {/* <button
             aria-label="Perfil"
             className="p-2 rounded-full hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
           >
@@ -165,7 +179,7 @@ export default function Header() {
               <circle cx="12" cy="7" r="4" />
               <path d="M20 21a8 8 0 1 0-16 0" />
             </svg>
-          </button>
+          </button> */}
 
           <button
             ref={btnRef}

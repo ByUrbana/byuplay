@@ -60,34 +60,43 @@ export default function OrigenPage() {
             </figure>
 
             {/* texto mejor jerarquizado + CTA inmediata */}
-            <div className="text-white/90">
-              <div className="text-[17px] md:text-[18.5px] leading-7 md:leading-8 space-y-4">
-                <p>
-                  La alianza entre <strong>Víctor Corso</strong>, Founder de{" "}
-                  <strong>VLC Marketing</strong>, y{" "}
-                  <strong>Carlos “Charly” Vázquez</strong>, Founder de{" "}
-                  <strong>BY)))URBANA</strong>, nace con el propósito de unir lo
-                  mejor de dos mundos.
-                </p>
+            <div className="relative">
+              {/* Fondo glassmorphism para el contenido de texto */}
+              <div className="relative rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 via-white/10 to-white/5 backdrop-blur-sm p-6 md:p-8 shadow-[0_8px_32px_rgba(0,0,0,.3)]">
+                {/* Efecto de glow sutil */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-400/5 via-transparent to-indigo-500/5 opacity-50" />
+                
+                {/* Contenido del texto */}
+                <div className="relative text-white/95">
+                  <div className="text-[17px] md:text-[18.5px] leading-7 md:leading-8 space-y-4">
+                    <p>
+                      La alianza entre <strong className="text-white font-semibold">Víctor Corso</strong>, Founder de{" "}
+                      <strong className="text-white font-semibold">VLC Marketing</strong>, y{" "}
+                      <strong className="text-white font-semibold">Carlos "Charly" Vázquez</strong>, Founder de{" "}
+                      <strong className="text-white font-semibold">BY)))URBANA</strong>, nace con el propósito de unir lo
+                      mejor de dos mundos.
+                    </p>
 
-                <p>
-                  Por un lado, la trayectoria, prestigio y visión estratégica de
-                  VLC Marketing; por el otro, la innovación tecnológica y el
-                  ecosistema de fidelización desarrollado por BY)))URBANA.
-                </p>
+                    <p>
+                      Por un lado, la trayectoria, prestigio y visión estratégica de
+                      VLC Marketing; por el otro, la innovación tecnológica y el
+                      ecosistema de fidelización desarrollado por BY)))URBANA.
+                    </p>
 
-                <p>
-                  Esta colaboración se propone consolidar a{" "}
-                  <strong>BY)))U FASHION</strong> como la plataforma oficial del{" "}
-                  <strong>Fashion Tour</strong>.
-                </p>
+                    <p>
+                      Esta colaboración se propone consolidar a{" "}
+                      <strong className="text-white font-semibold">BY)))U FASHION</strong> como la plataforma oficial del{" "}
+                      <strong className="text-white font-semibold">Fashion Tour</strong>.
+                    </p>
 
-                <p>
-                  El acuerdo refuerza el compromiso de ambas organizaciones con
-                  el crecimiento cultural y económico del sector. De este modo,
-                  el Fashion Tour se proyecta hacia un nuevo nivel de impacto y
-                  reconocimiento.
-                </p>
+                    <p>
+                      El acuerdo refuerza el compromiso de ambas organizaciones con
+                      el crecimiento cultural y económico del sector. De este modo,
+                      el Fashion Tour se proyecta hacia un nuevo nivel de impacto y
+                      reconocimiento.
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* CTA: bajo del texto, con micro-animación al hover */}
@@ -96,7 +105,7 @@ export default function OrigenPage() {
                   href="/contacto"
                   className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold
                              border border-white/25 bg-white/10 text-white hover:bg-white/20
-                             shadow-[0_10px_30px_rgba(0,0,0,.25)] transition"
+                             shadow-[0_10px_30px_rgba(0,0,0,.25)] transition-all duration-300 hover:scale-105"
                 >
                   Hablemos
                   <svg
@@ -118,7 +127,7 @@ export default function OrigenPage() {
                   href="/fashion"
                   className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold
                              border border-white/20 text-white/90 hover:text-white
-                             hover:bg-white/10 transition"
+                             hover:bg-white/10 transition-all duration-300 hover:scale-105"
                 >
                   Ver BY)))U Fashion
                   <svg
@@ -138,7 +147,7 @@ export default function OrigenPage() {
                 </a>
               </div>
 
-              {/* mini-stats para dar “vida” y credibilidad */}
+              {/* mini-stats para dar "vida" y credibilidad */}
               <div className="mt-8 grid grid-cols-3 gap-3 max-w-md">
                 <Stat value="10+" label="Años de eventos" />
                 <Stat value="50K+" label="Asistentes totales" />
@@ -155,7 +164,7 @@ export default function OrigenPage() {
 /** pequeño componente para stats */
 function Stat({ value, label }: { value: string; label: string }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center">
+    <div className="rounded-xl border border-white/10 bg-gradient-to-br from-white/5 via-white/10 to-white/5 backdrop-blur-sm px-4 py-3 text-center shadow-[0_4px_16px_rgba(0,0,0,.2)] hover:bg-white/15 transition-all duration-300">
       <div className="text-xl font-semibold text-white">{value}</div>
       <div className="text-[12px] text-white/60">{label}</div>
     </div>

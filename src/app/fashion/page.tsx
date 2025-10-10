@@ -18,45 +18,45 @@ const SLIDES: Slide[] = [
   {
     tag: "BY)))U CLUB",
     body:
-      "Bienvenido a BY)))U FASHION, un mundo de beneficios donde usuarios, sponsors y marcas se conectan para crecer juntos. 👉 Sumate hoy al club.",
+      "Bienvenido a BY)))U FASHION, un mundo de beneficios donde usuarios, sponsors y marcas se conectan para crecer juntos 👉 Sumate hoy al club",
     strong: ["beneficios","usuarios","sponsors","marcas","crecer juntos"],
   },
   {
     tag: "BY)))U CLUB",
     body:
-      "Con BY)))U FASHION ahorrás todos los días con descuentos exclusivos y promociones únicas pensadas especialmente para vos. 👉 Descubrí tus beneficios.",
+      "Con BY)))U FASHION ahorrás todos los días con descuentos exclusivos y promociones únicas pensadas especialmente para vos 👉 Descubrí tus beneficios",
     strong: ["ahorrás todos los días","descuentos exclusivos","promociones únicas"],
   },
   {
     tag: "BY)))U CLUB",
     body:
-      "Potenciá tu marca en un ecosistema innovador. Crecé junto a una comunidad activa con impacto real. 👉 Sé sponsor de BY)))U FASHION.",
+      "Potenciá tu marca en un ecosistema innovador. Crecé junto a una comunidad activa con impacto real 👉 Sé sponsor de BY)))U FASHION",
     strong: ["potenciá tu marca","ecosistema innovador","comunidad activa","impacto real"],
   },
   {
     tag: "BY)))U CLUB",
     body:
-      "Con BY)))U FASHION obtené más visibilidad y más ventas. Ofrecé descuentos, sumá nuevos clientes y fidelizá a los actuales. 👉 Sumá tu marca.",
+      "Con BY)))U FASHION obtené más visibilidad y más ventas. Ofrecé descuentos, sumá nuevos clientes y fidelizá a los actuales 👉 Sumá tu marca",
     strong: ["obtené más visibilidad","más ventas","ofrecé descuentos","sumá nuevos clientes","fidelizá"],
   },
   {
     tag: "BY)))U CLUB",
     body:
-      "Desfiles en vivo, shows exclusivos, modelos de alta costura y las principales marcas de moda y cosmética se unen para crear una experiencia inolvidable. 👉 Llevá el Fashion Tour a tu evento.",
+      "Desfiles en vivo, shows exclusivos, modelos de alta costura y las principales marcas de moda y cosmética se unen para crear una experiencia inolvidable 👉 Llevá el Fashion Tour a tu evento",
     strong: ["desfiles en vivo","shows exclusivos","alta costura","principales marcas de moda y cosmética","experiencia inolvidable"],
   },
   {
     tag: "BY)))U CLUB",
     body:
-      "Sumate al Fashion Tour de BY)))U FASHION. Sumate como nuestro Partner en esta experiencia que conecta moda, lifestyle y beneficios exclusivos. 👉 Conocé cómo abrir tu franquicia.",
+      "Sumate al Fashion Tour de BY)))U FASHION. Sumate como nuestro Partner en esta experiencia que conecta moda, lifestyle y beneficios exclusivos 👉 Conocé cómo abrir tu franquicia",
     strong: ["partner","moda","lifestyle","beneficios exclusivos"],
   },
 ];
 
 /* Resaltado estilo ByUrbana (MAYÚSCULAS + negritas en palabras fuertes)
    + ))) y FASHION en color #9bc5f9 */
-function highlightBody(upperText: string, strong: string[] = []) {
-  const needles = strong.map((s) => s.toUpperCase());
+function highlightBody(text: string, strong: string[] = []) {
+  const needles = strong;
 
   // Siempre remarcar estos especiales
   const specialNeedles = [
@@ -67,7 +67,7 @@ function highlightBody(upperText: string, strong: string[] = []) {
   let i = 0;
   const out: React.ReactNode[] = [];
 
-  while (i < upperText.length) {
+  while (i < text.length) {
     let nextIdx = -1,
       which: number | null = null,
       isSpecial = false,
@@ -76,7 +76,7 @@ function highlightBody(upperText: string, strong: string[] = []) {
 
     // Buscar matches en los strong normales
     for (let k = 0; k < needles.length; k++) {
-      const pos = upperText.indexOf(needles[k], i);
+      const pos = text.indexOf(needles[k], i);
       if (pos !== -1 && (nextIdx === -1 || pos < nextIdx)) {
         nextIdx = pos;
         which = k;
@@ -86,7 +86,7 @@ function highlightBody(upperText: string, strong: string[] = []) {
 
     // Buscar matches especiales
     for (const spec of specialNeedles) {
-      const pos = upperText.indexOf(spec.text, i);
+      const pos = text.indexOf(spec.text, i);
       if (pos !== -1 && (nextIdx === -1 || pos < nextIdx)) {
         nextIdx = pos;
         which = -1;
@@ -97,18 +97,18 @@ function highlightBody(upperText: string, strong: string[] = []) {
     }
 
     if (nextIdx === -1) {
-      out.push(upperText.slice(i));
+      out.push(text.slice(i));
       break;
     }
 
-    const pre = upperText.slice(i, nextIdx);
+    const pre = text.slice(i, nextIdx);
     if (pre) out.push(pre);
 
     if (isSpecial) {
       const spec = specialNeedles.find((s) =>
-        upperText.startsWith(s.text, nextIdx)
+        text.startsWith(s.text, nextIdx)
       )!;
-      const hit = upperText.slice(nextIdx, nextIdx + spec.text.length);
+      const hit = text.slice(nextIdx, nextIdx + spec.text.length);
       out.push(
         <span
           key={`${nextIdx}-special`}
@@ -120,7 +120,7 @@ function highlightBody(upperText: string, strong: string[] = []) {
       );
       i = nextIdx + spec.text.length;
     } else {
-      const hit = upperText.slice(nextIdx, nextIdx + needles[which!].length);
+      const hit = text.slice(nextIdx, nextIdx + needles[which!].length);
       out.push(
         <span
           key={`${nextIdx}-${which}`}
@@ -146,10 +146,10 @@ export default function FashionTourPage() {
 
   const slide = SLIDES[idx];
 
-  // Separar el callout (después de “👉 ”) para 1 sola línea al final
+  // Separar el callout (después de "👉 ") para 1 sola línea al final
   const [preRaw, postRaw] = slide.body.split("👉");
-  const pre  = (preRaw ?? "").toUpperCase().trim();
-  const post = (postRaw ?? "").toUpperCase().trim();
+  const pre  = (preRaw ?? "").trim();
+  const post = (postRaw ?? "").trim();
 
   return (
     <main className="fashion-skin min-h-screen pb-24">
@@ -180,7 +180,7 @@ export default function FashionTourPage() {
           <div key={idx} className="max-w-5xl mx-auto animate-fadeSlide">
             {/* Texto principal */}
             <p
-              className="mt-4 md:mt-5 text-white/95 uppercase text-2xl sm:text-3xl md:text-5xl leading-tight"
+              className="mt-4 md:mt-5 text-white/95 text-2xl sm:text-3xl md:text-5xl leading-tight"
               style={{ textShadow: "0 2px 12px rgba(0,0,0,.45)" }}
             >
               {highlightBody(pre, slide.strong)}
@@ -192,7 +192,7 @@ export default function FashionTourPage() {
                 <Link
                   href="/contacto"
                   aria-label={post}
-                  className="inline-flex max-w-full items-center justify-center rounded-full border border-white/35 bg-black/30 px-5 py-2.5 text-white uppercase font-black tracking-wide text-xl sm:text-2xl md:text-3xl leading-none hover:bg-black/45 hover:border-white/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 shadow-[0_10px_30px_rgba(0,0,0,.25)]"
+                  className="inline-flex max-w-full items-center justify-center rounded-full border border-white/35 bg-black/30 px-5 py-2.5 text-white font-black tracking-wide text-xl sm:text-2xl md:text-3xl leading-none hover:bg-black/45 hover:border-white/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 shadow-[0_10px_30px_rgba(0,0,0,.25)]"
                 >
                   <span className="truncate">{post}</span>
                 </Link>
