@@ -1,9 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 
 export default function UploadVideoPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -17,7 +22,23 @@ export default function UploadVideoPage() {
     status: "draft"
   });
 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Verificar autenticação
+  if (status === "loading") {
+    return (
+      <main className="fashion-skin min-h-screen pb-24 flex items-center justify-center">
+        <div className="text-white">Carregando...</div>
+      </main>
+    );
+  }
+
+  if (!session || session.user?.role !== "admin") {
+    router.push("/auth/signin");
+    return null;
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -27,31 +48,80 @@ export default function UploadVideoPage() {
     }));
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!selectedFile) {
+      alert("Por favor, selecciona un archivo de video");
+      return;
+    }
+    
     setIsSubmitting(true);
+    setUploadProgress(0);
     
-    // Simular upload
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    console.log("Datos del video:", formData);
-    alert("¡Video agregado con éxito!");
-    
-    // Reset form
-    setFormData({
-      title: "",
-      description: "",
-      rating: "",
-      genre: "",
-      releaseDate: "",
-      duration: "",
-      language: "",
-      contentType: "",
-      tags: "",
-      status: "draft"
-    });
-    
-    setIsSubmitting(false);
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('video', selectedFile);
+      formDataToSend.append('title', formData.title);
+      formDataToSend.append('description', formData.description);
+      formDataToSend.append('genre', formData.genre);
+      formDataToSend.append('rating', formData.rating);
+      
+      // Simular progress (em produção, você usaria XMLHttpRequest para progress real)
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return 90;
+          }
+          return prev + 10;
+        });
+      }, 200);
+      
+      const response = await fetch('/api/upload-video', {
+        method: 'POST',
+        body: formDataToSend,
+      });
+      
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+      
+      if (response.ok) {
+        const result = await response.json();
+        alert("¡Video agregado con éxito!");
+        
+        // Reset form
+        setFormData({
+          title: "",
+          description: "",
+          rating: "",
+          genre: "",
+          releaseDate: "",
+          duration: "",
+          language: "",
+          contentType: "",
+          tags: "",
+          status: "draft"
+        });
+        setSelectedFile(null);
+        setUploadProgress(0);
+      } else {
+        const error = await response.json();
+        alert(`Error: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert("Error al subir el video");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -88,6 +158,44 @@ export default function UploadVideoPage() {
               <h2 className="text-xl font-semibold text-white mb-6">Información del Video</h2>
               
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Upload de Arquivo */}
+                <div>
+                  <label htmlFor="video" className="block text-sm font-medium text-white/90 mb-2">
+                    Archivo de Video *
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="file"
+                      id="video"
+                      accept="video/*"
+                      onChange={handleFileChange}
+                      required
+                      className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-400/20 file:text-cyan-100 hover:file:bg-cyan-400/30 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 transition-all"
+                    />
+                  </div>
+                  {selectedFile && (
+                    <p className="mt-2 text-sm text-white/60">
+                      Archivo seleccionado: {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+                    </p>
+                  )}
+                </div>
+
+                {/* Progress Bar */}
+                {isSubmitting && (
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm text-white/60">
+                      <span>Subiendo video...</span>
+                      <span>{uploadProgress}%</span>
+                    </div>
+                    <div className="w-full bg-white/10 rounded-full h-2">
+                      <div 
+                        className="bg-gradient-to-r from-cyan-400 to-blue-500 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${uploadProgress}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+
                 {/* Título */}
                 <div>
                   <label htmlFor="title" className="block text-sm font-medium text-white/90 mb-2">

@@ -2,9 +2,28 @@
 
 import React from "react";
 import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 
 export default function DashboardPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // Verificar se está logado e é admin
+  if (status === "loading") {
+    return (
+      <main className="fashion-skin min-h-screen pb-24 flex items-center justify-center">
+        <div className="text-white">Carregando...</div>
+      </main>
+    );
+  }
+
+  if (!session || session.user?.role !== "admin") {
+    router.push("/auth/signin");
+    return null;
+  }
+
   // Datos mockados para las estadísticas
   const stats = {
     totalVideos: 1247,
@@ -62,8 +81,8 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          {/* Botão de Upload */}
-          <div className="mb-8">
+          {/* Botões de Ação */}
+          <div className="mb-8 flex flex-wrap gap-4">
             <Link
               href="/upload-video"
               className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold border border-cyan-400/50 bg-cyan-400/20 text-cyan-100 hover:bg-cyan-400/30 hover:border-cyan-400/70 shadow-[0_10px_30px_rgba(0,0,0,.25)] transition-all duration-300 hover:scale-105"
@@ -73,6 +92,27 @@ export default function DashboardPage() {
               </svg>
               Agregar Nuevo Video
             </Link>
+            
+            <Link
+              href="/gerenciar-videos"
+              className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold border border-blue-400/50 bg-blue-400/20 text-blue-100 hover:bg-blue-400/30 hover:border-blue-400/70 shadow-[0_10px_30px_rgba(0,0,0,.25)] transition-all duration-300 hover:scale-105"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M8 5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2H8V5z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Gerenciar Vídeos
+            </Link>
+            
+            <button
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold border border-red-400/50 bg-red-400/20 text-red-100 hover:bg-red-400/30 hover:border-red-400/70 shadow-[0_10px_30px_rgba(0,0,0,.25)] transition-all duration-300 hover:scale-105"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Sair
+            </button>
           </div>
 
           {/* Estatísticas Principais */}
