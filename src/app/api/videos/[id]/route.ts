@@ -5,10 +5,11 @@ import cloudinary from '@/lib/cloudinary';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    console.log('API DELETE chamada com ID:', params.id);
+    const { id } = await params;
+    console.log('API DELETE chamada com ID:', id);
     
     // Verificar autenticação
     const session = await getServerSession(authOptions);
@@ -17,7 +18,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const videoId = decodeURIComponent(params.id);
+    const videoId = decodeURIComponent(id);
     console.log('ID decodificado:', videoId);
     console.log('Tentando deletar vídeo do Cloudinary:', videoId);
 
