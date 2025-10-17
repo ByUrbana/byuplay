@@ -81,7 +81,7 @@ export default function GerenciarVideosPage() {
   if (status === "loading") {
     return (
       <main className="fashion-skin min-h-screen pb-24 flex items-center justify-center">
-        <div className="text-white">Carregando...</div>
+        <div className="text-white">Cargando...</div>
       </main>
     );
   }
@@ -194,15 +194,15 @@ export default function GerenciarVideosPage() {
           {/* Header */}
           <div className="mb-8">
             <span className="inline-block rounded-full px-3 py-1 text-[11px] tracking-[0.22em] uppercase text-white/90 bg-white/10 ring-1 ring-white/15">
-              Gerenciar
+              Gestionar
             </span>
             <h1 className="mt-3 text-[28px] md:text-[38px] font-semibold text-white">
               <span className="bg-gradient-to-r from-white via-white to-white/80 bg-clip-text text-transparent">
-                Gerenciar Vídeos
+                Gestionar Videos
               </span>
             </h1>
             <p className="mt-2 text-white/80">
-              Administra todos os vídeos da plataforma
+              Administrá todos los videos de la plataforma
             </p>
           </div>
 
@@ -212,7 +212,7 @@ export default function GerenciarVideosPage() {
               <div className="flex-1 min-w-[300px]">
                 <input
                   type="text"
-                  placeholder="Buscar vídeos..."
+                  placeholder="Buscar videos..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 transition-all"
@@ -224,7 +224,7 @@ export default function GerenciarVideosPage() {
                   onChange={(e) => setSelectedGenre(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 transition-all [&_option]:text-black [&_option]:bg-white"
                 >
-                  <option value="">Todos os gêneros</option>
+                  <option value="">Todos los géneros</option>
                   <option value="fashion">Fashion</option>
                   <option value="musica">Música</option>
                   <option value="podcast">Podcast</option>
@@ -243,7 +243,7 @@ export default function GerenciarVideosPage() {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M12 5v14M5 12h14" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              Adicionar Novo Vídeo
+              Agregar Nuevo Video
             </Link>
           </div>
 
@@ -263,7 +263,7 @@ export default function GerenciarVideosPage() {
           {/* Lista de Vídeos */}
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="text-white">Carregando vídeos...</div>
+              <div className="text-white">Cargando videos...</div>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -327,12 +327,12 @@ export default function GerenciarVideosPage() {
                       </div>
 
                       <div className="text-xs text-white/50 space-y-1">
-                        <p>Tamanho: {formatFileSize(video.size)}</p>
+                        <p>Tamaño: {formatFileSize(video.size)}</p>
                         {/* <p>Duração: {(video as any).durationFormatted || formatDuration(video.duration)}</p> */}
                         {/* {(video as any).releaseDate && <p>Lançamento: {(video as any).releaseDate}</p>} */}
                         {/* {(video as any).language && <p>Idioma: {(video as any).language}</p>} */}
                         {/* {(video as any).contentType && <p>Tipo: {(video as any).contentType}</p>} */}
-                        <p>Adicionado: {new Date(video.createdAt).toLocaleDateString('pt-BR')}</p>
+                        <p>Agregado: {new Date(video.createdAt).toLocaleDateString('es-AR')}</p>
                       </div>
 
                       {/* Ações */}
@@ -354,7 +354,7 @@ export default function GerenciarVideosPage() {
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6M10 11v6M14 11v6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                           </svg>
-                          Deletar
+                          Eliminar
                         </button>
                       </div>
                     </div>
@@ -367,7 +367,7 @@ export default function GerenciarVideosPage() {
           {!isLoading && filteredVideos.length === 0 && (
             <div className="text-center py-12">
               <div className="text-white/60 mb-4">
-                {searchTerm || selectedGenre ? "Nenhum vídeo encontrado com os filtros aplicados" : "Nenhum vídeo encontrado"}
+                {searchTerm || selectedGenre ? "Ningún video encontrado con los filtros aplicados" : "Ningún video encontrado"}
               </div>
               <button
                 onClick={() => router.push('/upload-video')}
@@ -376,7 +376,7 @@ export default function GerenciarVideosPage() {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path d="M12 5v14M5 12h14" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                Adicionar Primeiro Vídeo
+                Agregar Primer Video
               </button>
             </div>
           )}
@@ -407,13 +407,13 @@ export default function GerenciarVideosPage() {
                 </svg>
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-white">Confirmar Exclusão</h3>
-                <p className="text-white/60 text-sm">Esta ação não pode ser desfeita</p>
+                <h3 className="text-2xl font-bold text-white">Confirmar Eliminación</h3>
+                <p className="text-white/60 text-sm">Esta acción no se puede deshacer</p>
               </div>
             </div>
             <div className="mb-8">
               <p className="text-white/90 text-lg leading-relaxed">
-                Tem certeza de que deseja excluir este vídeo? Todos os dados relacionados serão permanentemente removidos.
+                ¿Estás seguro de que querés eliminar este video? Todos los datos relacionados serán permanentemente removidos.
               </p>
             </div>
             <div className="flex gap-4 justify-end">
@@ -427,7 +427,7 @@ export default function GerenciarVideosPage() {
                 onClick={confirmDelete}
                 className="px-6 py-3 rounded-xl bg-red-500 text-white hover:bg-red-600 transition-all duration-300 font-semibold shadow-lg hover:shadow-red-500/25"
               >
-                Excluir Vídeo
+                Eliminar Video
               </button>
             </div>
           </div>
@@ -458,8 +458,8 @@ export default function GerenciarVideosPage() {
                 </svg>
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-white">Operação Concluída</h3>
-                <p className="text-white/60 text-sm">Ação realizada com sucesso</p>
+                <h3 className="text-2xl font-bold text-white">Operación Completada</h3>
+                <p className="text-white/60 text-sm">Acción realizada con éxito</p>
               </div>
             </div>
             <div className="mb-8">
@@ -472,7 +472,7 @@ export default function GerenciarVideosPage() {
                 onClick={() => setShowSuccessModal(false)}
                 className="px-8 py-3 rounded-xl bg-green-500 text-white hover:bg-green-600 transition-all duration-300 font-semibold shadow-lg hover:shadow-green-500/25"
               >
-                Entendi
+                Entendido
               </button>
             </div>
           </div>
@@ -521,7 +521,7 @@ export default function GerenciarVideosPage() {
                 poster={currentVideo.thumbnail}
                 preload="metadata"
               >
-                Seu navegador não suporta o elemento de vídeo.
+                Tu navegador no soporta el elemento de video.
               </video>
             </div>
 
@@ -529,14 +529,14 @@ export default function GerenciarVideosPage() {
             <div className="space-y-3">
               {currentVideo.description && (
                 <div>
-                  <h4 className="text-sm font-semibold text-white/80 mb-1">Descrição</h4>
+                  <h4 className="text-sm font-semibold text-white/80 mb-1">Descripción</h4>
                   <p className="text-white/60 text-sm leading-relaxed">{currentVideo.description}</p>
                 </div>
               )}
               
               <div className="flex flex-wrap gap-4 text-sm text-white/60">
-                <span>Tamanho: {formatFileSize(currentVideo.size)}</span>
-                <span>Adicionado: {new Date(currentVideo.createdAt).toLocaleDateString('pt-BR')}</span>
+                <span>Tamaño: {formatFileSize(currentVideo.size)}</span>
+                <span>Agregado: {new Date(currentVideo.createdAt).toLocaleDateString('es-AR')}</span>
                 {currentVideo.tags && <span>Tags: {currentVideo.tags}</span>}
               </div>
             </div>

@@ -33,12 +33,12 @@ export async function DELETE(
       console.log('Vídeo deletado com sucesso');
       return NextResponse.json({ 
         success: true, 
-        message: 'Video deleted successfully' 
+        message: 'Video eliminado con éxito' 
       });
     } else {
       console.log('Falha ao deletar vídeo:', result);
       return NextResponse.json(
-        { error: 'Failed to delete video' }, 
+        { error: 'Error al eliminar el video' }, 
         { status: 500 }
       );
     }
@@ -46,7 +46,7 @@ export async function DELETE(
   } catch (error) {
     console.error('Delete video error:', error);
     return NextResponse.json(
-      { error: 'Failed to delete video' }, 
+      { error: 'Error al eliminar el video' }, 
       { status: 500 }
     );
   }
