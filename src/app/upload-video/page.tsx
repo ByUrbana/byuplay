@@ -30,7 +30,7 @@ export default function UploadVideoPage() {
   if (status === "loading") {
     return (
       <main className="fashion-skin min-h-screen pb-24 flex items-center justify-center">
-        <div className="text-white">Carregando...</div>
+        <div className="text-white">Cargando...</div>
       </main>
     );
   }

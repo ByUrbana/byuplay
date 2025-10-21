@@ -14,7 +14,7 @@ export default function DashboardPage() {
   if (status === "loading") {
     return (
       <main className="fashion-skin min-h-screen pb-24 flex items-center justify-center">
-        <div className="text-white">Carregando...</div>
+        <div className="text-white">Cargando...</div>
       </main>
     );
   }
@@ -98,7 +98,7 @@ export default function DashboardPage() {
                 <path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M8 5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2H8V5z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              Gerenciar Vídeos
+              Gestionar Videos
             </Link>
             
             <button
@@ -108,7 +108,7 @@ export default function DashboardPage() {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              Sair
+              Salir
             </button>
           </div>
 

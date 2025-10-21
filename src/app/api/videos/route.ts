@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ 
         success: true, 
         videos: [],
-        message: 'Cloudinary not configured - using empty list'
+        message: 'Cloudinary no configurado - usando lista vacía'
       });
     }
 
@@ -41,8 +41,8 @@ export async function GET(request: NextRequest) {
       
       return {
         id: resource.public_id,
-        title: resource.context?.custom?.title || resource.public_id.split('/').pop()?.replace(/_/g, ' ') || 'Video sem título',
-        description: resource.context?.custom?.description || 'Sem descrição',
+        title: resource.context?.custom?.title || resource.public_id.split('/').pop()?.replace(/_/g, ' ') || 'Video sin título',
+        description: resource.context?.custom?.description || 'Sin descripción',
         genre: resource.context?.custom?.genre || 'outros',
         rating: resource.context?.custom?.rating || 'L',
         url: resource.secure_url,

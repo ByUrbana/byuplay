@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+      return NextResponse.json({ error: 'No se proporcionó archivo' }, { status: 400 });
     }
 
     // Converter File para Buffer
@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json(
-      { error: 'Failed to upload video' }, 
+      { error: 'Error al subir el video' }, 
       { status: 500 }
     );
   }
