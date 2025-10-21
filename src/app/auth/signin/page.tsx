@@ -136,7 +136,7 @@ export default function SignInPage() {
                 </button>
               </form>
 
-              <div className="mt-6">
+              {/* <div className="mt-6">
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-white/20" />
@@ -159,7 +159,7 @@ export default function SignInPage() {
                   </svg>
                   Entrar com Google
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

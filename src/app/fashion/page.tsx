@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Header from "@/components/Header";
 
 /* ==== color celeste pedido (#9bc5f9) para ))) y FASHION ==== */
@@ -10,46 +11,61 @@ const CELESTE = "#9bc5f9";
 /* Slides (texto) */
 type Slide = {
   tag: string;
-  body: string;       // Incluye “👉 …” al final (callout)
-  strong?: string[];  // Frases a resaltar
+  body: string; // Incluye “👉 …” al final (callout)
+  strong?: string[]; // Frases a resaltar
 };
 
 const SLIDES: Slide[] = [
   {
     tag: "BY)))U CLUB",
-    body:
-      "Bienvenido a BY)))U FASHION, un mundo de beneficios donde usuarios, sponsors y marcas se conectan para crecer juntos 👉 Sumate hoy al club",
-    strong: ["beneficios","usuarios","sponsors","marcas","crecer juntos"],
+    body: "Bienvenido a BY)))U FASHION, un mundo de beneficios donde usuarios, sponsors y marcas se conectan para crecer juntos 👉 Sumate hoy al club",
+    strong: ["beneficios", "usuarios", "sponsors", "marcas", "crecer juntos"],
   },
   {
     tag: "BY)))U CLUB",
-    body:
-      "Con BY)))U FASHION ahorrás todos los días con descuentos exclusivos y promociones únicas pensadas especialmente para vos 👉 Descubrí tus beneficios",
-    strong: ["ahorrás todos los días","descuentos exclusivos","promociones únicas"],
+    body: "Con BY)))U FASHION ahorrás todos los días con descuentos exclusivos y promociones únicas pensadas especialmente para vos 👉 Descubrí tus beneficios",
+    strong: [
+      "ahorrás todos los días",
+      "descuentos exclusivos",
+      "promociones únicas",
+    ],
   },
   {
     tag: "BY)))U CLUB",
-    body:
-      "Potenciá tu marca en un ecosistema innovador. Crecé junto a una comunidad activa con impacto real 👉 Sé sponsor de BY)))U FASHION",
-    strong: ["potenciá tu marca","ecosistema innovador","comunidad activa","impacto real"],
+    body: "Potenciá tu marca en un ecosistema innovador. Crecé junto a una comunidad activa con impacto real 👉 Sé sponsor de BY)))U FASHION",
+    strong: [
+      "potenciá tu marca",
+      "ecosistema innovador",
+      "comunidad activa",
+      "impacto real",
+    ],
   },
   {
     tag: "BY)))U CLUB",
-    body:
-      "Con BY)))U FASHION obtené más visibilidad y más ventas. Ofrecé descuentos, sumá nuevos clientes y fidelizá a los actuales 👉 Sumá tu marca",
-    strong: ["obtené más visibilidad","más ventas","ofrecé descuentos","sumá nuevos clientes","fidelizá"],
+    body: "Con BY)))U FASHION obtené más visibilidad y más ventas. Ofrecé descuentos, sumá nuevos clientes y fidelizá a los actuales 👉 Sumá tu marca",
+    strong: [
+      "obtené más visibilidad",
+      "más ventas",
+      "ofrecé descuentos",
+      "sumá nuevos clientes",
+      "fidelizá",
+    ],
   },
   {
     tag: "BY)))U CLUB",
-    body:
-      "Desfiles en vivo, shows exclusivos, modelos de alta costura y las principales marcas de moda y cosmética se unen para crear una experiencia inolvidable 👉 Llevá el Fashion Tour a tu evento",
-    strong: ["desfiles en vivo","shows exclusivos","alta costura","principales marcas de moda y cosmética","experiencia inolvidable"],
+    body: "Desfiles en vivo, shows exclusivos, modelos de alta costura y las principales marcas de moda y cosmética se unen para crear una experiencia inolvidable 👉 Llevá el Fashion Tour a tu evento",
+    strong: [
+      "desfiles en vivo",
+      "shows exclusivos",
+      "alta costura",
+      "principales marcas de moda y cosmética",
+      "experiencia inolvidable",
+    ],
   },
   {
     tag: "BY)))U CLUB",
-    body:
-      "Sumate al Fashion Tour de BY)))U FASHION. Sumate como nuestro Partner en esta experiencia que conecta moda, lifestyle y beneficios exclusivos 👉 Conocé cómo abrir tu franquicia",
-    strong: ["partner","moda","lifestyle","beneficios exclusivos"],
+    body: "Sumate al Fashion Tour de BY)))U FASHION. Sumate como nuestro Partner en esta experiencia que conecta moda, lifestyle y beneficios exclusivos 👉 Conocé cómo abrir tu franquicia",
+    strong: ["partner", "moda", "lifestyle", "beneficios exclusivos"],
   },
 ];
 
@@ -63,6 +79,24 @@ function highlightBody(text: string, strong: string[] = []) {
     { text: ")))", className: "font-black", color: CELESTE },
     { text: "FASHION", className: "font-black", color: CELESTE },
   ];
+
+  // Caso especial para BY)))U FASHION - substituir por logo
+  if (text.includes("BY)))U FASHION")) {
+    const parts = text.split("BY)))U FASHION");
+    return (
+      <>
+        {parts[0]}
+        <Image
+          src="/flyer/byufashion.png"
+          alt="BY)))U FASHION"
+          width={250}
+          height={150}
+          className="inline h-16 mx-2 mb-2"
+        />
+        {parts[1]}
+      </>
+    );
+  }
 
   let i = 0;
   const out: React.ReactNode[] = [];
@@ -112,7 +146,9 @@ function highlightBody(text: string, strong: string[] = []) {
       out.push(
         <span
           key={`${nextIdx}-special`}
-          className={spec.className + " [text-shadow:0_2px_12px_rgba(0,0,0,.45)]"}
+          className={
+            spec.className + " [text-shadow:0_2px_12px_rgba(0,0,0,.45)]"
+          }
           style={{ color: specialColor }}
         >
           {hit}
@@ -148,7 +184,7 @@ export default function FashionTourPage() {
 
   // Separar el callout (después de "👉 ") para 1 sola línea al final
   const [preRaw, postRaw] = slide.body.split("👉");
-  const pre  = (preRaw ?? "").trim();
+  const pre = (preRaw ?? "").trim();
   const post = (postRaw ?? "").trim();
 
   return (
@@ -180,8 +216,13 @@ export default function FashionTourPage() {
           <div key={idx} className="max-w-5xl mx-auto animate-fadeSlide">
             {/* Texto principal */}
             <p
-              className="mt-4 md:mt-5 text-white/95 text-2xl sm:text-3xl md:text-5xl leading-tight"
-              style={{ textShadow: "0 2px 12px rgba(0,0,0,.45)" }}
+              // className="mt-4 md:mt-5 text-white/95 text-2xl sm:text-3xl md:text-5xl leading-tight"
+              // style={{ textShadow: "0 2px 12px rgba(0,0,0,.45)" }}
+              className="mt-4 md:mt-5 text-white/95 text-2xl sm:text-3xl md:text-5xl"
+              style={{
+                textShadow: "0 2px 12px rgba(0,0,0,.45)",
+                lineHeight: "1.4",
+              }}
             >
               {highlightBody(pre, slide.strong)}
             </p>
@@ -194,7 +235,7 @@ export default function FashionTourPage() {
                   aria-label={post}
                   className="inline-flex max-w-full items-center justify-center rounded-full border border-white/35 bg-black/30 px-5 py-2.5 text-white font-black tracking-wide text-xl sm:text-2xl md:text-3xl leading-none hover:bg-black/45 hover:border-white/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 shadow-[0_10px_30px_rgba(0,0,0,.25)]"
                 >
-                  <span className="truncate">{post}</span>
+                  <span className="truncate">{highlightBody(post, [])}</span>
                 </Link>
               </div>
             )}
@@ -203,11 +244,24 @@ export default function FashionTourPage() {
           {/* Flechas del carrusel */}
           <button
             aria-label="Anterior"
-            onClick={() => setIdx((i) => (i - 1 + SLIDES.length) % SLIDES.length)}
+            onClick={() =>
+              setIdx((i) => (i - 1 + SLIDES.length) % SLIDES.length)
+            }
             className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 rounded-full bg-black/35 hover:bg-black/50 p-2 text-white/90"
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                d="M15 18l-6-6 6-6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
           <button
@@ -215,8 +269,19 @@ export default function FashionTourPage() {
             onClick={() => setIdx((i) => (i + 1) % SLIDES.length)}
             className="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 rounded-full bg-black/35 hover:bg-black/50 p-2 text-white/90"
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                d="M9 6l6 6-6 6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
 
@@ -228,7 +293,9 @@ export default function FashionTourPage() {
                 aria-label={`Ir al slide ${i + 1}`}
                 onClick={() => setIdx(i)}
                 className={`h-2.5 rounded-full transition-all ${
-                  i === idx ? "w-6 bg-white" : "w-2.5 bg-white/50 hover:bg-white/80"
+                  i === idx
+                    ? "w-6 bg-white"
+                    : "w-2.5 bg-white/50 hover:bg-white/80"
                 }`}
               />
             ))}
@@ -238,7 +305,9 @@ export default function FashionTourPage() {
 
       {/* ===== EDICIONES ===== */}
       <section id="ediciones" className="mx-auto max-w-6xl mt-12 px-4 md:px-0">
-        <h2 className="ft-title text-lg md:text-xl font-semibold mb-4">Ediciones anteriores</h2>
+        <h2 className="ft-title text-lg md:text-xl font-semibold mb-4 text-white">
+          Ediciones anteriores
+        </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-12 lg:gap-x-16 xl:gap-x-20">
           {/* 2023 */}
@@ -259,7 +328,9 @@ export default function FashionTourPage() {
               />
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/35 to-transparent" />
             </div>
-            <h3 className="ft-title font-semibold text-white">Reviví Fashion Tour 2023</h3>
+            <h3 className="ft-title font-semibold text-white">
+              Reviví Fashion Tour 2023
+            </h3>
             <p className="ft-subtle text-sm text-white/80">Pasarela de moda</p>
           </article>
 
@@ -281,7 +352,9 @@ export default function FashionTourPage() {
               />
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/35 to-transparent" />
             </div>
-            <h3 className="ft-title font-semibold text-white">Reviví Fashion Tour 2024</h3>
+            <h3 className="ft-title font-semibold text-white">
+              Reviví Fashion Tour 2024
+            </h3>
             <p className="ft-subtle text-sm text-white/80">Evento de moda</p>
           </article>
 
@@ -303,7 +376,9 @@ export default function FashionTourPage() {
               />
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/35 to-transparent" />
             </div>
-            <h3 className="ft-title font-semibold text-white">Get Ready: Fashion Tour 2025</h3>
+            <h3 className="ft-title font-semibold text-white">
+              Get Ready: Fashion Tour 2025
+            </h3>
             <p className="ft-subtle text-sm text-white/80"></p>
           </article>
         </div>

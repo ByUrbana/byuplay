@@ -92,7 +92,7 @@ body{
   overflow: visible; /* Permitir que os reflexos se estendam */
   background: 
     url("/flyer/desarrollover-bg.jpg") center / cover no-repeat;
-  margin-top: 0; margin-bottom: 0; /* Remover margin inferior */
+  margin-top: 0; margin-bottom: 0; 
 }
 /* Removido margin-bottom para permitir reflexos completos */
 
@@ -106,9 +106,7 @@ body{
   text-align: center;
 }
 .ring-heading::after{
-  content:""; display:block; width:54px; height:2px; margin:.5rem auto 0; border-radius:999px;
-  background: linear-gradient(90deg, rgb(var(--brand) / .85), rgb(var(--brand-2) / .85));
-  opacity:.75;
+  display: none !important;
 }
 
 /* Cámara/perspectiva (más alta) */
@@ -291,9 +289,7 @@ body{
   position:absolute; inset:0;
   width:100%; height:100%;
   object-fit: cover;
-  filter: brightness(.92) contrast(1.06) saturate(1.06);
-  -webkit-mask-image: radial-gradient(130% 90% at 50% 40%, #000 60%, transparent 95%);
-          mask-image: radial-gradient(130% 90% at 50% 40%, #000 60%, transparent 95%);
+
 }
 
 .ring-video::after{
@@ -759,7 +755,7 @@ body{
 }
 
 /* Títulos y acentos */
-.ft-title{ color: rgb(var(--ft-ink)); }
+.ft-title{ color: rgb(#fff); }
 .ft-subtle{ color: rgba(14,25,33,.72); }
 
 /* Opcional: esconder el glow del sitio si existiera superpuesto */

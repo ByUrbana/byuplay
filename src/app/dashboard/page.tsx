@@ -68,12 +68,9 @@ export default function DashboardPage() {
         <div className="relative mx-auto max-w-7xl px-4 md:px-0 py-12 md:py-16">
           {/* Header */}
           <div className="mb-8">
-            <span className="inline-block rounded-full px-3 py-1 text-[11px] tracking-[0.22em] uppercase text-white/90 bg-white/10 ring-1 ring-white/15">
-              Dashboard
-            </span>
-            <h1 className="mt-3 text-[28px] md:text-[38px] font-semibold text-white">
+            <h1 className="text-[28px] md:text-[38px] font-semibold text-white">
               <span className="bg-gradient-to-r from-white via-white to-white/80 bg-clip-text text-transparent">
-                BYUPLAY Dashboard
+                Dashboard
               </span>
             </h1>
             <p className="mt-2 text-white/80">

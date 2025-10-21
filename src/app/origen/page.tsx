@@ -33,8 +33,16 @@ export default function OrigenPage() {
             </span>
           </h1>
 
-          <p className="mt-2 text-white/80">
-            BY)))URBANA es sponsor de BY)))U FASHION.
+          <p className="mt-2 text-white/80 flex items-center gap-2">
+            BY)))URBANA es sponsor de 
+            <Image
+              src="/flyer/byufashion.png"
+              alt="BY)))U FASHION"
+              width={120}
+              height={36}
+              className="h-16 w-auto"
+            />
+            .
           </p>
 
           {/* contenido principal */}
@@ -85,7 +93,14 @@ export default function OrigenPage() {
 
                     <p>
                       Esta colaboración se propone consolidar a{" "}
-                      <strong className="text-white font-semibold">BY)))U FASHION</strong> como la plataforma oficial del{" "}
+                      <Image
+                        src="/flyer/byufashion.png"
+                        alt="BY)))U FASHION"
+                        width={120}
+                        height={36}
+                        className="inline h-16 w-auto"
+                      />{" "}
+                      como la plataforma oficial del{" "}
                       <strong className="text-white font-semibold">Fashion Tour</strong>.
                     </p>
 

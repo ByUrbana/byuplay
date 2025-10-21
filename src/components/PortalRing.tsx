@@ -167,12 +167,20 @@ export default function PortalRing() {
       className="ring-scene container"
       aria-label="Categorías destacadas (carrusel 3D)"
     >
-      <h2
-        className="ring-heading relative mx-auto max-w-5xl px-4 text-center font-semibold tracking-[0.01em] text-text/90
-                     text-lg sm:text-xl md:text-2xl -top-1 md:-top-8 lg:-top-11"
-      >
-        Descubrí BY)))U PLAY
-      </h2>
+      <div className="ring-heading relative mx-auto max-w-5xl px-4 text-center -top-1 md:-top-8 lg:-top-11">
+        <div className="flex items-center justify-center gap-3 mb-2">
+          <span className="text-lg sm:text-xl md:text-2xl font-semibold tracking-[0.01em] text-text/90">Descubrí</span>
+          <Image
+            src="/flyer/byuplay.png"
+            alt="BY)))U PLAY"
+            width={300}
+            height={90}
+            priority
+            className="h-8 md:h-10 w-auto drop-shadow-[0_2px_6px_rgba(0,0,0,.25)]"
+          />
+        </div>
+        <div className="w-14 h-0.5 mx-auto bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"></div>
+      </div>
 
       <div
         className="ring-stage relative select-none touch-pan-y -mt-2 md:-mt-10 lg:-mt-14"
@@ -192,11 +200,11 @@ export default function PortalRing() {
           style={{ ["--bgY" as any]: "60%" }}
         >
           {/* <Image src="/flyer/prohibido.png" alt="" className="ring-video-el" fill priority /> */}
-          <Image 
-            src="/flyer/desarrollover-bg.jpg" 
-            alt="" 
-            className="ring-video-el" 
-            fill 
+          <Image
+            src="/flyer/desarrollover-bg.jpg"
+            alt=""
+            className="ring-video-el"
+            fill
             loading="eager"
             sizes="100vw"
           />

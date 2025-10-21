@@ -141,15 +141,15 @@ export default function Header() {
   
   return (
     <header
-      className="sticky top-0 z-[200] border-b border-brand2/20
-                 bg-surface/60 supports-[backdrop-filter]:bg-surface/40 backdrop-blur-md"
+      className="sticky top-0 z-[200] 
+                "
     >
       <div className="mx-auto h-16 max-w-[1400px] px-6 flex items-center justify-between gap-6">
         {/* IZQUIERDA: logo */}
         <div className="flex items-center gap-8 min-w-0">
           <Link href="/" aria-label="BY)))U — Inicio" className="group flex select-none items-center gap-2">
             <Image
-              src={isFashion ? "/flyer/fashiones.png" : "/flyer/blanco.png"}
+              src={isFashion ? "/flyer/byufashion.png" : "/flyer/byuplay.png"}
               alt={isFashion ? "BY)))U Fashion" : "BY)))U PLAY"}
               width={520}
               height={120}
