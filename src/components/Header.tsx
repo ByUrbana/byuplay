@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 
 /** BY ))) U <RIGHT> — paréntesis mismo tamaño y leve ajuste óptico */
 function ByMark({ right }: { right: string }) {
@@ -43,101 +42,6 @@ export default function Header() {
   const isFashion = pathname.startsWith("/fashion");
   const isPlayHome = pathname === "/"; // si tu home fuera otra ruta, ajustá acá
 
-  const MenuPanel = (
-    <div
-      onClick={() => setOpen(false)}
-      className="fixed inset-0 z-[10000] bg-black/0"
-      aria-hidden={!open}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        role="menu"
-        className="absolute right-4 top-16 w-60 rounded-xl border border-white/10
-                   bg-[#0A1E33]/95 p-1 shadow-2xl backdrop-blur-md
-                   max-h-[min(60vh,480px)] overflow-auto text-white"
-      >
-        {/* BY ))) U PLAY — oculto si ya estoy en la home */}
-        {!isPlayHome && (
-          <Link
-            href="/"
-            role="menuitem"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
-          >
-            <ByMark right="PLAY" />
-          </Link>
-        )}
-
-        {/* BY ))) U URBANA (externo) */}
-        <a
-          href="https://www.byurbana.com/"
-          role="menuitem"
-          onClick={() => setOpen(false)}
-          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <ByMark right="URBANA" />
-        </a>
-
-        {/* BY ))) U CLUB */}
-        <Link
-          href="/byuclub"
-          role="menuitem"
-          onClick={() => setOpen(false)}
-          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
-        >
-          <ByMark right="CLUB" />
-        </Link>
-
-        {/* ORIGEN — siempre visible */}
-        <Link
-          href="/origen"
-          role="menuitem"
-          onClick={() => setOpen(false)}
-          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M12 2l4 7-4 13-4-13 4-7z" strokeWidth="2" />
-          </svg>
-          ORIGEN
-        </Link>
-
-        {/* DASHBOARD */}
-        <Link
-          href="/dashboard"
-          role="menuitem"
-          onClick={() => setOpen(false)}
-          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <rect x="3" y="3" width="7" height="7" strokeWidth="2" />
-            <rect x="14" y="3" width="7" height="7" strokeWidth="2" />
-            <rect x="14" y="14" width="7" height="7" strokeWidth="2" />
-            <rect x="3" y="14" width="7" height="7" strokeWidth="2" />
-          </svg>
-          DASHBOARD
-        </Link>
-
-        {/* QUIÉNES SOMOS (externo) */}
-        <a
-          href="https://www.byuplay.com/"
-          role="menuitem"
-          onClick={() => setOpen(false)}
-          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 16v-4M12 8h.01" />
-          </svg>
-          QUIÉNES SOMOS
-        </a>
-      </div>
-    </div>
-  );
-
   
   return (
     <header
@@ -158,6 +62,154 @@ export default function Header() {
             />
           </Link>
         </div>
+
+        {/* CENTRO: Categorías de streaming - Desktop */}
+        <nav className="hidden lg:flex items-center gap-6 text-white">
+          <Link
+            href="/series"
+            className={`text-sm font-medium transition-all duration-200 px-3 py-2 rounded-lg ${
+              pathname === "/series"
+                ? "bg-blue-500/20 text-blue-300 border border-blue-400/30"
+                : "hover:text-blue-400"
+            }`}
+          >
+            SERIES
+          </Link>
+          <Link
+            href="/peliculas"
+            className={`text-sm font-medium transition-all duration-200 px-3 py-2 rounded-lg ${
+              pathname === "/peliculas"
+                ? "bg-yellow-500/20 text-yellow-300 border border-yellow-400/30"
+                : "hover:text-yellow-400"
+            }`}
+          >
+            PELÍCULAS
+          </Link>
+          <Link
+            href="/infantil"
+            className={`text-sm font-medium transition-all duration-200 px-3 py-2 rounded-lg ${
+              pathname === "/infantil"
+                ? "bg-pink-500/20 text-pink-300 border border-pink-400/30"
+                : "hover:text-pink-400"
+            }`}
+          >
+            INFANTIL
+          </Link>
+          <Link
+            href="/podcast"
+            className={`text-sm font-medium transition-all duration-200 px-3 py-2 rounded-lg ${
+              pathname === "/podcast"
+                ? "bg-purple-500/20 text-purple-300 border border-purple-400/30"
+                : "hover:text-purple-400"
+            }`}
+          >
+            PODCAST
+          </Link>
+          <Link
+            href="/deportes"
+            className={`text-sm font-medium transition-all duration-200 px-3 py-2 rounded-lg ${
+              pathname === "/deportes"
+                ? "bg-green-500/20 text-green-300 border border-green-400/30"
+                : "hover:text-green-400"
+            }`}
+          >
+            DEPORTES
+          </Link>
+          <Link
+            href="/musica"
+            className={`text-sm font-medium transition-all duration-200 px-3 py-2 rounded-lg ${
+              pathname === "/musica"
+                ? "bg-orange-500/20 text-orange-300 border border-orange-400/30"
+                : "hover:text-orange-400"
+            }`}
+          >
+            MÚSICA
+          </Link>
+          <Link
+            href="/fashion"
+            className={`text-sm font-medium transition-all duration-200 px-3 py-2 rounded-lg ${
+              pathname === "/fashion"
+                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/30"
+                : "hover:text-cyan-400"
+            }`}
+          >
+            FASHION
+          </Link>
+        </nav>
+
+        {/* CENTRO: Categorías de streaming - Mobile/Tablet */}
+        <nav className="hidden md:flex lg:hidden items-center gap-3 text-white">
+          <Link
+            href="/series"
+            className={`text-xs font-medium transition-all duration-200 px-2 py-1 rounded-md ${
+              pathname === "/series"
+                ? "bg-blue-500/20 text-blue-300 border border-blue-400/30"
+                : "hover:text-blue-400"
+            }`}
+          >
+            SERIES
+          </Link>
+          <Link
+            href="/peliculas"
+            className={`text-xs font-medium transition-all duration-200 px-2 py-1 rounded-md ${
+              pathname === "/peliculas"
+                ? "bg-yellow-500/20 text-yellow-300 border border-yellow-400/30"
+                : "hover:text-yellow-400"
+            }`}
+          >
+            PELÍCULAS
+          </Link>
+          <Link
+            href="/infantil"
+            className={`text-xs font-medium transition-all duration-200 px-2 py-1 rounded-md ${
+              pathname === "/infantil"
+                ? "bg-pink-500/20 text-pink-300 border border-pink-400/30"
+                : "hover:text-pink-400"
+            }`}
+          >
+            INFANTIL
+          </Link>
+          <Link
+            href="/podcast"
+            className={`text-xs font-medium transition-all duration-200 px-2 py-1 rounded-md ${
+              pathname === "/podcast"
+                ? "bg-purple-500/20 text-purple-300 border border-purple-400/30"
+                : "hover:text-purple-400"
+            }`}
+          >
+            PODCAST
+          </Link>
+          <Link
+            href="/deportes"
+            className={`text-xs font-medium transition-all duration-200 px-2 py-1 rounded-md ${
+              pathname === "/deportes"
+                ? "bg-green-500/20 text-green-300 border border-green-400/30"
+                : "hover:text-green-400"
+            }`}
+          >
+            DEPORTES
+          </Link>
+          <Link
+            href="/musica"
+            className={`text-xs font-medium transition-all duration-200 px-2 py-1 rounded-md ${
+              pathname === "/musica"
+                ? "bg-orange-500/20 text-orange-300 border border-orange-400/30"
+                : "hover:text-orange-400"
+            }`}
+          >
+            MÚSICA
+          </Link>
+          <Link
+            href="/fashion"
+            className={`text-xs font-medium transition-all duration-200 px-2 py-1 rounded-md ${
+              pathname === "/fashion"
+                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/30"
+                : "hover:text-cyan-400"
+            }`}
+          >
+            FASHION
+          </Link>
+        </nav>
 
         {/* DERECHA: acciones + hamburguesa */}
         <div className="flex items-center gap-2 md:gap-3 text-white">
@@ -181,25 +233,216 @@ export default function Header() {
             </svg>
           </button> */}
 
-          <button
-            ref={btnRef}
-            aria-label="Abrir menú"
-            aria-expanded={open}
-            onClick={(e) => {
-              e.stopPropagation();
-              setOpen((v) => !v);
-            }}
-            className="p-2 rounded-full hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M4 6h16M4 12h16M4 18h16" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-          </button>
+          <div className="relative">
+            <button
+              ref={btnRef}
+              aria-label="Abrir menú"
+              aria-expanded={open}
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpen((v) => !v);
+              }}
+              className="p-2 rounded-full hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M4 6h16M4 12h16M4 18h16" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            </button>
+
+            {/* Dropdown Menu */}
+            {open && (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                role="menu"
+                className="absolute right-0 top-12 w-60 rounded-xl border border-white/10
+                           bg-[#0A1E33]/95 p-1 shadow-2xl backdrop-blur-md
+                           max-h-[min(60vh,480px)] overflow-auto text-white z-50"
+              >
+                {/* BY ))) U PLAY — oculto si ya estoy en la home */}
+                {!isPlayHome && (
+                  <Link
+                    href="/"
+                    role="menuitem"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+                  >
+                    <ByMark right="PLAY" />
+                  </Link>
+                )}
+
+                {/* BY ))) U URBANA (externo) */}
+                <a
+                  href="https://www.byurbana.com/"
+                  role="menuitem"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <ByMark right="URBANA" />
+                </a>
+
+                {/* BY ))) U CLUB */}
+                <Link
+                  href="/byuclub"
+                  role="menuitem"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+                >
+                  <ByMark right="CLUB" />
+                </Link>
+
+                {/* CATEGORÍAS DE STREAMING */}
+                <div className="border-t border-white/10 my-2 pt-2">
+                  <div className="px-3 py-1 text-xs font-semibold text-white/60 uppercase tracking-wider">
+                    Categorías
+                  </div>
+                  
+                  <Link
+                    href="/series"
+                    role="menuitem"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <rect x="2" y="3" width="20" height="14" rx="2" ry="2" strokeWidth="2" />
+                      <line x1="8" y1="21" x2="16" y2="21" strokeWidth="2" />
+                      <line x1="12" y1="17" x2="12" y2="21" strokeWidth="2" />
+                    </svg>
+                    SERIES
+                  </Link>
+
+                  <Link
+                    href="/peliculas"
+                    role="menuitem"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <polygon points="5,3 19,12 5,21" strokeWidth="2" />
+                    </svg>
+                    PELÍCULAS
+                  </Link>
+
+                  <Link
+                    href="/infantil"
+                    role="menuitem"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <circle cx="12" cy="12" r="10" strokeWidth="2" />
+                      <path d="M8 14s1.5 2 4 2 4-2 4-2" strokeWidth="2" />
+                      <line x1="9" y1="9" x2="9.01" y2="9" strokeWidth="2" />
+                      <line x1="15" y1="9" x2="15.01" y2="9" strokeWidth="2" />
+                    </svg>
+                    INFANTIL
+                  </Link>
+
+                  <Link
+                    href="/podcast"
+                    role="menuitem"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" strokeWidth="2" />
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" strokeWidth="2" />
+                      <line x1="12" y1="19" x2="12" y2="23" strokeWidth="2" />
+                      <line x1="8" y1="23" x2="16" y2="23" strokeWidth="2" />
+                    </svg>
+                    PODCAST
+                  </Link>
+
+                  <Link
+                    href="/deportes"
+                    role="menuitem"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <circle cx="12" cy="12" r="10" strokeWidth="2" />
+                      <path d="M8 12l2 2 4-4" strokeWidth="2" />
+                    </svg>
+                    DEPORTES
+                  </Link>
+
+                  <Link
+                    href="/musica"
+                    role="menuitem"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path d="M9 18V5l12-2v13" strokeWidth="2" />
+                      <circle cx="6" cy="18" r="3" strokeWidth="2" />
+                      <circle cx="18" cy="16" r="3" strokeWidth="2" />
+                    </svg>
+                    MÚSICA
+                  </Link>
+
+                  <Link
+                    href="/fashion"
+                    role="menuitem"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z" strokeWidth="2" />
+                    </svg>
+                    FASHION
+                  </Link>
+                </div>
+
+                {/* ORIGEN — siempre visible */}
+                <Link
+                  href="/origen"
+                  role="menuitem"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 2l4 7-4 13-4-13 4-7z" strokeWidth="2" />
+                  </svg>
+                  ORIGEN
+                </Link>
+
+                {/* DASHBOARD */}
+                <Link
+                  href="/dashboard"
+                  role="menuitem"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <rect x="3" y="3" width="7" height="7" strokeWidth="2" />
+                    <rect x="14" y="3" width="7" height="7" strokeWidth="2" />
+                    <rect x="14" y="14" width="7" height="7" strokeWidth="2" />
+                    <rect x="3" y="14" width="7" height="7" strokeWidth="2" />
+                  </svg>
+                  DASHBOARD
+                </Link>
+
+                {/* QUIÉNES SOMOS (externo) */}
+                <a
+                  href="https://www.byuplay.com/"
+                  role="menuitem"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 16v-4M12 8h.01" />
+                  </svg>
+                  QUIÉNES SOMOS
+                </a>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-
-      {/* Render del panel en portal */}
-      {mounted && open && createPortal(MenuPanel, document.body)}
     </header>
   );
 }

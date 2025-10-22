@@ -9,8 +9,13 @@ export default function Navbar() {
 
         <nav className="flex gap-5 text-neutral-300">
           <Link href="/live" className="hover:text-white">TV EN VIVO</Link>
-          <Link href="/catalogo" className="hover:text-white">SERIES Y PELÍCULAS</Link>
-          <Link href="/infantiles" className="hover:text-white">INFANTILES</Link>
+          <Link href="/series" className="hover:text-white">SERIES</Link>
+          <Link href="/peliculas" className="hover:text-white">PELÍCULAS</Link>
+          <Link href="/infantil" className="hover:text-white">INFANTIL</Link>
+          <Link href="/podcast" className="hover:text-white">PODCAST</Link>
+          <Link href="/deportes" className="hover:text-white">DEPORTES</Link>
+          <Link href="/musica" className="hover:text-white">MÚSICA</Link>
+          <Link href="/fashion" className="hover:text-white">FASHION</Link>
           <Link href="/documentales" className="hover:text-white">DOCUMENTALES</Link>
           <Link href="/paises" className="hover:text-white">PAÍSES</Link>
           <Link href="/quienes-somos" className="hover:text-white">QUIENES SOMOS</Link>

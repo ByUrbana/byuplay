@@ -16,7 +16,7 @@ type Panel = {
 // 👇 Definición de los paneles
 const PANELS: Panel[] = [
   {
-    href: "/infantiles",
+    href: "/infantil",
     topLabel: "BLUE OCEAN",
     title: "INFANTIL",
     subtitle: "",
@@ -24,7 +24,7 @@ const PANELS: Panel[] = [
     img: "/flyer/disney.png",
   },
   {
-    href: "/adultos",
+    href: "/peliculas",
     topLabel: "ORANGE SUNSET",
     title: "PELICULAS",
     subtitle: "",
@@ -218,7 +218,7 @@ export default function PortalRing() {
           const scale = 0.985 - 0.035 * t;
           const z = 1000 - Math.round(Math.abs(angle) * 10);
           const refAlpha = Math.max(0.14, 0.38 - 0.22 * t);
-          const isReady = panel.href === "/fashion";
+          const isReady = true; // Todas as páginas estão prontas
 
           return (
             <Link
