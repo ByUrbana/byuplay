@@ -18,9 +18,9 @@ export const metadata: Metadata = {
   title: "Urbana Play",
   description: "Clon educativo de la interfaz de Urbana Play",
   icons: {
-    icon: "/flyer/icon-fav.png",
-    shortcut: "/flyer/icon-fav.png",
-    apple: "/flyer/icon-fav.png",
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
 };
 
@@ -31,6 +31,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className="bg-transparent">
+      <head>
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+      </head>
       {/* NO pongas bg-black en el body o ocultará el glow azul */}
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased text-white`}>
         {/* Fondo azul global */}
