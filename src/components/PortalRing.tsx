@@ -21,7 +21,7 @@ const PANELS: Panel[] = [
     title: "INFANTIL",
     subtitle: "",
     hue: 205,
-    img: "/flyer/disney.png",
+    img: "/flyer/disney.jpg",
   },
   {
     href: "/peliculas",
@@ -29,7 +29,7 @@ const PANELS: Panel[] = [
     title: "PELICULAS",
     subtitle: "",
     hue: 35,
-    img: "/flyer/peliculas.png",
+    img: "/flyer/peliculas.jpg",
   },
   {
     href: "/series",
@@ -37,7 +37,7 @@ const PANELS: Panel[] = [
     title: "SERIES",
     subtitle: "",
     hue: 265,
-    img: "/flyer/series.png",
+    img: "/flyer/series.jpg",
   },
   {
     href: "/fashion",
@@ -54,7 +54,7 @@ const PANELS: Panel[] = [
     title: "PODCAST",
     subtitle: "",
     hue: 265,
-    img: "/flyer/podcast.png",
+    img: "/flyer/podcast.jpeg",
   },
   {
     href: "/deportes",
@@ -62,7 +62,7 @@ const PANELS: Panel[] = [
     title: "DEPORTES",
     subtitle: "",
     hue: 28,
-    img: "/flyer/futbol.png",
+    img: "/flyer/esportes.webp",
   },
   {
     href: "/musica",
@@ -70,7 +70,7 @@ const PANELS: Panel[] = [
     title: "MUSICA",
     subtitle: "",
     hue: 195,
-    img: "/flyer/musica.png",
+    img: "/flyer/musica.jpg",
   },
 ];
 
