@@ -15,8 +15,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Urbana Play – Clon",
+  title: "Urbana Play",
   description: "Clon educativo de la interfaz de Urbana Play",
+  icons: {
+    icon: "/flyer/icon-fav.png",
+    shortcut: "/flyer/icon-fav.png",
+    apple: "/flyer/icon-fav.png",
+  },
 };
 
 export default function RootLayout({
