@@ -18,7 +18,7 @@ export const TITLES: Title[] = [
     year: 2024,
     country: "India",
     genres: ["Acción", "Thriller"],
-    poster: "https://image.tmdb.org/t/p/w500/2CAL2433ZeIihfX1Hb2139CX0pW.jpg",
+    poster: "/flyer/kill-massacre.jpg",
     playbackUrl: process.env.NEXT_PUBLIC_LIVE_URL || "",
     tagline: "Un comando aborda un tren a Nueva Delhi en una audaz misión."
   },

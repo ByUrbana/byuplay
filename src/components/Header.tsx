@@ -21,10 +21,7 @@ export default function Header() {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => setMounted(true), []);
   useEffect(() => {
     const onEsc = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     const onClickAway = (e: MouseEvent) => {
@@ -45,8 +42,7 @@ export default function Header() {
   
   return (
     <header
-      className="sticky top-0 z-[200] 
-                "
+      className="sticky top-0 z-[200] bg-black/70 backdrop-blur"
     >
       <div className="mx-auto h-16 max-w-[1400px] px-6 flex items-center justify-between gap-6">
         {/* IZQUIERDA: logo */}
@@ -65,6 +61,16 @@ export default function Header() {
 
         {/* CENTRO: Categorías de streaming - Desktop */}
         <nav className="hidden lg:flex items-center gap-6 text-white">
+          <Link
+            href="/catalogo"
+            className={`text-sm font-medium transition-all duration-200 px-3 py-2 rounded-lg ${
+              pathname === "/catalogo"
+                ? "bg-indigo-500/20 text-indigo-300 border border-indigo-400/30"
+                : "hover:text-indigo-400"
+            }`}
+          >
+            CATÁLOGO
+          </Link>
           <Link
             href="/series"
             className={`text-sm font-medium transition-all duration-200 px-3 py-2 rounded-lg ${
@@ -139,6 +145,16 @@ export default function Header() {
 
         {/* CENTRO: Categorías de streaming - Mobile/Tablet */}
         <nav className="hidden md:flex lg:hidden items-center gap-3 text-white">
+          <Link
+            href="/catalogo"
+            className={`text-xs font-medium transition-all duration-200 px-2 py-1 rounded-md ${
+              pathname === "/catalogo"
+                ? "bg-indigo-500/20 text-indigo-300 border border-indigo-400/30"
+                : "hover:text-indigo-400"
+            }`}
+          >
+            CATÁLOGO
+          </Link>
           <Link
             href="/series"
             className={`text-xs font-medium transition-all duration-200 px-2 py-1 rounded-md ${
@@ -256,7 +272,7 @@ export default function Header() {
                 role="menu"
                 className="absolute right-0 top-12 w-60 rounded-xl border border-white/10
                            bg-[#0A1E33]/95 p-1 shadow-2xl backdrop-blur-md
-                           max-h-[min(60vh,480px)] overflow-auto text-white z-50"
+                           max-h-[min(60vh,480px)] overflow-auto text-white z-[9999]"
               >
                 {/* BY ))) U PLAY — oculto si ya estoy en la home */}
                 {!isPlayHome && (
@@ -291,6 +307,51 @@ export default function Header() {
                 >
                   <ByMark right="CLUB" />
                 </Link>
+
+                {/* ORIGEN — siempre visible */}
+                <Link
+                  href="/origen"
+                  role="menuitem"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 2l4 7-4 13-4-13 4-7z" strokeWidth="2" />
+                  </svg>
+                  ORIGEN
+                </Link>
+
+                {/* DASHBOARD */}
+                <Link
+                  href="/dashboard"
+                  role="menuitem"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <rect x="3" y="3" width="7" height="7" strokeWidth="2" />
+                    <rect x="14" y="3" width="7" height="7" strokeWidth="2" />
+                    <rect x="14" y="14" width="7" height="7" strokeWidth="2" />
+                    <rect x="3" y="14" width="7" height="7" strokeWidth="2" />
+                  </svg>
+                  DASHBOARD
+                </Link>
+
+                {/* QUIÉNES SOMOS (externo) */}
+                <a
+                  href="https://www.byuplay.com/"
+                  role="menuitem"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 16v-4M12 8h.01" />
+                  </svg>
+                  QUIÉNES SOMOS
+                </a>
 
                 {/* CATEGORÍAS DE STREAMING */}
                 <div className="border-t border-white/10 my-2 pt-2">
@@ -392,52 +453,20 @@ export default function Header() {
                     </svg>
                     FASHION
                   </Link>
+
+                  <Link
+                    href="/catalogo"
+                    role="menuitem"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" strokeWidth="2" />
+                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" strokeWidth="2" />
+                    </svg>
+                    CATÁLOGO
+                  </Link>
                 </div>
-
-                {/* ORIGEN — siempre visible */}
-                <Link
-                  href="/origen"
-                  role="menuitem"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M12 2l4 7-4 13-4-13 4-7z" strokeWidth="2" />
-                  </svg>
-                  ORIGEN
-                </Link>
-
-                {/* DASHBOARD */}
-                <Link
-                  href="/dashboard"
-                  role="menuitem"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <rect x="3" y="3" width="7" height="7" strokeWidth="2" />
-                    <rect x="14" y="3" width="7" height="7" strokeWidth="2" />
-                    <rect x="14" y="14" width="7" height="7" strokeWidth="2" />
-                    <rect x="3" y="14" width="7" height="7" strokeWidth="2" />
-                  </svg>
-                  DASHBOARD
-                </Link>
-
-                {/* QUIÉNES SOMOS (externo) */}
-                <a
-                  href="https://www.byuplay.com/"
-                  role="menuitem"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 16v-4M12 8h.01" />
-                  </svg>
-                  QUIÉNES SOMOS
-                </a>
               </div>
             )}
           </div>

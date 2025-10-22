@@ -1,5 +1,5 @@
 "use client";
-import Navbar from "@/components/Navbar";
+import Header from "@/components/Header";
 import TitleCard from "@/components/TitleCard";
 import Row from "@/components/Row";
 import { TITLES } from "@/app/lib/data";
@@ -27,7 +27,7 @@ export default function Page() {
 
   return (
     <main>
-      <Navbar />
+      <Header />
       <TitleCard t={hero} />
 
       {/* Filas */}

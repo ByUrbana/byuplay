@@ -19,9 +19,9 @@ export interface Title {
 
 export default function TitleCard({ t }: { t: Title }) {
   return (
-    <section className="relative mx-auto mt-6 max-w-7xl px-4">
+    <section className="relative mx-auto mt-6 max-w-8xl px-4">
       {/* Poster (hero) */}
-      <div className="relative aspect-[16/7] w-full overflow-hidden rounded-lg">
+      <div className="relative aspect-[3/2] w-full overflow-hidden rounded-lg">
         <Image
           src={t.poster}
           alt={t.name}
@@ -42,7 +42,7 @@ export default function TitleCard({ t }: { t: Title }) {
             </h1>
 
             {/* Fecha / país (placeholder simple) */}
-            <p className="mb-2 text-sm text-neutral-300">• {t.year}</p>
+            <p className="mb-2 text-sm text-neutral-300">{t.year}</p>
 
             {/* Descripción */}
             <p className="mb-6 line-clamp-3 text-neutral-200">
@@ -51,28 +51,37 @@ export default function TitleCard({ t }: { t: Title }) {
             </p>
 
             {/* Botones */}
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-4">
               {t.playbackUrl ? (
                 <Link
                   href={t.playbackUrl}
-                  className="inline-flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 font-medium text-white hover:bg-red-700"
+                  className="inline-flex items-center gap-3 rounded-lg bg-white px-6 py-3 font-semibold text-black hover:bg-gray-100 transition-colors"
                 >
-                  ▶ Ver ahora
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                  Ver ahora
                 </Link>
               ) : (
                 <button
-                  className="inline-flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 font-medium text-white opacity-70"
+                  className="inline-flex items-center gap-3 rounded-lg bg-white px-6 py-3 font-semibold text-black opacity-70 cursor-not-allowed"
                   disabled
                 >
-                  ▶ Ver ahora
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                  Ver ahora
                 </button>
               )}
 
               <Link
                 href={`/catalogo?id=${t.id}`}
-                className="inline-flex items-center gap-2 rounded-md bg-white/10 px-4 py-2 font-medium hover:bg-white/20"
+                className="inline-flex items-center gap-3 rounded-lg bg-gray-600/80 px-6 py-3 font-semibold text-white hover:bg-gray-600 transition-colors backdrop-blur-sm"
               >
-                ⓘ Más info
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                </svg>
+                Más info
               </Link>
             </div>
           </div>
