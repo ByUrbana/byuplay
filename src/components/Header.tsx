@@ -10,8 +10,8 @@ function ByMark({ right }: { right: string }) {
   return (
     <span className="inline-flex items-baseline leading-none">
       <span>BY</span>
-      <span className="mx-1 relative -top-[0.03em]">)))</span>
-      <span>U {right}</span>
+      <span className="relative -top-[0.03em]">)))</span>
+      <span>U{right}</span>
     </span>
   );
 }
@@ -295,7 +295,7 @@ export default function Header() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <ByMark right="URBANA" />
+                  <ByMark right="RBANA" />
                 </a>
 
                 {/* BY ))) U CLUB */}
