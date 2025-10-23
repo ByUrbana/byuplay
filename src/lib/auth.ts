@@ -15,9 +15,17 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
+        console.log("Tentativa de autorização:", { 
+          email: credentials?.email,
+          hasPassword: !!credentials?.password,
+          adminEmail: process.env.ADMIN_EMAIL,
+          hasAdminPassword: !!process.env.ADMIN_PASSWORD
+        });
+        
         // Verificar se é admin
         if (credentials?.email === process.env.ADMIN_EMAIL && 
             credentials?.password === process.env.ADMIN_PASSWORD) {
+          console.log("Login admin bem-sucedido");
           return {
             id: "admin",
             email: credentials.email,
@@ -25,6 +33,8 @@ export const authOptions: NextAuthOptions = {
             role: "admin"
           }
         }
+        
+        console.log("Credenciais inválidas");
         return null
       }
     })

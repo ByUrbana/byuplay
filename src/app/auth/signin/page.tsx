@@ -18,24 +18,33 @@ export default function SignInPage() {
     setError("");
 
     try {
+      console.log("Tentando fazer login com:", { email, password: "***" });
+      
       const result = await signIn("credentials", {
         email,
         password,
         redirect: false,
       });
 
+      console.log("Resultado do signIn:", result);
+
       if (result?.error) {
+        console.error("Erro no login:", result.error);
         setError("Credenciais inválidas");
       } else {
         // Verificar se é admin
         const session = await getSession();
+        console.log("Sessão obtida:", session);
+        
         if (session?.user?.role === "admin") {
+          console.log("Redirecionando para dashboard");
           router.push("/dashboard");
         } else {
           setError("Acesso negado. Apenas administradores podem acessar.");
         }
       }
     } catch (error) {
+      console.error("Erro no handleSubmit:", error);
       setError("Erro ao fazer login");
     } finally {
       setIsLoading(false);
