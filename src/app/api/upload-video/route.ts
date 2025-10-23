@@ -43,11 +43,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No se proporcionó archivo' }, { status: 400 });
     }
 
-    // Verificar tamanho do arquivo (100MB = 100 * 1024 * 1024 bytes)
-    const maxSize = 100 * 1024 * 1024; // 100MB
+    // Verificar tamanho do arquivo (10MB = 10 * 1024 * 1024 bytes para deploy)
+    const maxSize = 10 * 1024 * 1024; // 10MB para evitar erro 413 no deploy
     if (file.size > maxSize) {
       return NextResponse.json({ 
-        error: `Archivo demasiado grande. Máximo permitido: 100MB. Tamaño actual: ${Math.round(file.size / 1024 / 1024)}MB` 
+        error: `Archivo demasiado grande. Máximo permitido: 10MB. Tamaño actual: ${Math.round(file.size / 1024 / 1024)}MB` 
       }, { status: 413 });
     }
 

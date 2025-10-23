@@ -67,90 +67,39 @@ export default function UploadVideoPage() {
     setUploadProgress(0);
     
     try {
-      // Upload direto para Cloudinary usando signed upload
-      const uploadResponse = await fetch('/api/upload-video/sign', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          public_id: `${Date.now()}_${formData.title.replace(/\s+/g, '_')}`,
-          folder: 'byuplay/videos',
-          resource_type: 'video'
-        })
-      });
-
-      if (!uploadResponse.ok) {
-        throw new Error('Erro ao obter assinatura de upload');
-      }
-
-      const { signature, timestamp, cloudName, apiKey } = await uploadResponse.json();
-
-      // Criar FormData para upload direto ao Cloudinary
-      const cloudinaryFormData = new FormData();
-      cloudinaryFormData.append('file', selectedFile);
-      cloudinaryFormData.append('public_id', `${Date.now()}_${formData.title.replace(/\s+/g, '_')}`);
-      cloudinaryFormData.append('folder', 'byuplay/videos');
-      cloudinaryFormData.append('resource_type', 'video');
-      cloudinaryFormData.append('signature', signature);
-      cloudinaryFormData.append('timestamp', timestamp);
-      cloudinaryFormData.append('api_key', apiKey);
-      cloudinaryFormData.append('transformation', 'q_auto,f_mp4');
-      cloudinaryFormData.append('context', `title=${formData.title}|description=${formData.description}|genre=${formData.genre}|rating=${formData.rating}`);
-
-      // Upload com progress real
-      const xhr = new XMLHttpRequest();
+      const formDataToSend = new FormData();
+      formDataToSend.append('video', selectedFile);
+      formDataToSend.append('title', formData.title);
+      formDataToSend.append('description', formData.description);
+      formDataToSend.append('genre', formData.genre);
+      formDataToSend.append('rating', formData.rating);
+      formDataToSend.append('releaseDate', formData.releaseDate);
+      formDataToSend.append('duration', formData.duration);
+      formDataToSend.append('language', formData.language);
+      formDataToSend.append('contentType', formData.contentType);
+      formDataToSend.append('tags', formData.tags);
       
-      xhr.upload.addEventListener('progress', (event) => {
-        if (event.lengthComputable) {
-          const percentComplete = (event.loaded / event.total) * 100;
-          setUploadProgress(Math.round(percentComplete));
-        }
-      });
-
-      const uploadPromise = new Promise((resolve, reject) => {
-        xhr.addEventListener('load', () => {
-          if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-            resolve(response);
-          } else {
-            reject(new Error(`Upload failed: ${xhr.status}`));
+      // Simular progress (em produção, você usaria XMLHttpRequest para progress real)
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return 90;
           }
+          return prev + 10;
         });
-        
-        xhr.addEventListener('error', () => {
-          reject(new Error('Upload failed'));
-        });
-      });
-
-      xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`);
-      xhr.send(cloudinaryFormData);
-
-      const result = await uploadPromise;
+      }, 200);
       
-      // Salvar metadados no nosso sistema
-      const saveResponse = await fetch('/api/upload-video/save', {
+      const response = await fetch('/api/upload-video', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          cloudinaryData: result,
-          metadata: {
-            title: formData.title,
-            description: formData.description,
-            genre: formData.genre,
-            rating: formData.rating,
-            releaseDate: formData.releaseDate,
-            duration: formData.duration,
-            language: formData.language,
-            contentType: formData.contentType,
-            tags: formData.tags
-          }
-        })
+        body: formDataToSend,
       });
-
-      if (saveResponse.ok) {
+      
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+      
+      if (response.ok) {
+        const result = await response.json();
         alert("¡Video agregado con éxito!");
         
         // Reset form
@@ -169,9 +118,9 @@ export default function UploadVideoPage() {
         setSelectedFile(null);
         setUploadProgress(0);
       } else {
-        throw new Error('Erro ao salvar metadados');
+        const error = await response.json();
+        alert(`Error: ${error.error}`);
       }
-      
     } catch (error) {
       console.error('Upload error:', error);
       alert("Error al subir el video");
