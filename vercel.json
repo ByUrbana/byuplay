@@ -1,7 +1,8 @@
 {
   "functions": {
     "src/app/api/upload-video/route.ts": {
-      "maxDuration": 300
+      "maxDuration": 300,
+      "memory": 1024
     }
   },
   "headers": [

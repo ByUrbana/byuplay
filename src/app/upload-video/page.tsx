@@ -102,21 +102,8 @@ export default function UploadVideoPage() {
         const result = await response.json();
         alert("¡Video agregado con éxito!");
         
-        // Reset form
-        setFormData({
-          title: "",
-          description: "",
-          rating: "",
-          genre: "",
-          releaseDate: "",
-          duration: "",
-          language: "",
-          contentType: "",
-          tags: "",
-          status: "draft"
-        });
-        setSelectedFile(null);
-        setUploadProgress(0);
+        // Redirecionar para o dashboard após upload bem-sucedido
+        router.push('/dashboard');
       } else {
         const error = await response.json();
         alert(`Error: ${error.error}`);
