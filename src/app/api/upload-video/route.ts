@@ -50,30 +50,35 @@ export async function POST(request: NextRequest) {
       type: file.type
     });
 
-    // Converter File para Buffer
+    // Converter File para Buffer de forma otimizada
+    console.log('Converting file to buffer...');
     const bytes = await file.arrayBuffer();
+    console.log('ArrayBuffer created, size:', bytes.byteLength);
+    
     const buffer = Buffer.from(bytes);
+    console.log('Buffer created, size:', buffer.length);
 
-    // Upload para Cloudinary com metadados corretos
+    // Upload simples para Cloudinary - sem transformações
+    console.log('Starting simple Cloudinary upload...');
+    
     const result = await new Promise((resolve, reject) => {
       cloudinary.uploader.upload_stream(
         {
           resource_type: 'video',
           folder: 'byuplay/videos',
           public_id: `${Date.now()}_${title.replace(/\s+/g, '_')}`,
-          transformation: [
-            { quality: 'auto' },
-            { format: 'mp4' }
-          ],
-          eager: [
-            { format: 'mp4', quality: 'auto' }
-          ],
+          // Removidas todas as transformações que causam problemas
           context: `title=${title}|description=${description}|genre=${genre}|rating=${rating}|releaseDate=${releaseDate}|duration=${duration}|language=${language}|contentType=${contentType}|tags=${tags}`,
           tags: [genre, 'byuplay', 'video']
         },
         (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
+          if (error) {
+            console.error('Cloudinary upload error:', error);
+            reject(error);
+          } else {
+            console.log('Cloudinary upload success');
+            resolve(result);
+          }
         }
       ).end(buffer);
     });
@@ -110,13 +115,38 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ 
       success: true, 
-      video: videoData 
+      video: videoData
     });
 
   } catch (error) {
     console.error('Upload error:', error);
+    
+    // Tratamento específico para diferentes tipos de erro
+    if (error instanceof Error) {
+      if (error.message.includes('out of memory') || error.message.includes('heap')) {
+        return NextResponse.json(
+          { error: 'Arquivo muito grande para processar. Tente um arquivo menor.' }, 
+          { status: 413 }
+        );
+      }
+      
+      if (error.message.includes('timeout')) {
+        return NextResponse.json(
+          { error: 'Timeout no upload. Tente novamente.' }, 
+          { status: 408 }
+        );
+      }
+      
+      if (error.message.includes('network') || error.message.includes('connection')) {
+        return NextResponse.json(
+          { error: 'Erro de conexão. Verifique sua internet e tente novamente.' }, 
+          { status: 503 }
+        );
+      }
+    }
+    
     return NextResponse.json(
-      { error: 'Error al subir el video' }, 
+      { error: `Error al subir el video: ${error instanceof Error ? error.message : 'Erro desconhecido'}` }, 
       { status: 500 }
     );
   }

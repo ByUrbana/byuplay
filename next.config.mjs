@@ -15,7 +15,7 @@ const nextConfig = {
   // Aumentar limite de body size para uploads
   api: {
     bodyParser: {
-      sizeLimit: '100mb',
+      sizeLimit: '500mb',
     },
   },
   // Configuração para Vercel (deploy)
