@@ -3,6 +3,17 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import cloudinary from '@/lib/cloudinary';
 
+// Configuração para arquivos grandes
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '100mb',
+    },
+  },
+  // Configuração específica para este endpoint
+  maxDuration: 300, // 5 minutos
+};
+
 export async function POST(request: NextRequest) {
   try {
     // Verificar autenticação
@@ -30,6 +41,14 @@ export async function POST(request: NextRequest) {
 
     if (!file) {
       return NextResponse.json({ error: 'No se proporcionó archivo' }, { status: 400 });
+    }
+
+    // Verificar tamanho do arquivo (100MB = 100 * 1024 * 1024 bytes)
+    const maxSize = 100 * 1024 * 1024; // 100MB
+    if (file.size > maxSize) {
+      return NextResponse.json({ 
+        error: `Archivo demasiado grande. Máximo permitido: 100MB. Tamaño actual: ${Math.round(file.size / 1024 / 1024)}MB` 
+      }, { status: 413 });
     }
 
     // Converter File para Buffer
