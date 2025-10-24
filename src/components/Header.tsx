@@ -42,7 +42,7 @@ export default function Header() {
   
   return (
     <header
-      className="sticky top-0 z-[200] bg-black/70 backdrop-blur"
+      className="sticky top-0 z-[9998] bg-black/70 backdrop-blur"
     >
       <div className="mx-auto h-16 max-w-[1400px] px-6 flex items-center justify-between gap-6">
         {/* IZQUIERDA: logo */}
@@ -272,7 +272,7 @@ export default function Header() {
                 role="menu"
                 className="absolute right-0 top-12 w-60 rounded-xl border border-white/10
                            bg-[#0A1E33]/95 p-1 shadow-2xl backdrop-blur-md
-                           max-h-[min(60vh,480px)] overflow-auto text-white z-[9999]"
+                           max-h-[min(60vh,480px)] overflow-auto text-white z-[99999]"
               >
                 {/* BY ))) U PLAY — oculto si ya estoy en la home */}
                 {!isPlayHome && (

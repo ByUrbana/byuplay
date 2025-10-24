@@ -51,6 +51,14 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role as string
       }
       return session
+    },
+    async redirect({ url, baseUrl }) {
+      // Se a URL contém um callbackUrl, use ela
+      if (url.startsWith("/")) return `${baseUrl}${url}`
+      // Se a URL é do mesmo domínio, use ela
+      if (new URL(url).origin === baseUrl) return url
+      // Por padrão, redirecione para o dashboard
+      return `${baseUrl}/dashboard`
     }
   },
   pages: {

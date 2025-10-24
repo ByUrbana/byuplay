@@ -67,85 +67,114 @@ export default function DashboardPage() {
 
         <div className="relative mx-auto max-w-7xl px-4 md:px-0 py-12 md:py-16">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-[28px] md:text-[38px] font-semibold text-white">
-              <span className="bg-gradient-to-r from-white via-white to-white/80 bg-clip-text text-transparent">
-                Dashboard
-              </span>
-            </h1>
-            <p className="mt-2 text-white/80">
-              Vista general de tu plataforma de streaming
-            </p>
-          </div>
+          <div className="mb-8 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+            <div>
+              <h1 className="text-[28px] md:text-[38px] font-semibold text-white">
+                <span className="bg-gradient-to-r from-white via-white to-white/80 bg-clip-text text-transparent">
+                  Dashboard
+                </span>
+              </h1>
+              <p className="mt-2 text-white/80">
+                Vista general de tu plataforma de streaming
+              </p>
+            </div>
 
-          {/* Botões de Ação */}
-          <div className="mb-8 flex flex-wrap gap-4">
-            <Link
-              href="/upload-video"
-              className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold border border-cyan-400/50 bg-cyan-400/20 text-cyan-100 hover:bg-cyan-400/30 hover:border-cyan-400/70 shadow-[0_10px_30px_rgba(0,0,0,.25)] transition-all duration-300 hover:scale-105"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M12 5v14M5 12h14" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              Agregar Nuevo Video
-            </Link>
-            
-            <Link
-              href="/gerenciar-videos"
-              className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold border border-blue-400/50 bg-blue-400/20 text-blue-100 hover:bg-blue-400/30 hover:border-blue-400/70 shadow-[0_10px_30px_rgba(0,0,0,.25)] transition-all duration-300 hover:scale-105"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M8 5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2H8V5z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              Gestionar Videos
-            </Link>
-            
-            <button
-              onClick={() => signOut({ callbackUrl: "/" })}
-              className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold border border-red-400/50 bg-red-400/20 text-red-100 hover:bg-red-400/30 hover:border-red-400/70 shadow-[0_10px_30px_rgba(0,0,0,.25)] transition-all duration-300 hover:scale-105"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              Salir
-            </button>
+            {/* Botões de Ação */}
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/upload-video"
+                className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold border border-cyan-400/50 bg-cyan-400/20 text-cyan-100 hover:bg-cyan-400/30 hover:border-cyan-400/70 shadow-[0_8px_24px_rgba(0,0,0,.25)] transition-all duration-300 hover:scale-105"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M12 5v14M5 12h14" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Agregar Video
+              </Link>
+              
+              <Link
+                href="/gerenciar-videos"
+                className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold border border-blue-400/50 bg-blue-400/20 text-blue-100 hover:bg-blue-400/30 hover:border-blue-400/70 shadow-[0_8px_24px_rgba(0,0,0,.25)] transition-all duration-300 hover:scale-105"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M8 5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2H8V5z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Gestionar Videos
+              </Link>
+              
+              <button
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold border border-red-400/50 bg-red-400/20 text-red-100 hover:bg-red-400/30 hover:border-red-400/70 shadow-[0_8px_24px_rgba(0,0,0,.25)] transition-all duration-300 hover:scale-105"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Salir
+              </button>
+            </div>
           </div>
 
           {/* Estatísticas Principais */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8 relative z-10">
             <StatCard
               title="Total de Videos"
               value={stats.totalVideos.toLocaleString()}
-              icon="📹"
+              icon={
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                  <line x1="8" y1="21" x2="16" y2="21"/>
+                  <line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+              }
               trend="+12%"
               color="cyan"
             />
             <StatCard
               title="Visualizaciones"
               value={stats.totalViews.toLocaleString()}
-              icon="👁️"
+              icon={
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              }
               trend="+8%"
               color="blue"
             />
             <StatCard
               title="Usuarios Activos"
               value={stats.totalUsers.toLocaleString()}
-              icon="👥"
+              icon={
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              }
               trend="+15%"
               color="green"
             />
             <StatCard
               title="Tiempo Promedio (min)"
               value={stats.avgWatchTime.toString()}
-              icon="⏱️"
+              icon={
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12,6 12,12 16,14"/>
+                </svg>
+              }
               trend="+3%"
               color="purple"
             />
             <StatCard
               title="Ingresos ($)"
               value={stats.revenue.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}
-              icon="💰"
+              icon={
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="12" y1="1" x2="12" y2="23"/>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+              }
               trend="+22%"
               color="yellow"
             />
@@ -256,7 +285,7 @@ export default function DashboardPage() {
 function StatCard({ title, value, icon, trend, color }: { 
   title: string; 
   value: string; 
-  icon: string; 
+  icon: React.ReactNode; 
   trend: string; 
   color: string; 
 }) {
@@ -271,7 +300,7 @@ function StatCard({ title, value, icon, trend, color }: {
   return (
     <div className={`relative rounded-xl border bg-gradient-to-br ${colorClasses[color as keyof typeof colorClasses]} p-4 backdrop-blur-sm`}>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-2xl">{icon}</span>
+        <div className="text-white/80">{icon}</div>
         <span className="text-xs text-white/60">{trend}</span>
       </div>
       <h4 className="text-white/60 text-xs font-medium mb-1">{title}</h4>

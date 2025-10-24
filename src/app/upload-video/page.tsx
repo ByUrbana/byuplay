@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Header from "@/components/Header";
 
 export default function UploadVideoPage() {
@@ -127,18 +128,36 @@ export default function UploadVideoPage() {
 
         <div className="relative mx-auto max-w-4xl px-4 md:px-0 py-12 md:py-16">
           {/* Header */}
-          <div className="mb-8">
-            <span className="inline-block rounded-full px-3 py-1 text-[11px] tracking-[0.22em] uppercase text-white/90 bg-white/10 ring-1 ring-white/15">
-              Upload
-            </span>
-            <h1 className="mt-3 text-[28px] md:text-[38px] font-semibold text-white">
-              <span className="bg-gradient-to-r from-white via-white to-white/80 bg-clip-text text-transparent">
-                Subir Contenido
+          <div className="mb-8 flex justify-between items-start">
+            <div>
+              <span className="inline-block rounded-full px-3 py-1 text-[11px] tracking-[0.22em] uppercase text-white/90 bg-white/10 ring-1 ring-white/15">
+                Upload
               </span>
-            </h1>
-            <p className="mt-2 text-white/80">
-              Agregá nuevos videos a tu plataforma BYUPLAY
-            </p>
+              <h1 className="mt-3 text-[28px] md:text-[38px] font-semibold text-white">
+                <span className="bg-gradient-to-r from-white via-white to-white/80 bg-clip-text text-transparent">
+                  Subir Contenido
+                </span>
+              </h1>
+              <p className="mt-2 text-white/80">
+                Agregá nuevos videos a tu plataforma BYUPLAY
+              </p>
+            </div>
+            
+            {/* Botão Dashboard */}
+            <div className="mt-4">
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold border border-blue-400/50 bg-blue-400/20 text-blue-100 hover:bg-blue-400/30 hover:border-blue-400/70 shadow-[0_8px_24px_rgba(0,0,0,.25)] transition-all duration-300 hover:scale-105"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <rect x="3" y="3" width="7" height="7" strokeWidth="2" />
+                  <rect x="14" y="3" width="7" height="7" strokeWidth="2" />
+                  <rect x="14" y="14" width="7" height="7" strokeWidth="2" />
+                  <rect x="3" y="14" width="7" height="7" strokeWidth="2" />
+                </svg>
+                Dashboard
+              </Link>
+            </div>
           </div>
 
           {/* Formulário de Upload */}

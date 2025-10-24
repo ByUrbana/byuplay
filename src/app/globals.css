@@ -1076,7 +1076,16 @@ body{
 .fashion-skin { position: relative; }
 .fashion-skin::before,
 .fashion-skin::after { z-index: 0; }
-.fashion-skin > * { position: relative; z-index: 1; }
+.fashion-skin > *:not(header) { position: relative; z-index: 1; }
+
+/* Garantir que o header e menu tenham prioridade máxima */
+.fashion-skin header { 
+  position: relative !important; 
+  z-index: 99998 !important; 
+}
+.fashion-skin header [role="menu"] { 
+  z-index: 99999 !important; 
+}
 
 
 

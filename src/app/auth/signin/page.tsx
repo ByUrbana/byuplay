@@ -4,6 +4,7 @@ import { signIn, getSession } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
+import AuthRedirect from "@/components/AuthRedirect";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -24,6 +25,7 @@ export default function SignInPage() {
         email,
         password,
         redirect: false,
+        callbackUrl: "/dashboard"
       });
 
       console.log("Resultado do signIn:", result);
@@ -31,17 +33,24 @@ export default function SignInPage() {
       if (result?.error) {
         console.error("Erro no login:", result.error);
         setError("Credenciais inválidas");
-      } else {
-        // Verificar se é admin
-        const session = await getSession();
-        console.log("Sessão obtida:", session);
-        
-        if (session?.user?.role === "admin") {
-          console.log("Redirecionando para dashboard");
-          router.push("/dashboard");
-        } else {
-          setError("Acesso negado. Apenas administradores podem acessar.");
-        }
+      } else if (result?.ok) {
+        // Aguardar um pouco para a sessão ser atualizada
+        setTimeout(async () => {
+          const session = await getSession();
+          console.log("Sessão obtida:", session);
+          
+          if (session?.user?.role === "admin") {
+            console.log("Redirecionando para dashboard");
+            // Usar window.location para forçar redirecionamento em produção
+            if (typeof window !== "undefined") {
+              window.location.href = "/dashboard";
+            } else {
+              router.push("/dashboard");
+            }
+          } else {
+            setError("Acesso negado. Apenas administradores podem acessar.");
+          }
+        }, 100);
       }
     } catch (error) {
       console.error("Erro no handleSubmit:", error);
@@ -67,6 +76,7 @@ export default function SignInPage() {
 
   return (
     <main className="fashion-skin min-h-screen pb-24">
+      <AuthRedirect />
       <Header />
 
       <section className="relative">
