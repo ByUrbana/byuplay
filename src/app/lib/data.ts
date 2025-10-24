@@ -18,7 +18,7 @@ export const TITLES: Title[] = [
     year: 2024,
     country: "India",
     genres: ["Acción", "Thriller"],
-    poster: "/flyer/kill-massacre.jpg",
+    poster: "/flyer/kill-massacre.webp",
     playbackUrl: process.env.NEXT_PUBLIC_LIVE_URL || "",
     tagline: "Un comando aborda un tren a Nueva Delhi en una audaz misión."
   },

@@ -19,9 +19,9 @@ export interface Title {
 
 export default function TitleCard({ t }: { t: Title }) {
   return (
-    <section className="relative mx-auto mt-6 max-w-8xl px-4">
+    <section className="relative w-full">
       {/* Poster (hero) */}
-      <div className="relative aspect-[3/2] w-full overflow-hidden rounded-lg">
+      <div className="relative aspect-[21/9] w-full overflow-hidden">
         <Image
           src={t.poster}
           alt={t.name}
@@ -37,7 +37,7 @@ export default function TitleCard({ t }: { t: Title }) {
         {/* Texto encima */}
         <div className="absolute inset-0 flex items-center">
           <div className="max-w-xl px-8">
-            <h1 className="mb-4 text-5xl font-extrabold leading-tight md:text-6xl">
+            <h1 className="mb-4 text-5xl font-extrabold leading-tight md:text-6xl text-white">
               {t.name.toUpperCase()}
             </h1>
 

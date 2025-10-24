@@ -4,8 +4,9 @@ const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'picsum.photos' }, 
-       { protocol: 'https', hostname: 'placehold.co' },
-      { protocol: 'https', hostname: 'image.tmdb.org' }    // si luego usas TMDB
+      { protocol: 'https', hostname: 'placehold.co' },
+      { protocol: 'https', hostname: 'image.tmdb.org' },    // si luego usas TMDB
+      { protocol: 'https', hostname: 'res.cloudinary.com' } // Cloudinary images
     ]
   },
   // Configurações para upload de arquivos grandes

@@ -28,9 +28,11 @@ body{
     url("/flyer/desarrollover-bg.jpg") center / cover no-repeat fixed;
 }
 .scroll-hide::-webkit-scrollbar,
-.row-scroll::-webkit-scrollbar { display: none; }
+.row-scroll::-webkit-scrollbar,
+.scrollbar-hide::-webkit-scrollbar { display: none; }
 .scroll-hide{ -ms-overflow-style:none; scrollbar-width:none; }
 .row-scroll{ -ms-overflow-style:none; scrollbar-width:none; }
+.scrollbar-hide{ -ms-overflow-style:none; scrollbar-width:none; }
 
 /* ===================== Ventana con arco (cúpula) ===================== */
 .portal-arch{
