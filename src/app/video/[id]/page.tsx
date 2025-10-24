@@ -42,14 +42,18 @@ export default function VideoPage() {
         
         if (response.ok) {
           const data = await response.json();
-          console.log('Buscando vídeo com ID:', params.id);
+          
+          // Garantir que params.id é uma string
+          const videoId = Array.isArray(params.id) ? params.id[0] : params.id;
+          
+          console.log('Buscando vídeo com ID:', videoId);
           console.log('Vídeos disponíveis:', data.videos?.map((v: Video) => v.id));
           
           // Buscar por ID exato ou por ID que termine com o parâmetro
           const foundVideo = data.videos?.find((v: Video) => 
-            v.id === params.id || 
-            v.id.endsWith(params.id) ||
-            v.id.includes(params.id)
+            v.id === videoId || 
+            v.id.endsWith(videoId) ||
+            v.id.includes(videoId)
           );
           
           if (foundVideo) {

@@ -10,15 +10,7 @@ const nextConfig = {
     ]
   },
   // Configurações para upload de arquivos grandes
-  experimental: {
-    serverComponentsExternalPackages: ['cloudinary']
-  },
-  // Aumentar limite de body size para uploads
-  api: {
-    bodyParser: {
-      sizeLimit: '500mb',
-    },
-  },
+  serverExternalPackages: ['cloudinary'],
   // Configuração para Vercel (deploy)
   ...(process.env.NODE_ENV === 'production' && {
     output: 'standalone'

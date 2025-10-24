@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import Header from "@/components/Header";
 
 interface Video {
@@ -277,10 +278,11 @@ export default function GerenciarVideosPage() {
                   <div className="relative">
                     {/* Thumbnail */}
                     <div className="aspect-video rounded-xl overflow-hidden mb-4 bg-white/10 relative group cursor-pointer" onClick={() => handlePlayVideo(video)}>
-                      <img
+                      <Image
                         src={video.thumbnail}
                         alt={video.title}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = '/placeholder-video.jpg';
                         }}
