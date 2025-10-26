@@ -4,161 +4,93 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
+import { TITLES } from "@/app/lib/data";
 
-/* ==== color dorado para PELÍCULAS ==== */
-const DORADO = "#ffd700";
-
-/* Slides (texto) */
-type Slide = {
-  tag: string;
-  body: string;
-  strong?: string[];
-};
-
-const SLIDES: Slide[] = [
-  {
-    tag: "BY)))U PELÍCULAS",
-    body: "Viví la magia del cine con BY)))U PELÍCULAS. Desde blockbusters épicos hasta joyas del cine independiente 👉 Descubrí tu próxima película favorita",
-    strong: ["magia del cine", "blockbusters épicos", "cine independiente", "película favorita"],
-  },
-  {
-    tag: "BY)))U PELÍCULAS",
-    body: "Noches de cine perfectas con BY)))U PELÍCULAS. Las mejores películas de todos los géneros en un solo lugar 👉 Prepará tu maratón",
-    strong: ["noches de cine perfectas", "mejores películas", "todos los géneros", "maratón"],
-  },
-  {
-    tag: "BY)))U PELÍCULAS",
-    body: "Desde clásicos atemporales hasta estrenos exclusivos. BY)))U PELÍCULAS te lleva a mundos increíbles 👉 Sumergite en la historia",
-    strong: ["clásicos atemporales", "estrenos exclusivos", "mundos increíbles", "historia"],
-  },
-  {
-    tag: "BY)))U PELÍCULAS",
-    body: "Acción, romance, terror, comedia. En BY)))U PELÍCULAS encontrás el género perfecto para cada estado de ánimo 👉 Elegí tu aventura",
-    strong: ["acción", "romance", "terror", "comedia", "género perfecto", "aventura"],
-  },
-];
-
-/* Resaltado estilo ByUrbana */
-function highlightBody(text: string, strong: string[] = []) {
-  const needles = strong;
-
-  const specialNeedles = [
-    { text: ")))", className: "font-black", color: DORADO },
-    { text: "PELÍCULAS", className: "font-black", color: DORADO },
-  ];
-
-  if (text.includes("BY)))U PELÍCULAS")) {
-    const parts = text.split("BY)))U PELÍCULAS");
-    return (
-      <>
-        {parts[0]}
-        <Image
-          src="/flyer/byuplay.png"
-          alt="BY)))U PELÍCULAS"
-          width={250}
-          height={150}
-          className="inline h-16 mx-2 mb-2"
-        />
-        {parts[1]}
-      </>
-    );
-  }
-
-  let i = 0;
-  const out: React.ReactNode[] = [];
-
-  while (i < text.length) {
-    let nextIdx = -1,
-      which: number | null = null,
-      isSpecial = false,
-      specialClass = "",
-      specialColor = "";
-
-    for (let k = 0; k < needles.length; k++) {
-      const pos = text.indexOf(needles[k], i);
-      if (pos !== -1 && (nextIdx === -1 || pos < nextIdx)) {
-        nextIdx = pos;
-        which = k;
-        isSpecial = false;
-      }
-    }
-
-    for (const spec of specialNeedles) {
-      const pos = text.indexOf(spec.text, i);
-      if (pos !== -1 && (nextIdx === -1 || pos < nextIdx)) {
-        nextIdx = pos;
-        which = -1;
-        isSpecial = true;
-        specialClass = spec.className;
-        specialColor = spec.color;
-      }
-    }
-
-    if (nextIdx === -1) {
-      out.push(text.slice(i));
-      break;
-    }
-
-    const pre = text.slice(i, nextIdx);
-    if (pre) out.push(pre);
-
-    if (isSpecial) {
-      const spec = specialNeedles.find((s) =>
-        text.startsWith(s.text, nextIdx)
-      )!;
-      const hit = text.slice(nextIdx, nextIdx + spec.text.length);
-      out.push(
-        <span
-          key={`${nextIdx}-special`}
-          className={
-            spec.className + " [text-shadow:0_2px_12px_rgba(0,0,0,.45)]"
-          }
-          style={{ color: specialColor }}
-        >
-          {hit}
-        </span>
-      );
-      i = nextIdx + spec.text.length;
-    } else {
-      const hit = text.slice(nextIdx, nextIdx + needles[which!].length);
-      out.push(
-        <span
-          key={`${nextIdx}-${which}`}
-          className="font-black text-white [text-shadow:0_2px_12px_rgba(0,0,0,.45)]"
-        >
-          {hit}
-        </span>
-      );
-      i = nextIdx + needles[which!].length;
-    }
-  }
-
-  return out;
+interface Video {
+  id: string;
+  title: string;
+  description: string;
+  genre: string;
+  rating: string;
+  releaseDate: string;
+  duration: number;
+  durationFormatted: string;
+  language: string;
+  contentType: string;
+  tags: string;
+  url: string;
+  thumbnail: string;
+  size: number;
+  createdAt: string;
+  hasContext?: boolean;
+  contextData?: any;
 }
 
 export default function PeliculasPage() {
-  const [idx, setIdx] = useState(0);
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // Carregar vídeos do gênero películas
   useEffect(() => {
-    const id = setInterval(() => setIdx((i) => (i + 1) % SLIDES.length), 4200);
-    return () => clearInterval(id);
+    const loadVideos = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch('/api/videos-public');
+        if (!response.ok) {
+          throw new Error('Erro ao carregar vídeos');
+        }
+        const data = await response.json();
+        
+        // Verificar se a resposta tem a estrutura esperada
+        const videos = data.videos || data;
+        
+        // Filtrar apenas vídeos de películas
+        const peliculasVideos = videos.filter((video: Video) => 
+          video.genre.toLowerCase() === 'peliculas'
+        );
+        
+        setVideos(peliculasVideos);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Erro desconhecido');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadVideos();
   }, []);
 
-  const slide = SLIDES[idx];
+  const hero = TITLES[0];
 
-  const [preRaw, postRaw] = slide.body.split("👉");
-  const pre = (preRaw ?? "").trim();
-  const post = (postRaw ?? "").trim();
+  // Função para navegar para o vídeo
+  const handlePlayVideo = (video: Video) => {
+    // Extrair apenas o ID real (última parte após a última barra)
+    const videoId = video.id.split('/').pop() || video.id;
+    
+    // Navegar usando window.location para forçar navegação completa
+    window.location.assign(`/video/${videoId}`);
+  };
+
+  // Função para formatar duração
+  const formatDuration = (seconds: number): string => {
+    if (seconds === 0) return "0:00";
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    if (minutes >= 60) {
+      const hours = Math.floor(minutes / 60);
+      const mins = minutes % 60;
+      return `${hours}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+    }
+    return `${minutes}:${secs.toString().padStart(2, "0")}`;
+  };
 
   return (
     <main className="peliculas-skin min-h-screen pb-24">
       <Header />
 
-      {/* ===== HERO ===== */}
-      <section
-        className="relative w-full overflow-hidden h-[calc(100vh-64px)] max-h-[1100px]"
-        aria-live="polite"
-      >
+      {/* ===== HERO COM VÍDEO DE FUNDO ===== */}
+      <section className="relative w-full overflow-hidden h-[calc(100vh-64px)] max-h-[1100px]">
         <video
           className="absolute inset-0 h-full w-full object-cover [filter:brightness(0.7)_saturate(1.1)]"
           autoPlay
@@ -167,147 +99,175 @@ export default function PeliculasPage() {
           playsInline
           preload="auto"
         >
-          <source src="/video/peliculas-bg.mp4" type="video/mp4" />
+          <source src="/video/homem-aranha.mp4" type="video/mp4" />
         </video>
 
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,.8),rgba(0,0,0,.4)_40%,rgba(0,0,0,.8))]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_70%_at_50%_0%,rgba(255,215,0,.15),transparent_60%)]" />
+        {/* Degradado escuro para o texto */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
 
-        <div className="relative z-10 h-full grid place-items-center text-center px-6">
-          <div key={idx} className="max-w-5xl mx-auto animate-fadeSlide">
-            <p
-              className="mt-4 md:mt-5 text-white/95 text-2xl sm:text-3xl md:text-5xl"
-              style={{
-                textShadow: "0 2px 12px rgba(0,0,0,.45)",
-                lineHeight: "1.4",
-              }}
-            >
-              {highlightBody(pre, slide.strong)}
+        {/* Texto encima */}
+        <div className="absolute inset-0 flex items-center">
+          <div className="max-w-xl px-8">
+            <h1 className="mb-4 text-3xl font-extrabold leading-tight md:text-4xl lg:text-5xl text-white">
+              BY)))U PELÍCULAS
+            </h1>
+
+            {/* Fecha / país */}
+            <p className="mb-2 text-sm text-neutral-300">2024 • Argentina</p>
+
+            {/* Descripción */}
+            <p className="mb-6 line-clamp-3 text-neutral-200">
+              Viví la magia del cine con BY)))U PELÍCULAS. Desde blockbusters épicos hasta joyas del cine independiente. Descubrí tu próxima película favorita.
             </p>
 
-            {post && (
-              <div className="mt-16 md:mt-20 lg:mt-24 flex justify-center">
-                <Link
-                  href="/catalogo"
-                  aria-label={post}
-                  className="inline-flex max-w-full items-center justify-center rounded-full border border-white/35 bg-black/30 px-5 py-2.5 text-white font-black tracking-wide text-xl sm:text-2xl md:text-3xl leading-none hover:bg-black/45 hover:border-white/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 shadow-[0_10px_30px_rgba(0,0,0,.25)]"
-                >
-                  <span className="truncate">{highlightBody(post, [])}</span>
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* Flechas del carrusel */}
-          <button
-            aria-label="Anterior"
-            onClick={() =>
-              setIdx((i) => (i - 1 + SLIDES.length) % SLIDES.length)
-            }
-            className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 rounded-full bg-black/35 hover:bg-black/50 p-2 text-white/90"
-          >
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                d="M15 18l-6-6 6-6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-          <button
-            aria-label="Siguiente"
-            onClick={() => setIdx((i) => (i + 1) % SLIDES.length)}
-            className="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 rounded-full bg-black/35 hover:bg-black/50 p-2 text-white/90"
-          >
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                d="M9 6l6 6-6 6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-
-          {/* Dots */}
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
-            {SLIDES.map((_, i) => (
+            {/* Botones */}
+            <div className="flex flex-wrap gap-4">
               <button
-                key={i}
-                aria-label={`Ir al slide ${i + 1}`}
-                onClick={() => setIdx(i)}
-                className={`h-2.5 rounded-full transition-all ${
-                  i === idx
-                    ? "w-6 bg-white"
-                    : "w-2.5 bg-white/50 hover:bg-white/80"
-                }`}
-              />
-            ))}
+                className="inline-flex items-center gap-3 rounded-lg bg-white px-6 py-3 font-semibold text-black opacity-70 cursor-not-allowed"
+                disabled
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+                Ver ahora
+              </button>
+
+              <Link
+                href="/catalogo"
+                className="inline-flex items-center gap-3 rounded-lg bg-gray-600/80 px-6 py-3 font-semibold text-white hover:bg-gray-600 transition-colors backdrop-blur-sm"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                </svg>
+                Más info
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ===== PELÍCULAS DESTACADAS ===== */}
-      <section className="mx-auto max-w-6xl mt-12 px-4 md:px-0">
-        <h2 className="text-lg md:text-xl font-semibold mb-4 text-white">
-          Películas Destacadas
-        </h2>
+      <section className="relative">
+        <div className="pointer-events-none absolute -top-20 -left-20 h-60 w-60 rounded-full bg-yellow-400/15 blur-3xl" />
+        <div className="pointer-events-none absolute bottom-0 right-0 h-72 w-72 rounded-full bg-orange-500/10 blur-3xl" />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-12 lg:gap-x-16 xl:gap-x-20">
-          {/* Película 1 */}
-          <article className="rounded-2xl p-4 bg-transparent shadow-none">
-            <div className="relative h-36 md:h-44 rounded-xl overflow-hidden mb-3">
-              <div className="absolute inset-0 bg-gradient-to-br from-yellow-600 to-yellow-800 flex items-center justify-center">
-                <span className="text-white font-bold text-2xl">PELÍCULA 1</span>
-              </div>
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/35 to-transparent" />
-            </div>
-            <h3 className="font-semibold text-white">
-              Acción Épica
-            </h3>
-            <p className="text-sm text-white/80">Acción • 2h 15min</p>
-          </article>
+        <div className="relative mx-auto px-4 md:px-8 py-12 md:py-16">
+          {/* ===== VÍDEOS DE PELÍCULAS ===== */}
+          <section className="mx-auto max-w-6xl px-4 md:px-0">
+            <h2 className="text-lg md:text-xl font-semibold mb-4 text-white">
+              Vídeos de Películas
+            </h2>
 
-          {/* Película 2 */}
-          <article className="rounded-2xl p-4 bg-transparent shadow-none">
-            <div className="relative h-36 md:h-44 rounded-xl overflow-hidden mb-3">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-600 to-purple-800 flex items-center justify-center">
-                <span className="text-white font-bold text-2xl">PELÍCULA 2</span>
+            {isLoading ? (
+              <div className="text-center py-12">
+                <div className="text-white/60">Carregando vídeos...</div>
               </div>
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/35 to-transparent" />
-            </div>
-            <h3 className="font-semibold text-white">
-              Romance Clásico
-            </h3>
-            <p className="text-sm text-white/80">Romance • 1h 45min</p>
-          </article>
+            ) : error ? (
+              <div className="text-center py-12">
+                <div className="text-red-400 mb-4">Erro: {error}</div>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold border border-red-400/50 bg-red-400/20 text-red-100 hover:bg-red-400/30 hover:border-red-400/70 transition-all duration-300"
+                >
+                  Tentar Novamente
+                </button>
+              </div>
+            ) : videos.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {videos.map((video) => (
+                  <div
+                    key={video.id}
+                    onClick={() => handlePlayVideo(video)}
+                    className="group cursor-pointer"
+                  >
+                    <div className="relative aspect-video rounded-lg overflow-hidden bg-white/10 shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:shadow-2xl">
+                      {video.thumbnail ? (
+                        <Image
+                          src={video.thumbnail}
+                          alt={video.title}
+                          fill
+                          className="object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = "/placeholder-video.jpg";
+                          }}
+                        />
+                      ) : (
+                        <div className="absolute inset-0 bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center">
+                          <span className="text-white font-bold text-2xl">🎬</span>
+                        </div>
+                      )}
 
-          {/* Película 3 */}
-          <article className="rounded-2xl p-4 bg-transparent shadow-none">
-            <div className="relative h-36 md:h-44 rounded-xl overflow-hidden mb-3">
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-600 to-orange-800 flex items-center justify-center">
-                <span className="text-white font-bold text-2xl">PELÍCULA 3</span>
+                      {/* Overlay de play */}
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            className="text-white ml-0.5"
+                          >
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
+                      </div>
+                      
+                      {/* Badge de classificação */}
+                      <div className="absolute top-3 right-3">
+                        <span
+                          className={`px-2 py-1 rounded text-xs font-bold ${
+                            video.rating === "L"
+                              ? "bg-green-500"
+                              : video.rating === "10"
+                              ? "bg-blue-500"
+                              : video.rating === "12"
+                              ? "bg-yellow-500"
+                              : video.rating === "14"
+                              ? "bg-orange-500"
+                              : video.rating === "16"
+                              ? "bg-red-500"
+                              : video.rating === "18"
+                              ? "bg-black"
+                              : "bg-gray-500"
+                          }`}
+                        >
+                          {video.rating}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Informações do vídeo */}
+                    <div className="mt-3">
+                      <h3 className="text-white font-semibold text-sm line-clamp-2 group-hover:text-yellow-300 transition-colors">
+                        {video.title}
+                      </h3>
+                      <div className="flex items-center gap-2 text-xs text-white/60 mt-1">
+                        <span className="px-2 py-1 rounded-full bg-yellow-400/20 text-yellow-100">
+                          {video.genre}
+                        </span>
+                        <span>{formatDuration(video.duration)}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/35 to-transparent" />
-            </div>
-            <h3 className="font-semibold text-white">
-              Comedia Familiar
-            </h3>
-            <p className="text-sm text-white/80">Comedia • 1h 30min</p>
-          </article>
+            ) : (
+              <div className="text-center py-12">
+                <div className="text-white/60 mb-4">
+                  Nenhum vídeo de películas encontrado
+                </div>
+                <Link
+                  href="/catalogo"
+                  className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold border border-yellow-400/50 bg-yellow-400/20 text-yellow-100 hover:bg-yellow-400/30 hover:border-yellow-400/70 transition-all duration-300"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" strokeWidth="2" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" strokeWidth="2" />
+                  </svg>
+                  Ver Catálogo Completo
+                </Link>
+              </div>
+            )}
+          </section>
         </div>
       </section>
     </main>

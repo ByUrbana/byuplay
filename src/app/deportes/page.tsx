@@ -5,6 +5,26 @@ import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
 
+interface Video {
+  id: string;
+  title: string;
+  description: string;
+  genre: string;
+  rating: string;
+  releaseDate: string;
+  duration: number;
+  durationFormatted: string;
+  language: string;
+  contentType: string;
+  tags: string;
+  url: string;
+  thumbnail: string;
+  size: number;
+  createdAt: string;
+  hasContext?: boolean;
+  contextData?: any;
+}
+
 /* ==== color verde para DEPORTES ==== */
 const VERDE = "#10b981";
 
@@ -13,6 +33,7 @@ type Slide = {
   tag: string;
   body: string;
   strong?: string[];
+  background?: string;
 };
 
 const SLIDES: Slide[] = [
@@ -20,21 +41,25 @@ const SLIDES: Slide[] = [
     tag: "BY)))U DEPORTES",
     body: "Viví la pasión del deporte con BY)))U DEPORTES. Desde partidos en vivo hasta análisis exclusivos de tus equipos favoritos 👉 ¡No te pierdas nada!",
     strong: ["pasión del deporte", "partidos en vivo", "análisis exclusivos", "equipos favoritos"],
+    background: "/flyer/messi-1.webp",
   },
   {
     tag: "BY)))U DEPORTES",
     body: "Fútbol, básquet, tenis y más. BY)))U DEPORTES te trae la mejor cobertura deportiva con comentarios expertos y estadísticas 👉 Seguí cada jugada",
     strong: ["fútbol", "básquet", "tenis", "mejor cobertura deportiva", "comentarios expertos", "estadísticas", "cada jugada"],
+    background: "/flyer/messi-2.webp",
   },
   {
     tag: "BY)))U DEPORTES",
     body: "Momentos épicos, goles increíbles y victorias históricas. BY)))U DEPORTES captura la emoción del deporte en cada segundo 👉 ¡Sentí la adrenalina!",
     strong: ["momentos épicos", "goles increíbles", "victorias históricas", "emoción del deporte", "adrenalina"],
+    background: "/flyer/messi-3.jpeg",
   },
   {
     tag: "BY)))U DEPORTES",
     body: "Desde el Mundial hasta las ligas locales. BY)))U DEPORTES te conecta con el deporte que amás, sin importar dónde estés 👉 ¡Viví cada partido!",
     strong: ["Mundial", "ligas locales", "deporte que amás", "cada partido"],
+    background: "/flyer/messi-4.webp",
   },
 ];
 
@@ -138,10 +163,43 @@ function highlightBody(text: string, strong: string[] = []) {
 
 export default function DeportesPage() {
   const [idx, setIdx] = useState(0);
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const id = setInterval(() => setIdx((i) => (i + 1) % SLIDES.length), 4200);
     return () => clearInterval(id);
+  }, []);
+
+  // Carregar vídeos do gênero deportes
+  useEffect(() => {
+    const loadVideos = async () => {
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        const response = await fetch('/api/videos-public');
+        
+        if (response.ok) {
+          const data = await response.json();
+          // Filtrar apenas vídeos do gênero "deportes"
+          const deportesVideos = (data.videos || []).filter((video: Video) => 
+            video.genre.toLowerCase() === 'deportes'
+          );
+          setVideos(deportesVideos);
+        } else {
+          setError('Erro ao carregar vídeos');
+        }
+      } catch (error) {
+        console.error('Erro ao carregar vídeos:', error);
+        setError('Erro de conexão');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadVideos();
   }, []);
 
   const slide = SLIDES[idx];
@@ -149,6 +207,33 @@ export default function DeportesPage() {
   const [preRaw, postRaw] = slide.body.split("👉");
   const pre = (preRaw ?? "").trim();
   const post = (postRaw ?? "").trim();
+
+  // Função para navegar para o vídeo
+  const handlePlayVideo = (video: Video) => {
+    // Extrair apenas o ID real (última parte após a última barra)
+    const videoId = video.id.split('/').pop() || video.id;
+    
+    console.log('ID original:', video.id);
+    console.log('ID extraído:', videoId);
+    
+    // Navegar usando window.location para forçar navegação completa
+    window.location.assign(`/video/${videoId}`);
+  };
+
+  const formatDuration = (seconds: number) => {
+    if (!seconds || seconds === 0) return "0:00";
+    
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    
+    if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, "0")}:${secs
+        .toString()
+        .padStart(2, "0")}`;
+    }
+    return `${minutes}:${secs.toString().padStart(2, "0")}`;
+  };
 
   return (
     <main className="deportes-skin min-h-screen pb-24">
@@ -159,16 +244,14 @@ export default function DeportesPage() {
         className="relative w-full overflow-hidden h-[calc(100vh-64px)] max-h-[1100px]"
         aria-live="polite"
       >
-        <video
-          className="absolute inset-0 h-full w-full object-cover [filter:brightness(0.8)_saturate(1.2)]"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-        >
-          <source src="/video/deportes-bg.mp4" type="video/mp4" />
-        </video>
+        <Image
+          src={slide.background || "/flyer/esportes.webp"}
+          alt="Deportes"
+          fill
+          className="object-cover [filter:brightness(0.8)_saturate(1.2)]"
+          priority
+          sizes="(max-width: 1280px) 100vw, 1280px"
+        />
 
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,.7),rgba(0,0,0,.3)_40%,rgba(0,0,0,.7))]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_70%_at_50%_0%,rgba(16,185,129,.2),transparent_60%)]" />
@@ -260,55 +343,111 @@ export default function DeportesPage() {
         </div>
       </section>
 
-      {/* ===== DEPORTES DESTACADOS ===== */}
+
+      {/* ===== VÍDEOS DE DEPORTES ===== */}
       <section className="mx-auto max-w-6xl mt-12 px-4 md:px-0">
         <h2 className="text-lg md:text-xl font-semibold mb-4 text-white">
-          Deportes en Vivo
+          Vídeos de Deportes
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-12 lg:gap-x-16 xl:gap-x-20">
-          {/* Deporte 1 */}
-          <article className="rounded-2xl p-4 bg-transparent shadow-none">
-            <div className="relative h-36 md:h-44 rounded-xl overflow-hidden mb-3">
-              <div className="absolute inset-0 bg-gradient-to-br from-green-600 to-green-800 flex items-center justify-center">
-                <span className="text-white font-bold text-2xl">⚽</span>
-              </div>
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/35 to-transparent" />
-            </div>
-            <h3 className="font-semibold text-white">
-              Fútbol en Vivo
-            </h3>
-            <p className="text-sm text-white/80">Liga Local • 90 min</p>
-          </article>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="text-white">Carregando vídeos de deportes...</div>
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <div className="text-white/60 mb-4">{error}</div>
+          </div>
+        ) : videos.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {videos.map((video) => (
+              <div
+                key={video.id}
+                className="group cursor-pointer"
+                onClick={() => handlePlayVideo(video)}
+              >
+                <div className="relative aspect-video rounded-lg overflow-hidden bg-white/10 shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:shadow-2xl">
+                  <Image
+                    src={video.thumbnail}
+                    alt={video.title}
+                    fill
+                    className="object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/placeholder-video.jpg";
+                    }}
+                  />
 
-          {/* Deporte 2 */}
-          <article className="rounded-2xl p-4 bg-transparent shadow-none">
-            <div className="relative h-36 md:h-44 rounded-xl overflow-hidden mb-3">
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-600 to-orange-800 flex items-center justify-center">
-                <span className="text-white font-bold text-2xl">🏀</span>
-              </div>
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/35 to-transparent" />
-            </div>
-            <h3 className="font-semibold text-white">
-              Básquet Profesional
-            </h3>
-            <p className="text-sm text-white/80">NBA • 48 min</p>
-          </article>
+                  {/* Overlay de play */}
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="text-white ml-0.5"
+                      >
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </div>
+                  </div>
 
-          {/* Deporte 3 */}
-          <article className="rounded-2xl p-4 bg-transparent shadow-none">
-            <div className="relative h-36 md:h-44 rounded-xl overflow-hidden mb-3">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
-                <span className="text-white font-bold text-2xl">🎾</span>
+                  {/* Badge de classificação */}
+                  <div className="absolute top-3 right-3">
+                    <span
+                      className={`px-2 py-1 rounded text-xs font-bold ${
+                        video.rating === "L"
+                          ? "bg-green-500"
+                          : video.rating === "10"
+                          ? "bg-blue-500"
+                          : video.rating === "12"
+                          ? "bg-yellow-500"
+                          : video.rating === "14"
+                          ? "bg-orange-500"
+                          : video.rating === "16"
+                          ? "bg-red-500"
+                          : video.rating === "18"
+                          ? "bg-black"
+                          : "bg-gray-500"
+                      }`}
+                    >
+                      {video.rating}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Informações do vídeo */}
+                <div className="mt-3">
+                  <h3 className="text-white font-semibold text-sm line-clamp-2 group-hover:text-green-300 transition-colors">
+                    {video.title}
+                  </h3>
+                  <div className="flex items-center gap-2 text-xs text-white/60 mt-1">
+                    <span className="px-2 py-1 rounded-full bg-green-400/20 text-green-100">
+                      {video.genre}
+                    </span>
+                    <span>{formatDuration(video.duration)}</span>
+                  </div>
+                </div>
               </div>
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/35 to-transparent" />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <div className="text-white/60 mb-4">
+              Nenhum vídeo de deportes encontrado
             </div>
-            <h3 className="font-semibold text-white">
-              Tenis Internacional
-            </h3>
-            <p className="text-sm text-white/80">ATP • 2-3 horas</p>
-          </article>
-        </div>
+            <Link
+              href="/catalogo"
+              className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold border border-green-400/50 bg-green-400/20 text-green-100 hover:bg-green-400/30 hover:border-green-400/70 transition-all duration-300"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" strokeWidth="2" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" strokeWidth="2" />
+              </svg>
+              Ver Catálogo Completo
+            </Link>
+          </div>
+        )}
       </section>
     </main>
   );

@@ -17,13 +17,25 @@ export interface Title {
   tagline2?: string;
 }
 
-export default function TitleCard({ t }: { t: Title }) {
+export default function TitleCard({ 
+  t, 
+  customImage, 
+  customTitle, 
+  customYear, 
+  customDescription 
+}: { 
+  t: Title; 
+  customImage?: string;
+  customTitle?: string;
+  customYear?: string | number;
+  customDescription?: string;
+}) {
   return (
     <section className="relative w-full">
       {/* Poster (hero) */}
       <div className="relative aspect-[21/9] w-full overflow-hidden">
         <Image
-          src={t.poster}
+          src={customImage || t.poster}
           alt={t.name}
           fill
           className="object-cover"
@@ -38,15 +50,15 @@ export default function TitleCard({ t }: { t: Title }) {
         <div className="absolute inset-0 flex items-center">
           <div className="max-w-xl px-8">
             <h1 className="mb-4 text-5xl font-extrabold leading-tight md:text-6xl text-white">
-              {t.name.toUpperCase()}
+              {(customTitle || t.name).toUpperCase()}
             </h1>
 
-            {/* Fecha / país (placeholder simple) */}
-            <p className="mb-2 text-sm text-neutral-300">{t.year}</p>
+            {/* Fecha / país */}
+            <p className="mb-2 text-sm text-neutral-300">{customYear || t.year}</p>
 
             {/* Descripción */}
             <p className="mb-6 line-clamp-3 text-neutral-200">
-              {t.tagline ||
+              {customDescription || t.tagline ||
                 "Cuando el comando de las fuerzas especiales descubre un peligro inminente, comienza una audaz misión que lo cambiará todo…"}
             </p>
 

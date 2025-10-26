@@ -5,6 +5,26 @@ import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
 
+interface Video {
+  id: string;
+  title: string;
+  description: string;
+  genre: string;
+  rating: string;
+  releaseDate: string;
+  duration: number;
+  durationFormatted: string;
+  language: string;
+  contentType: string;
+  tags: string;
+  url: string;
+  thumbnail: string;
+  size: number;
+  createdAt: string;
+  hasContext?: boolean;
+  contextData?: any;
+}
+
 /* ==== color celeste pedido (#9bc5f9) para ))) y FASHION ==== */
 const CELESTE = "#9bc5f9";
 
@@ -174,10 +194,43 @@ function highlightBody(text: string, strong: string[] = []) {
 
 export default function FashionTourPage() {
   const [idx, setIdx] = useState(0);
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const id = setInterval(() => setIdx((i) => (i + 1) % SLIDES.length), 4200);
     return () => clearInterval(id);
+  }, []);
+
+  // Carregar vídeos do gênero fashion
+  useEffect(() => {
+    const loadVideos = async () => {
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        const response = await fetch('/api/videos-public');
+        
+        if (response.ok) {
+          const data = await response.json();
+          // Filtrar apenas vídeos do gênero "fashion"
+          const fashionVideos = (data.videos || []).filter((video: Video) => 
+            video.genre.toLowerCase() === 'fashion'
+          );
+          setVideos(fashionVideos);
+        } else {
+          setError('Erro ao carregar vídeos');
+        }
+      } catch (error) {
+        console.error('Erro ao carregar vídeos:', error);
+        setError('Erro de conexão');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadVideos();
   }, []);
 
   const slide = SLIDES[idx];
@@ -186,6 +239,33 @@ export default function FashionTourPage() {
   const [preRaw, postRaw] = slide.body.split("👉");
   const pre = (preRaw ?? "").trim();
   const post = (postRaw ?? "").trim();
+
+  // Função para navegar para o vídeo
+  const handlePlayVideo = (video: Video) => {
+    // Extrair apenas o ID real (última parte após a última barra)
+    const videoId = video.id.split('/').pop() || video.id;
+    
+    console.log('ID original:', video.id);
+    console.log('ID extraído:', videoId);
+    
+    // Navegar usando window.location para forçar navegação completa
+    window.location.assign(`/video/${videoId}`);
+  };
+
+  const formatDuration = (seconds: number) => {
+    if (!seconds || seconds === 0) return "0:00";
+    
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    
+    if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, "0")}:${secs
+        .toString()
+        .padStart(2, "0")}`;
+    }
+    return `${minutes}:${secs.toString().padStart(2, "0")}`;
+  };
 
   return (
     <main className="fashion-skin min-h-screen pb-24">
@@ -303,85 +383,111 @@ export default function FashionTourPage() {
         </div>
       </section>
 
-      {/* ===== EDICIONES ===== */}
-      <section id="ediciones" className="mx-auto max-w-6xl mt-12 px-4 md:px-0">
-        <h2 className="ft-title text-lg md:text-xl font-semibold mb-4 text-white">
-          Ediciones anteriores
+
+      {/* ===== VÍDEOS DE FASHION ===== */}
+      <section className="mx-auto max-w-6xl mt-12 px-4 md:px-0">
+        <h2 className="text-lg md:text-xl font-semibold mb-4 text-white">
+          Vídeos de Fashion
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-12 lg:gap-x-16 xl:gap-x-20">
-          {/* 2023 */}
-          <article className="ft-card rounded-2xl p-4 bg-transparent shadow-none">
-            <div className="relative h-36 md:h-44 rounded-xl overflow-hidden mb-3">
-              <video
-                className="absolute inset-0 h-full w-full object-cover"
-                src="/video/fashion-2023.mp4"
-                poster="/video/posters/ft-2023.jpg"
-                playsInline
-                muted
-                preload="metadata"
-                onMouseEnter={(e) => e.currentTarget.play()}
-                onMouseLeave={(e) => {
-                  e.currentTarget.pause();
-                  e.currentTarget.currentTime = 0;
-                }}
-              />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/35 to-transparent" />
-            </div>
-            <h3 className="ft-title font-semibold text-white">
-              Reviví Fashion Tour 2023
-            </h3>
-            <p className="ft-subtle text-sm text-white/80">Pasarela de moda</p>
-          </article>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="text-white">Carregando vídeos de fashion...</div>
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <div className="text-white/60 mb-4">{error}</div>
+          </div>
+        ) : videos.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {videos.map((video) => (
+              <div
+                key={video.id}
+                className="group cursor-pointer"
+                onClick={() => handlePlayVideo(video)}
+              >
+                <div className="relative aspect-video rounded-lg overflow-hidden bg-white/10 shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:shadow-2xl">
+                  <Image
+                    src={video.thumbnail}
+                    alt={video.title}
+                    fill
+                    className="object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/placeholder-video.jpg";
+                    }}
+                  />
 
-          {/* 2024 */}
-          <article className="ft-card rounded-2xl p-4 bg-transparent shadow-none">
-            <div className="relative h-36 md:h-44 rounded-xl overflow-hidden mb-3">
-              <video
-                className="absolute inset-0 h-full w-full object-cover"
-                src="/video/fashion-2024.mp4"
-                poster="/video/posters/ft-2024.jpg"
-                playsInline
-                muted
-                preload="metadata"
-                onMouseEnter={(e) => e.currentTarget.play()}
-                onMouseLeave={(e) => {
-                  e.currentTarget.pause();
-                  e.currentTarget.currentTime = 0;
-                }}
-              />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/35 to-transparent" />
-            </div>
-            <h3 className="ft-title font-semibold text-white">
-              Reviví Fashion Tour 2024
-            </h3>
-            <p className="ft-subtle text-sm text-white/80">Evento de moda</p>
-          </article>
+                  {/* Overlay de play */}
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="text-white ml-0.5"
+                      >
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </div>
+                  </div>
 
-          {/* 2025 */}
-          <article className="ft-card rounded-2xl p-4 bg-transparent shadow-none">
-            <div className="relative h-36 md:h-44 rounded-xl overflow-hidden mb-3">
-              <video
-                className="absolute inset-0 h-full w-full object-cover"
-                src="/video/plata.mp4"
-                poster="/video/posters/ft-2025.jpg"
-                playsInline
-                muted
-                preload="metadata"
-                onMouseEnter={(e) => e.currentTarget.play()}
-                onMouseLeave={(e) => {
-                  e.currentTarget.pause();
-                  e.currentTarget.currentTime = 0;
-                }}
-              />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/35 to-transparent" />
+                  {/* Badge de classificação */}
+                  <div className="absolute top-3 right-3">
+                    <span
+                      className={`px-2 py-1 rounded text-xs font-bold ${
+                        video.rating === "L"
+                          ? "bg-green-500"
+                          : video.rating === "10"
+                          ? "bg-blue-500"
+                          : video.rating === "12"
+                          ? "bg-yellow-500"
+                          : video.rating === "14"
+                          ? "bg-orange-500"
+                          : video.rating === "16"
+                          ? "bg-red-500"
+                          : video.rating === "18"
+                          ? "bg-black"
+                          : "bg-gray-500"
+                      }`}
+                    >
+                      {video.rating}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Informações do vídeo */}
+                <div className="mt-3">
+                  <h3 className="text-white font-semibold text-sm line-clamp-2 group-hover:text-cyan-300 transition-colors">
+                    {video.title}
+                  </h3>
+                  <div className="flex items-center gap-2 text-xs text-white/60 mt-1">
+                    <span className="px-2 py-1 rounded-full bg-cyan-400/20 text-cyan-100">
+                      {video.genre}
+                    </span>
+                    <span>{formatDuration(video.duration)}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <div className="text-white/60 mb-4">
+              Nenhum vídeo de fashion encontrado
             </div>
-            <h3 className="ft-title font-semibold text-white">
-              Get Ready: Fashion Tour 2025
-            </h3>
-            <p className="ft-subtle text-sm text-white/80"></p>
-          </article>
-        </div>
+            <Link
+              href="/catalogo"
+              className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold border border-cyan-400/50 bg-cyan-400/20 text-cyan-100 hover:bg-cyan-400/30 hover:border-cyan-400/70 transition-all duration-300"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" strokeWidth="2" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" strokeWidth="2" />
+              </svg>
+              Ver Catálogo Completo
+            </Link>
+          </div>
+        )}
       </section>
     </main>
   );

@@ -155,10 +155,20 @@ export default function GerenciarVideosPage() {
     alert(`Editar video ${videoId} - Funcionalidad en desarrollo`);
   };
 
+  // Debug: mostrar todos os gêneros únicos disponíveis
+  const uniqueGenres = [...new Set(videos.map(video => video.genre))];
+  console.log('Gêneros disponíveis:', uniqueGenres);
+
   const filteredVideos = videos.filter(video => {
     const matchesSearch = video.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          video.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesGenre = selectedGenre === "" || video.genre === selectedGenre;
+    const matchesGenre = selectedGenre === "" || video.genre.toLowerCase() === selectedGenre.toLowerCase();
+    
+    // Debug: log para verificar gêneros disponíveis
+    if (selectedGenre === "infantil") {
+      console.log('Filtrando por infantil:', video.genre, 'matches:', matchesGenre);
+    }
+    
     return matchesSearch && matchesGenre;
   });
 
@@ -232,6 +242,7 @@ export default function GerenciarVideosPage() {
                   <option value="deportes">Deportes</option>
                   <option value="series">Series</option>
                   <option value="peliculas">Películas</option>
+                  <option value="infantil">Infantil</option>
                 </select>
               </div>
             </div>

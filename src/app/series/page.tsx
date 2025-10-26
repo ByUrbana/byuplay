@@ -1,75 +1,226 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
+import TitleCard from "@/components/TitleCard";
+import { TITLES } from "@/app/lib/data";
+
+interface Video {
+  id: string;
+  title: string;
+  description: string;
+  genre: string;
+  rating: string;
+  releaseDate: string;
+  duration: number;
+  durationFormatted: string;
+  language: string;
+  contentType: string;
+  tags: string;
+  url: string;
+  thumbnail: string;
+  size: number;
+  createdAt: string;
+  hasContext?: boolean;
+  contextData?: any;
+}
 
 export default function SeriesPage() {
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const hero = TITLES[0];
+
+  // Carregar vídeos do gênero series
+  useEffect(() => {
+    const loadVideos = async () => {
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        const response = await fetch('/api/videos-public');
+        
+        if (response.ok) {
+          const data = await response.json();
+          // Filtrar apenas vídeos do gênero "series"
+          const seriesVideos = (data.videos || []).filter((video: Video) => 
+            video.genre.toLowerCase() === 'series'
+          );
+          setVideos(seriesVideos);
+        } else {
+          setError('Erro ao carregar vídeos');
+        }
+      } catch (err) {
+        setError('Erro ao carregar vídeos');
+        console.error('Erro ao carregar vídeos:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadVideos();
+  }, []);
+
+  // Função para navegar para o vídeo
+  const handlePlayVideo = (video: Video) => {
+    // Extrair apenas o ID real (última parte após a última barra)
+    const videoId = video.id.split('/').pop() || video.id;
+    
+    // Navegar usando window.location para forçar navegação completa
+    window.location.assign(`/video/${videoId}`);
+  };
+
+  // Função para formatar duração
+  const formatDuration = (seconds: number): string => {
+    if (seconds === 0) return "0:00";
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    if (minutes >= 60) {
+      const hours = Math.floor(minutes / 60);
+      const mins = minutes % 60;
+      return `${hours}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+    }
+    return `${minutes}:${secs.toString().padStart(2, "0")}`;
+  };
+
   return (
     <main className="series-skin min-h-screen pb-24">
       <Header />
+      <TitleCard 
+        t={hero} 
+        customImage="/flyer/serie-bg.webp"
+        customTitle="BY)))U SERIES"
+        customYear="2024"
+        customDescription="Descubrí las mejores series con BY)))U SERIES. Desde dramas épicos hasta comedias que te harán reír. ¡Sumergite en historias que te atrapan!"
+      />
 
-      {/* ===== HERO COM BACKGROUND INFINITO ===== */}
-      <section className="relative w-full h-[80vh] min-h-[600px] overflow-hidden">
-        {/* Background Image - Ocupa toda a largura da tela */}
-        <div className="absolute inset-0 w-full h-full">
-          <Image
-            src="/flyer/serie-bg.webp"
-            alt="BY)))U SERIES"
-            fill
-            className="object-cover object-top"
-            priority
-            sizes="100vw"
-          />
-        </div>
+      <section className="relative">
+        <div className="pointer-events-none absolute -top-20 -left-20 h-60 w-60 rounded-full bg-blue-400/15 blur-3xl" />
+        <div className="pointer-events-none absolute bottom-0 right-0 h-72 w-72 rounded-full bg-purple-500/10 blur-3xl" />
 
-        {/* Degradado oscuro para el texto */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
+        <div className="relative mx-auto px-4 md:px-8 py-12 md:py-16">
+          {/* ===== VÍDEOS DE SERIES ===== */}
+          <section className="mx-auto max-w-6xl px-4 md:px-0">
+            <h2 className="text-lg md:text-xl font-semibold mb-4 text-white">
+              Vídeos de Series
+            </h2>
 
-        {/* Texto encima - Container com margem para o conteúdo */}
-        <div className="relative z-10 h-full flex items-center">
-          <div className="max-w-8xl mx-auto px-4 w-full">
-            <div className="max-w-xl">
-              <h1 className="mb-4 text-5xl font-extrabold leading-tight md:text-6xl">
-                BY)))U SERIES
-              </h1>
+            {isLoading ? (
+              <div className="text-center py-12">
+                <div className="text-white/60">Carregando vídeos...</div>
+              </div>
+            ) : error ? (
+              <div className="text-center py-12">
+                <div className="text-red-400 mb-4">Erro: {error}</div>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold border border-red-400/50 bg-red-400/20 text-red-100 hover:bg-red-400/30 hover:border-red-400/70 transition-all duration-300"
+                >
+                  Tentar Novamente
+                </button>
+              </div>
+            ) : videos.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {videos.map((video) => (
+                  <div
+                    key={video.id}
+                    onClick={() => handlePlayVideo(video)}
+                    className="group cursor-pointer"
+                  >
+                    <div className="relative aspect-video rounded-lg overflow-hidden bg-white/10 shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:shadow-2xl">
+                      {video.thumbnail ? (
+                        <Image
+                          src={video.thumbnail}
+                          alt={video.title}
+                          fill
+                          className="object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = "/placeholder-video.jpg";
+                          }}
+                        />
+                      ) : (
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                          <span className="text-white font-bold text-2xl">📺</span>
+                        </div>
+                      )}
 
-              {/* Fecha / país */}
-              <p className="mb-2 text-sm text-neutral-300">2024 • Argentina</p>
+                      {/* Overlay de play */}
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            className="text-white ml-0.5"
+                          >
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
+                      </div>
+                      
+                      {/* Badge de classificação */}
+                      <div className="absolute top-3 right-3">
+                        <span
+                          className={`px-2 py-1 rounded text-xs font-bold ${
+                            video.rating === "L"
+                              ? "bg-green-500"
+                              : video.rating === "10"
+                              ? "bg-blue-500"
+                              : video.rating === "12"
+                              ? "bg-yellow-500"
+                              : video.rating === "14"
+                              ? "bg-orange-500"
+                              : video.rating === "16"
+                              ? "bg-red-500"
+                              : video.rating === "18"
+                              ? "bg-black"
+                              : "bg-gray-500"
+                          }`}
+                        >
+                          {video.rating}
+                        </span>
+                      </div>
+                    </div>
 
-              {/* Descripción */}
-              <p className="mb-6 line-clamp-3 text-neutral-200">
-                Descubrí las mejores series del momento con BY)))U SERIES. Desde dramas intensos hasta comedias que te harán reír. Sumergite en mundos increíbles con nuestras series exclusivas.
-              </p>
-
-              {/* Botones */}
-              <div className="flex flex-wrap gap-4">
+                    {/* Informações do vídeo */}
+                    <div className="mt-3">
+                      <h3 className="text-white font-semibold text-sm line-clamp-2 group-hover:text-blue-300 transition-colors">
+                        {video.title}
+                      </h3>
+                      <div className="flex items-center gap-2 text-xs text-white/60 mt-1">
+                        <span className="px-2 py-1 rounded-full bg-blue-400/20 text-blue-100">
+                          {video.genre}
+                        </span>
+                        <span>{formatDuration(video.duration)}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="text-white/60 mb-4">
+                  Nenhum vídeo de series encontrado
+                </div>
                 <Link
                   href="/catalogo"
-                  className="inline-flex items-center gap-3 rounded-lg bg-white px-6 py-3 font-semibold text-black hover:bg-gray-100 transition-colors"
+                  className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold border border-blue-400/50 bg-blue-400/20 text-blue-100 hover:bg-blue-400/30 hover:border-blue-400/70 transition-all duration-300"
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M8 5v14l11-7z"/>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" strokeWidth="2" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" strokeWidth="2" />
                   </svg>
-                  Ver series
-                </Link>
-
-                <Link
-                  href="/catalogo"
-                  className="inline-flex items-center gap-3 rounded-lg bg-gray-600/80 px-6 py-3 font-semibold text-white hover:bg-gray-600 transition-colors backdrop-blur-sm"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
-                  </svg>
-                  Más info
+                  Ver Catálogo Completo
                 </Link>
               </div>
-            </div>
-          </div>
+            )}
+          </section>
         </div>
       </section>
-
     </main>
   );
 }

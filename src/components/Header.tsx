@@ -56,7 +56,7 @@ export default function Header() {
 
     setIsSearching(true);
     try {
-      const response = await fetch('/api/videos-simple');
+      const response = await fetch('/api/videos-public');
       if (response.ok) {
         const data = await response.json();
         const videos = data.videos || [];
@@ -320,14 +320,22 @@ export default function Header() {
                       ) : searchResults.length > 0 ? (
                         <div className="space-y-2">
                           {searchResults.map((video) => (
-                            <Link
+                            <div
                               key={video.id}
-                              href={`/catalogo?search=${encodeURIComponent(video.title)}`}
                               onClick={() => {
+                                // Extrair apenas o ID real (última parte após a última barra)
+                                const videoId = video.id.split('/').pop() || video.id;
+                                
+                                console.log('ID original:', video.id);
+                                console.log('ID extraído:', videoId);
+                                
+                                // Navegar usando window.location para forçar navegação completa
+                                window.location.assign(`/video/${videoId}`);
+                                
                                 setSearchOpen(false);
                                 setSearchTerm("");
                               }}
-                              className="block p-3 rounded-lg hover:bg-white/10 transition-colors"
+                              className="block p-3 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
                             >
                               <div className="flex items-start gap-3">
                                 <Image
@@ -365,7 +373,7 @@ export default function Header() {
                                   </div>
                                 </div>
                               </div>
-                            </Link>
+                            </div>
                           ))}
                         </div>
                       ) : (
