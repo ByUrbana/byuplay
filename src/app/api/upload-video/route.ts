@@ -3,15 +3,15 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import cloudinary from '@/lib/cloudinary';
 
-// Configuração para arquivos grandes
+// Configuração para arquivos grandes - sem limite de tamanho
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: '100mb',
+      sizeLimit: false, // Sem limite de tamanho
     },
   },
   // Configuração específica para este endpoint
-  maxDuration: 300, // 5 minutos
+  maxDuration: 600, // 10 minutos para uploads grandes
 };
 
 export async function POST(request: NextRequest) {
