@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 
 interface DirectCloudinaryUploadProps {
@@ -31,7 +31,21 @@ export default function DirectCloudinaryUpload({
     tags: "",
     status: "draft"
   });
-  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Carregar script do Cloudinary Upload Widget
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://widget.cloudinary.com/v2.0/global/all.js';
+    script.async = true;
+    document.head.appendChild(script);
+
+    return () => {
+      const existingScript = document.querySelector('script[src="https://widget.cloudinary.com/v2.0/global/all.js"]');
+      if (existingScript) {
+        document.head.removeChild(existingScript);
+      }
+    };
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -41,10 +55,121 @@ export default function DirectCloudinaryUpload({
     }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
+  // Função para abrir o widget diretamente
+  const openUploadWidget = () => {
+    console.log('Tentando abrir Upload Widget...');
+    console.log('Cloudinary script carregado:', !!(window as any).cloudinary);
+    console.log('Cloud Name:', process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME);
+    console.log('Upload Preset:', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET);
+    
+    // Verificar se o script do Cloudinary foi carregado
+    if (!(window as any).cloudinary) {
+      onUploadError('Cloudinary script não carregado. Aguarde alguns segundos e tente novamente.');
+      return;
+    }
+
+    // Verificar se as variáveis de ambiente estão configuradas
+    if (!process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || !process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET) {
+      onUploadError('Configuração do Cloudinary não encontrada. Verifique as variáveis de ambiente NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME e NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET');
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadStatus('preparing');
+    setUploadProgress(0);
+
+    try {
+      // Criar o Upload Widget com configurações otimizadas
+      const widget = (window as any).cloudinary.createUploadWidget(
+        {
+          cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+          uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET,
+          folder: 'byuplay/videos',
+          resourceType: 'video',
+          // Configurações para arquivos grandes
+          maxFileSize: 2000000000, // 2GB máximo
+          chunkSize: 6000000, // 6MB chunks
+          chunkUpload: true, // Habilitar chunking automático
+          // Configurações de UI
+          showAdvancedOptions: false,
+          showPoweredBy: false,
+          singleUploadAutoClose: false, // Não fechar automaticamente para ver progresso
+          // Configurações de acessibilidade
+          accessibility: {
+            keyboard: true,
+            screenReader: true
+          }
+        },
+        (error: any, result: any) => {
+          console.log('Widget event:', result?.event, error);
+          
+          if (error) {
+            console.error('Erro no Upload Widget:', error);
+            console.error('Detalhes do erro:', JSON.stringify(error, null, 2));
+            setUploadStatus('error');
+            onUploadError('Erro no upload: ' + (error.message || JSON.stringify(error)));
+          } else if (result && result.event === 'success') {
+            console.log('Upload concluído com sucesso via Widget!');
+            console.log('Resultado:', result.info);
+            setUploadStatus('success');
+            setUploadProgress(100);
+            
+            // Converter duração de minutos para segundos
+            const durationInSeconds = formData.duration ? parseInt(formData.duration) * 60 : 0;
+            
+            const videoData = {
+              id: result.info.public_id,
+              title: formData.title || result.info.original_filename,
+              description: formData.description || '',
+              genre: formData.genre || 'general',
+              rating: formData.rating || 'L',
+              releaseDate: formData.releaseDate || new Date().toISOString().split('T')[0],
+              duration: durationInSeconds || result.info.duration,
+              language: formData.language || 'es',
+              contentType: formData.contentType || 'video',
+              tags: formData.tags || '',
+              url: result.info.secure_url,
+              thumbnail: result.info.secure_url.replace('.mp4', '.jpg'),
+              size: result.info.bytes,
+              createdAt: new Date().toISOString()
+            };
+            
+            onUploadSuccess(videoData);
+          } else if (result && result.event === 'upload-added') {
+            console.log('Arquivo adicionado ao widget');
+            setUploadProgress(20);
+          } else if (result && result.event === 'uploading') {
+            console.log('Upload em progresso...');
+            setUploadProgress(50);
+          } else if (result && result.event === 'processing') {
+            console.log('Processando arquivo...');
+            setUploadProgress(80);
+          } else if (result && result.event === 'queues-end') {
+            console.log('Fila de upload finalizada');
+            setUploadProgress(90);
+          }
+        }
+      );
+
+      // Abrir o widget
+      widget.open();
+      
+      // Simular progresso enquanto o widget está aberto
+      const progressInterval = setInterval(() => {
+        if (uploadProgress < 95) {
+          setUploadProgress(prev => Math.min(prev + 1, 95));
+        }
+      }, 3000);
+
+      // Limpar interval após 30 minutos
+      setTimeout(() => {
+        clearInterval(progressInterval);
+      }, 1800000);
+      
+    } catch (error) {
+      console.error('Erro ao criar widget:', error);
+      setUploadStatus('error');
+      onUploadError('Erro ao criar widget: ' + (error instanceof Error ? error.message : 'Erro desconhecido'));
     }
   };
 
@@ -54,92 +179,103 @@ export default function DirectCloudinaryUpload({
       setUploadStatus('preparing');
       setUploadProgress(0);
 
-      // 1. Obter assinatura do servidor
-      setUploadStatus('preparing');
-      setUploadProgress(10);
-      
-      const timestamp = Math.round(new Date().getTime() / 1000);
-      const publicId = `${timestamp}_${metadata.title.replace(/\s+/g, '_')}`;
-      const context = `title=${metadata.title}|description=${metadata.description}|genre=${metadata.genre}|rating=${metadata.rating}|releaseDate=${metadata.releaseDate}|duration=${metadata.duration}|language=${metadata.language}|contentType=${metadata.contentType}|tags=${metadata.tags}`;
-      const tags = `${metadata.genre},byuplay,video`;
-      
-      const signResponse = await fetch('/api/upload-video/sign', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          timestamp,
-          publicId,
-          folder: 'byuplay/videos',
-          context,
-          tags
-        })
-      });
-
-      if (!signResponse.ok) {
-        throw new Error('Erro ao obter assinatura de upload');
-      }
-
-      const { signature, apiKey, cloudName, folder } = await signResponse.json();
-
-      // 2. Preparar FormData para upload direto
-      setUploadStatus('uploading');
-      setUploadProgress(20);
-      
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('public_id', publicId);
-      formData.append('folder', folder);
-      formData.append('api_key', apiKey);
-      formData.append('timestamp', timestamp.toString());
-      formData.append('signature', signature);
-      formData.append('resource_type', 'video');
-      formData.append('context', context);
-      formData.append('tags', tags);
-
-      // 3. Upload direto para Cloudinary com progress
-      const xhr = new XMLHttpRequest();
-      
-      return new Promise((resolve, reject) => {
-        xhr.upload.addEventListener('progress', (e) => {
-          if (e.lengthComputable) {
-            // Mapear progresso de 20% a 90% para o upload real
-            const uploadProgress = Math.round((e.loaded / e.total) * 70) + 20;
-            setUploadProgress(uploadProgress);
-            onUploadProgress?.(uploadProgress);
-          }
-        });
-
-        xhr.addEventListener('load', () => {
-          setUploadStatus('processing');
-          setUploadProgress(90);
-          
-          if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-            setUploadStatus('success');
-            setUploadProgress(100);
-            resolve(response);
-          } else {
-            const error = JSON.parse(xhr.responseText);
-            setUploadStatus('error');
-            reject(new Error(error.error?.message || 'Erro no upload'));
-          }
-        });
-
-        xhr.addEventListener('error', () => {
-          setUploadStatus('error');
-          reject(new Error('Erro de rede durante o upload'));
-        });
-
-        xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`);
-        xhr.send(formData);
-      });
+      // Usar sempre o Upload Widget - mais confiável e suporta chunking automático
+      console.log('Usando Upload Widget do Cloudinary para upload...');
+      return await uploadWithWidget(file, metadata);
 
     } catch (error) {
       setUploadStatus('error');
       throw error;
-    } finally {
-      // Não resetar aqui, deixar o componente gerenciar
     }
+  };
+
+  const uploadWithWidget = async (file: File, metadata: any) => {
+    return new Promise((resolve, reject) => {
+      // Verificar se o script do Cloudinary foi carregado
+      if (!(window as any).cloudinary) {
+        reject(new Error('Cloudinary script não carregado. Aguarde alguns segundos e tente novamente.'));
+        return;
+      }
+
+      setUploadStatus('uploading');
+      setUploadProgress(10);
+
+      // Criar o Upload Widget com configurações otimizadas
+      const widget = (window as any).cloudinary.createUploadWidget(
+        {
+          cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'your-cloud-name',
+          uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'your-upload-preset',
+          folder: 'byuplay/videos',
+          resourceType: 'video',
+          context: {
+            title: metadata.title,
+            description: metadata.description,
+            genre: metadata.genre,
+            rating: metadata.rating,
+            releaseDate: metadata.releaseDate,
+            duration: metadata.duration,
+            language: metadata.language,
+            contentType: metadata.contentType,
+            tags: metadata.tags
+          },
+          tags: `${metadata.genre},byuplay,video`,
+          // Configurações para arquivos grandes
+          maxFileSize: 2000000000, // 2GB máximo
+          chunkSize: 6000000, // 6MB chunks
+          chunkUpload: true, // Habilitar chunking automático
+          // Configurações de UI
+          showAdvancedOptions: false,
+          showPoweredBy: false,
+          singleUploadAutoClose: false, // Não fechar automaticamente para ver progresso
+          // Configurações de acessibilidade
+          accessibility: {
+            keyboard: true,
+            screenReader: true
+          }
+        },
+        (error: any, result: any) => {
+          console.log('Widget event:', result?.event, error);
+          
+          if (error) {
+            console.error('Erro no Upload Widget:', error);
+            setUploadStatus('error');
+            reject(new Error('Erro no upload: ' + (error.message || 'Erro desconhecido')));
+          } else if (result && result.event === 'success') {
+            console.log('Upload concluído com sucesso via Widget!');
+            setUploadStatus('success');
+            setUploadProgress(100);
+            resolve(result.info);
+          } else if (result && result.event === 'upload-added') {
+            console.log('Arquivo adicionado ao widget');
+            setUploadProgress(20);
+          } else if (result && result.event === 'uploading') {
+            console.log('Upload em progresso...');
+            setUploadProgress(50);
+          } else if (result && result.event === 'processing') {
+            console.log('Processando arquivo...');
+            setUploadProgress(80);
+          } else if (result && result.event === 'queues-end') {
+            console.log('Fila de upload finalizada');
+            setUploadProgress(90);
+          }
+        }
+      );
+
+      // Abrir o widget
+      widget.open();
+      
+      // Simular progresso enquanto o widget está aberto
+      const progressInterval = setInterval(() => {
+        if (uploadProgress < 95) {
+          setUploadProgress(prev => Math.min(prev + 1, 95));
+        }
+      }, 3000);
+
+      // Limpar interval após 30 minutos
+      setTimeout(() => {
+        clearInterval(progressInterval);
+      }, 1800000);
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -156,12 +292,8 @@ export default function DirectCloudinaryUpload({
       return;
     }
 
-    // Verificar tamanho do arquivo (100MB para plano free)
-    const maxSize = 100 * 1024 * 1024; // 100MB
-    if (selectedFile.size > maxSize) {
-      onUploadError('Archivo muy grande. Máximo 100MB para plan gratuito.');
-      return;
-    }
+    // Sem limite de tamanho - permitir uploads grandes com chunking automático
+    console.log('File size:', `${Math.round(selectedFile.size / 1024 / 1024)}MB`);
 
     try {
       const result = await uploadToCloudinary(selectedFile, formData);
@@ -250,20 +382,22 @@ export default function DirectCloudinaryUpload({
       <form onSubmit={handleSubmit} className="space-y-6">
       {/* Upload de Arquivo */}
       <div>
-        <label htmlFor="video" className="block text-sm font-medium text-white/90 mb-2">
+        <label className="block text-sm font-medium text-white/90 mb-2">
           Archivo de Video *
         </label>
         <div className="relative">
-          <input
-            ref={fileInputRef}
-            type="file"
-            id="video"
-            accept="video/*"
-            onChange={handleFileChange}
-            required
+          <button
+            type="button"
+            onClick={openUploadWidget}
             disabled={isUploading}
-            className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-400/20 file:text-cyan-100 hover:file:bg-cyan-400/30 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 transition-all disabled:opacity-50"
-          />
+            className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-cyan-400">
+              <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" strokeWidth="2"/>
+              <circle cx="12" cy="13" r="3" strokeWidth="2"/>
+            </svg>
+            {isUploading ? 'Subiendo...' : 'Escolher arquivo'}
+          </button>
         </div>
         {selectedFile && (
           <p className="mt-2 text-sm text-white/60">
@@ -519,9 +653,6 @@ export default function DirectCloudinaryUpload({
               status: "draft"
             });
             setSelectedFile(null);
-            if (fileInputRef.current) {
-              fileInputRef.current.value = '';
-            }
           }}
           disabled={isUploading}
           className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold border border-white/20 text-white/90 hover:text-white hover:bg-white/10 transition-all duration-300 disabled:opacity-50"

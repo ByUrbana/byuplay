@@ -220,7 +220,7 @@ export default function UploadVideoPage() {
                       </h4>
                       <p className="text-sm opacity-80">
                         Upload directo a Cloudinary, contornea limitaciones del
-                        Vercel. Soporte a videos hasta 100MB.
+                        Vercel. Soporte a videos de cualquier tamaño con chunking automático.
                       </p>
                     </div>
                   </button>
