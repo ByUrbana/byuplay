@@ -176,18 +176,18 @@ export default function InfantilPage() {
     return () => clearInterval(id);
   }, []);
 
-  // Carregar vídeos do gênero infantil
+  // Cargar videos del género infantil
   useEffect(() => {
     const loadVideos = async () => {
       setIsLoading(true);
       try {
         const response = await fetch('/api/videos-public');
         if (!response.ok) {
-          throw new Error('Erro ao carregar vídeos');
+          throw new Error('Error al cargar videos');
         }
         const data = await response.json();
         
-        // Verificar se a resposta tem a estrutura esperada
+        // Verificar si la respuesta tiene la estructura esperada
         const videos = data.videos || data;
         
         // Filtrar apenas vídeos de infantil
@@ -197,7 +197,7 @@ export default function InfantilPage() {
         
         setVideos(infantilVideos);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erro desconhecido');
+        setError(err instanceof Error ? err.message : 'Error desconocido');
       } finally {
         setIsLoading(false);
       }
@@ -212,7 +212,7 @@ export default function InfantilPage() {
   const pre = (preRaw ?? "").trim();
   const post = (postRaw ?? "").trim();
 
-  // Função para navegar para o vídeo
+  // Función para navegar al video
   const handlePlayVideo = (video: Video) => {
     // Extrair apenas o ID real (última parte após a última barra)
     const videoId = video.id.split('/').pop() || video.id;
@@ -221,7 +221,7 @@ export default function InfantilPage() {
     window.location.assign(`/video/${videoId}`);
   };
 
-  // Função para formatar duração
+  // Función para formatear duración
   const formatDuration = (seconds: number): string => {
     if (seconds === 0) return "0:00";
     const minutes = Math.floor(seconds / 60);
@@ -360,11 +360,11 @@ export default function InfantilPage() {
 
             {isLoading ? (
               <div className="text-center py-12">
-                <div className="text-white/60">Carregando vídeos...</div>
+                <div className="text-white/60">Cargando videos...</div>
               </div>
             ) : error ? (
               <div className="text-center py-12">
-                <div className="text-red-400 mb-4">Erro: {error}</div>
+                <div className="text-red-400 mb-4">Error: {error}</div>
                 <button
                   onClick={() => window.location.reload()}
                   className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold border border-red-400/50 bg-red-400/20 text-red-100 hover:bg-red-400/30 hover:border-red-400/70 transition-all duration-300"
@@ -454,7 +454,7 @@ export default function InfantilPage() {
             ) : (
               <div className="text-center py-12">
                 <div className="text-white/60 mb-4">
-                  Nenhum vídeo infantil encontrado
+                  Ningún video infantil encontrado
                 </div>
                 <Link
                   href="/catalogo"

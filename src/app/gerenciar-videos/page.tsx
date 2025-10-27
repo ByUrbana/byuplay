@@ -43,7 +43,7 @@ export default function GerenciarVideosPage() {
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
 
-  // Carregar vídeos reais do Cloudinary
+  // Cargar videos reales de Cloudinary
   useEffect(() => {
     const loadVideos = async () => {
       setIsLoading(true);
@@ -62,13 +62,13 @@ export default function GerenciarVideosPage() {
           }
         } else {
           const errorText = await response.text();
-          console.error('Erro ao carregar vídeos:', errorText);
-          setError('Erro ao carregar vídeos. Verifique as configurações do Cloudinary.');
+          console.error('Error al cargar videos:', errorText);
+          setError('Error al cargar videos. Verificá las configuraciones de Cloudinary.');
           setVideos([]);
         }
       } catch (error) {
-        console.error('Erro ao carregar vídeos:', error);
-        setError('Erro de conexão. Verifique se o servidor está rodando.');
+        console.error('Error al cargar videos:', error);
+        setError('Error de conexión. Verificá si el servidor está funcionando.');
         setVideos([]);
       } finally {
         setIsLoading(false);
@@ -78,7 +78,7 @@ export default function GerenciarVideosPage() {
     loadVideos();
   }, []);
 
-  // Verificar autenticação
+  // Verificar autenticación
   if (status === "loading") {
     return (
       <main className="fashion-skin min-h-screen pb-24 flex items-center justify-center">
@@ -100,7 +100,7 @@ export default function GerenciarVideosPage() {
   const confirmDelete = async () => {
     if (!videoToDelete) return;
 
-    console.log('Tentando deletar vídeo:', videoToDelete);
+    console.log('Intentando eliminar video:', videoToDelete);
 
     try {
       // Codificar o ID para evitar problemas com barras na URL
@@ -118,19 +118,19 @@ export default function GerenciarVideosPage() {
         console.log('Resultado da deleção:', result);
         setVideos(prev => prev.filter(video => video.id !== videoToDelete));
         setShowDeleteModal(false);
-        setSuccessMessage("Vídeo excluído com sucesso!");
+        setSuccessMessage("Video eliminado con éxito!");
         setShowSuccessModal(true);
       } else {
         const error = await response.json();
-        console.error('Erro na API:', error);
+        console.error('Error en la API:', error);
         setShowDeleteModal(false);
-        setSuccessMessage(`Erro: ${error.error}`);
+        setSuccessMessage(`Error: ${error.error}`);
         setShowSuccessModal(true);
       }
     } catch (error) {
-      console.error('Erro ao deletar vídeo:', error);
+      console.error('Error al eliminar video:', error);
       setShowDeleteModal(false);
-      setSuccessMessage("Erro ao excluir o vídeo");
+      setSuccessMessage("Error al eliminar el video");
       setShowSuccessModal(true);
     }
   };
@@ -155,7 +155,7 @@ export default function GerenciarVideosPage() {
     alert(`Editar video ${videoId} - Funcionalidad en desarrollo`);
   };
 
-  // Debug: mostrar todos os gêneros únicos disponíveis
+  // Debug: mostrar todos los géneros únicos disponibles
   const uniqueGenres = [...new Set(videos.map(video => video.genre))];
   console.log('Gêneros disponíveis:', uniqueGenres);
 
@@ -164,7 +164,7 @@ export default function GerenciarVideosPage() {
                          video.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesGenre = selectedGenre === "" || video.genre.toLowerCase() === selectedGenre.toLowerCase();
     
-    // Debug: log para verificar gêneros disponíveis
+    // Debug: log para verificar géneros disponibles
     if (selectedGenre === "infantil") {
       console.log('Filtrando por infantil:', video.genre, 'matches:', matchesGenre);
     }

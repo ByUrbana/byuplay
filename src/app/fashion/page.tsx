@@ -37,55 +37,58 @@ type Slide = {
 
 const SLIDES: Slide[] = [
   {
-    tag: "BY)))U CLUB",
-    body: "Bienvenido a BY)))U FASHION, un mundo de beneficios donde usuarios, sponsors y marcas se conectan para crecer juntos 👉 Sumate hoy al club",
-    strong: ["beneficios", "usuarios", "sponsors", "marcas", "crecer juntos"],
+    tag: "FASHION STREAMING",
+    body: "Descubrí los desfiles más exclusivos del mundo de la moda en streaming HD 👉 Disfrutá de las mejores pasarelas",
+    strong: ["desfiles más exclusivos", "moda en streaming HD", "mejores pasarelas"],
   },
   {
-    tag: "BY)))U CLUB",
-    body: "Con BY)))U FASHION ahorrás todos los días con descuentos exclusivos y promociones únicas pensadas especialmente para vos 👉 Descubrí tus beneficios",
+    tag: "FASHION STREAMING",
+    body: "Séries documentales sobre diseñadores, modelos y las marcas más icónicas de la industria fashion 👉 Explorá el mundo de la moda",
     strong: [
-      "ahorrás todos los días",
-      "descuentos exclusivos",
-      "promociones únicas",
+      "séries documentales",
+      "diseñadores",
+      "modelos",
+      "marcas más icónicas",
+      "industria fashion",
     ],
   },
   {
-    tag: "BY)))U CLUB",
-    body: "Potenciá tu marca en un ecosistema innovador. Crecé junto a una comunidad activa con impacto real 👉 Sé sponsor de BY)))U FASHION",
+    tag: "FASHION STREAMING",
+    body: "Shows de moda en vivo, eventos exclusivos y cobertura especial de las principales semanas de la moda 👉 Viví la moda en tiempo real",
     strong: [
-      "potenciá tu marca",
-      "ecosistema innovador",
-      "comunidad activa",
-      "impacto real",
+      "shows de moda en vivo",
+      "eventos exclusivos",
+      "semanas de la moda",
+      "tiempo real",
     ],
   },
   {
-    tag: "BY)))U CLUB",
-    body: "Con BY)))U FASHION obtené más visibilidad y más ventas. Ofrecé descuentos, sumá nuevos clientes y fidelizá a los actuales 👉 Sumá tu marca",
+    tag: "FASHION STREAMING",
+    body: "Contenido exclusivo sobre tendencias, estilismo, maquillaje y las últimas colecciones de alta costura 👉 Inspirate con las últimas tendencias",
     strong: [
-      "obtené más visibilidad",
-      "más ventas",
-      "ofrecé descuentos",
-      "sumá nuevos clientes",
-      "fidelizá",
-    ],
-  },
-  {
-    tag: "BY)))U CLUB",
-    body: "Desfiles en vivo, shows exclusivos, modelos de alta costura y las principales marcas de moda y cosmética se unen para crear una experiencia inolvidable 👉 Llevá el Fashion Tour a tu evento",
-    strong: [
-      "desfiles en vivo",
-      "shows exclusivos",
+      "contenido exclusivo",
+      "tendencias",
+      "estilismo",
+      "maquillaje",
       "alta costura",
-      "principales marcas de moda y cosmética",
-      "experiencia inolvidable",
+      "últimas tendencias",
     ],
   },
   {
-    tag: "BY)))U CLUB",
-    body: "Sumate al Fashion Tour de BY)))U FASHION. Sumate como nuestro Partner en esta experiencia que conecta moda, lifestyle y beneficios exclusivos 👉 Conocé cómo abrir tu franquicia",
-    strong: ["partner", "moda", "lifestyle", "beneficios exclusivos"],
+    tag: "FASHION STREAMING",
+    body: "Accedé a desfiles históricos, retrospectivas de diseñadores legendarios y contenido de moda 👉 Reviví la historia de la moda",
+    strong: [
+      "desfiles históricos",
+      "retrospectivas",
+      "diseñadores legendarios",
+      "contenido archivado",
+      "historia de la moda",
+    ],
+  },
+  {
+    tag: "FASHION STREAMING",
+    body: "Streaming 24/7 de contenido fashion premium. Desde pasarelas internacionales hasta behind the scenes exclusivos 👉 Sumate a la experiencia fashion",
+    strong: ["streaming 24/7", "contenido fashion premium", "pasarelas internacionales", "behind the scenes exclusivos"],
   },
 ];
 
@@ -203,7 +206,7 @@ export default function FashionTourPage() {
     return () => clearInterval(id);
   }, []);
 
-  // Carregar vídeos do gênero fashion
+  // Cargar videos del género fashion
   useEffect(() => {
     const loadVideos = async () => {
       setIsLoading(true);
@@ -220,11 +223,11 @@ export default function FashionTourPage() {
           );
           setVideos(fashionVideos);
         } else {
-          setError('Erro ao carregar vídeos');
+          setError('Error al cargar videos');
         }
       } catch (error) {
-        console.error('Erro ao carregar vídeos:', error);
-        setError('Erro de conexão');
+        console.error('Error al cargar videos:', error);
+        setError('Error de conexión');
       } finally {
         setIsLoading(false);
       }
@@ -240,7 +243,7 @@ export default function FashionTourPage() {
   const pre = (preRaw ?? "").trim();
   const post = (postRaw ?? "").trim();
 
-  // Função para navegar para o vídeo
+  // Función para navegar al video
   const handlePlayVideo = (video: Video) => {
     // Extrair apenas o ID real (última parte após a última barra)
     const videoId = video.id.split('/').pop() || video.id;
@@ -392,7 +395,7 @@ export default function FashionTourPage() {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="text-white">Carregando vídeos de fashion...</div>
+            <div className="text-white">Cargando videos de fashion...</div>
           </div>
         ) : error ? (
           <div className="text-center py-12">
@@ -474,7 +477,7 @@ export default function FashionTourPage() {
         ) : (
           <div className="text-center py-12">
             <div className="text-white/60 mb-4">
-              Nenhum vídeo de fashion encontrado
+              Ningún video de fashion encontrado
             </div>
             <Link
               href="/catalogo"

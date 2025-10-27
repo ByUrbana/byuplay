@@ -43,13 +43,13 @@ export default function VideoPage() {
         if (response.ok) {
           const data = await response.json();
           
-          // Garantir que params.id é uma string
+          // Garantizar que params.id es una string
           const videoId = Array.isArray(params.id) ? params.id[0] : params.id;
           
-          console.log('Buscando vídeo com ID:', videoId);
-          console.log('Vídeos disponíveis:', data.videos?.map((v: Video) => v.id));
+          console.log('Buscando video con ID:', videoId);
+          console.log('Videos disponibles:', data.videos?.map((v: Video) => v.id));
           
-          // Buscar por ID exato ou por ID que termine com o parâmetro
+          // Buscar por ID exacto o por ID que termine con el parámetro
           const foundVideo = data.videos?.find((v: Video) => 
             v.id === videoId || 
             v.id.endsWith(videoId) ||
@@ -59,14 +59,14 @@ export default function VideoPage() {
           if (foundVideo) {
             setVideo(foundVideo);
           } else {
-            setError("Vídeo não encontrado");
+            setError("Video no encontrado");
           }
         } else {
-          setError("Erro ao carregar vídeo");
+          setError("Error al cargar video");
         }
       } catch (error) {
-        console.error("Erro ao carregar vídeo:", error);
-        setError("Erro de conexão");
+        console.error("Error al cargar video:", error);
+        setError("Error de conexión");
       } finally {
         setIsLoading(false);
       }
@@ -105,7 +105,7 @@ export default function VideoPage() {
       <main className="fashion-skin min-h-screen">
         <Header />
         <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-white text-lg">Carregando vídeo...</div>
+          <div className="text-white text-lg">Cargando video...</div>
         </div>
       </main>
     );
@@ -117,12 +117,12 @@ export default function VideoPage() {
         <Header />
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <div className="text-white text-xl mb-4">{error || "Vídeo não encontrado"}</div>
+            <div className="text-white text-xl mb-4">{error || "Video no encontrado"}</div>
             <button
               onClick={() => router.back()}
               className="px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition-colors"
             >
-              Voltar
+              Volver
             </button>
           </div>
         </div>
@@ -135,7 +135,7 @@ export default function VideoPage() {
       <Header />
       
       <div className="relative mx-auto px-4 md:px-8 py-8">
-        {/* Player em modo teatro */}
+        {/* Player en modo teatro */}
         <div className="mb-8">
           <div className="relative aspect-video rounded-xl overflow-hidden bg-black shadow-2xl">
             <video
@@ -145,15 +145,15 @@ export default function VideoPage() {
               poster={video.thumbnail}
               preload="metadata"
             >
-              Seu navegador não suporta o elemento de vídeo.
+              Tu navegador no soporta el elemento de video.
             </video>
           </div>
         </div>
 
-        {/* Informações do vídeo */}
+        {/* Informaciones del video */}
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Conteúdo principal */}
+            {/* Contenido principal */}
             <div className="lg:col-span-2">
               <div className="mb-6">
                 <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
@@ -190,7 +190,7 @@ export default function VideoPage() {
 
                 {video.description && (
                   <div className="mb-6">
-                    <h2 className="text-xl font-semibold text-white mb-3">Descrição</h2>
+                    <h2 className="text-xl font-semibold text-white mb-3">Descripción</h2>
                     <p className="text-white/80 leading-relaxed">
                       {video.description}
                     </p>
@@ -199,14 +199,14 @@ export default function VideoPage() {
               </div>
             </div>
 
-            {/* Sidebar com informações técnicas */}
+            {/* Sidebar con informaciones técnicas */}
             <div className="lg:col-span-1">
               <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-                <h3 className="text-lg font-semibold text-white mb-4">Informações</h3>
+                <h3 className="text-lg font-semibold text-white mb-4">Informaciones</h3>
                 
                 <div className="space-y-4">
                   <div>
-                    <span className="text-white/60 text-sm">Adicionado:</span>
+                    <span className="text-white/60 text-sm">Agregado:</span>
                     <p className="text-white">
                       {new Date(video.createdAt).toLocaleDateString("pt-BR", {
                         year: "numeric",
@@ -217,22 +217,22 @@ export default function VideoPage() {
                   </div>
 
                   <div>
-                    <span className="text-white/60 text-sm">Duração:</span>
+                    <span className="text-white/60 text-sm">Duración:</span>
                     <p className="text-white">{formatDuration(video.duration)}</p>
                   </div>
 
                   <div>
-                    <span className="text-white/60 text-sm">Gênero:</span>
+                    <span className="text-white/60 text-sm">Género:</span>
                     <p className="text-white">{video.genre}</p>
                   </div>
 
                   <div>
-                    <span className="text-white/60 text-sm">Classificação:</span>
+                    <span className="text-white/60 text-sm">Clasificación:</span>
                     <p className="text-white">{video.rating}</p>
                   </div>
 
                   <div>
-                    <span className="text-white/60 text-sm">Tamanho:</span>
+                    <span className="text-white/60 text-sm">Tamaño:</span>
                     <p className="text-white">{formatFileSize(video.size)}</p>
                   </div>
 
@@ -249,7 +249,7 @@ export default function VideoPage() {
                     onClick={() => router.back()}
                     className="w-full px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
                   >
-                    Voltar ao Catálogo
+                    Volver al Catálogo
                   </button>
                 </div>
               </div>

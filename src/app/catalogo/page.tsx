@@ -36,12 +36,12 @@ export default function CatalogoPage() {
   const [selectedGenre, setSelectedGenre] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  // Refs para os carousels
+  // Refs para los carousels
   const carouselRef = React.useRef<HTMLDivElement>(null);
   const trendingCarouselRef = React.useRef<HTMLDivElement>(null);
   const recentCarouselRef = React.useRef<HTMLDivElement>(null);
 
-  // Carregar vídeos reais do Cloudinary
+  // Cargar videos reales de Cloudinary
   useEffect(() => {
     const loadVideos = async () => {
       setIsLoading(true);
@@ -60,15 +60,15 @@ export default function CatalogoPage() {
           }
         } else {
           const errorText = await response.text();
-          console.error("Erro ao carregar vídeos:", errorText);
+          console.error("Error al cargar videos:", errorText);
           setError(
-            "Erro ao carregar vídeos. Verifique as configurações do Cloudinary."
+            "Error al cargar videos. Verificá las configuraciones de Cloudinary."
           );
           setVideos([]);
         }
       } catch (error) {
-        console.error("Erro ao carregar vídeos:", error);
-        setError("Erro de conexão. Verifique se o servidor está rodando.");
+        console.error("Error al cargar videos:", error);
+        setError("Error de conexión. Verificá si el servidor está funcionando.");
         setVideos([]);
       } finally {
         setIsLoading(false);
@@ -192,7 +192,7 @@ export default function CatalogoPage() {
             </div>
 
             <div className="relative">
-              {/* Seta esquerda */}
+              {/* Flecha izquierda */}
               <button
                 onClick={() => scrollCarousel("left")}
                 className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white transition-all duration-300 opacity-70 hover:opacity-100"
@@ -214,7 +214,7 @@ export default function CatalogoPage() {
                 </svg>
               </button>
 
-              {/* Seta direita */}
+              {/* Flecha derecha */}
               <button
                 onClick={() => scrollCarousel("right")}
                 className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white transition-all duration-300 opacity-70 hover:opacity-100"
@@ -324,19 +324,19 @@ export default function CatalogoPage() {
             </div>
           </div>
 
-          {/* Seção Mais Assistidos */}
+          {/* Sección Más Vistos */}
           <div className="mb-12">
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-white mb-2">
-                Mais Assistidos
+                Más Vistos
               </h2>
               <p className="text-white/70">
-                Os vídeos mais populares da plataforma
+                Los videos más populares de la plataforma
               </p>
             </div>
 
             <div className="relative">
-              {/* Seta esquerda */}
+              {/* Flecha izquierda */}
               <button
                 onClick={() => scrollVideoCarousel("left", "trending")}
                 className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white transition-all duration-300 opacity-70 hover:opacity-100"
@@ -358,7 +358,7 @@ export default function CatalogoPage() {
                 </svg>
               </button>
 
-              {/* Seta direita */}
+              {/* Flecha derecha */}
               <button
                 onClick={() => scrollVideoCarousel("right", "trending")}
                 className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white transition-all duration-300 opacity-70 hover:opacity-100"
@@ -419,7 +419,7 @@ export default function CatalogoPage() {
                       </div>
                     </div>
 
-                    {/* Badge de classificação */}
+                    {/* Badge de clasificación */}
                     <div className="absolute top-3 right-3">
                       <span
                         className={`px-2 py-1 rounded text-xs font-bold ${
@@ -442,7 +442,7 @@ export default function CatalogoPage() {
                       </span>
                     </div>
 
-                    {/* Informações do vídeo */}
+                    {/* Informaciones del video */}
                     <div className="absolute bottom-0 left-0 right-0 p-4">
                       <h3 className="text-lg font-bold text-white mb-1 group-hover:text-cyan-300 transition-colors line-clamp-2">
                         {video.title}
@@ -460,19 +460,19 @@ export default function CatalogoPage() {
             </div>
           </div>
 
-          {/* Seção Últimos Adicionados */}
+          {/* Sección Últimos Agregados */}
           <div className="mb-12">
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-white mb-2">
-                Últimos Adicionados
+                Últimos Agregados
               </h2>
               <p className="text-white/70">
-                Os vídeos mais recentes da plataforma
+                Los videos más recientes de la plataforma
               </p>
             </div>
 
             <div className="relative">
-              {/* Seta esquerda */}
+              {/* Flecha izquierda */}
               <button
                 onClick={() => scrollVideoCarousel("left", "recent")}
                 className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white transition-all duration-300 opacity-70 hover:opacity-100"
@@ -494,7 +494,7 @@ export default function CatalogoPage() {
                 </svg>
               </button>
 
-              {/* Seta direita */}
+              {/* Flecha derecha */}
               <button
                 onClick={() => scrollVideoCarousel("right", "recent")}
                 className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white transition-all duration-300 opacity-70 hover:opacity-100"
@@ -555,7 +555,7 @@ export default function CatalogoPage() {
                       </div>
                     </div>
 
-                    {/* Badge de classificação */}
+                    {/* Badge de clasificación */}
                     <div className="absolute top-3 right-3">
                       <span
                         className={`px-2 py-1 rounded text-xs font-bold ${
@@ -578,7 +578,7 @@ export default function CatalogoPage() {
                       </span>
                     </div>
 
-                    {/* Informações do vídeo */}
+                    {/* Informaciones del video */}
                     <div className="absolute bottom-0 left-0 right-0 p-4">
                       <h3 className="text-lg font-bold text-white mb-1 group-hover:text-cyan-300 transition-colors line-clamp-2">
                         {video.title}
@@ -640,7 +640,7 @@ export default function CatalogoPage() {
             </div>
           </div>
 
-          {/* Mensagens de Erro/Aviso */}
+          {/* Mensajes de Error/Aviso */}
           {error && (
             <div className="mb-6 p-4 rounded-xl bg-yellow-500/20 border border-yellow-500/30 text-yellow-200">
               <div className="flex items-center gap-2">
@@ -706,7 +706,7 @@ export default function CatalogoPage() {
                       </div>
                     </div>
 
-                  {/* Tooltip com informações adicionais no hover */}
+                  {/* Tooltip con informaciones adicionales en hover */}
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
                     <div className="bg-gray-900/95 backdrop-blur-sm border border-white/20 rounded-lg p-4 shadow-2xl min-w-[280px] max-w-[320px]">
                     <div className="space-y-3">

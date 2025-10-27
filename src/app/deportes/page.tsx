@@ -172,7 +172,7 @@ export default function DeportesPage() {
     return () => clearInterval(id);
   }, []);
 
-  // Carregar vídeos do gênero deportes
+  // Cargar videos del género deportes
   useEffect(() => {
     const loadVideos = async () => {
       setIsLoading(true);
@@ -189,11 +189,11 @@ export default function DeportesPage() {
           );
           setVideos(deportesVideos);
         } else {
-          setError('Erro ao carregar vídeos');
+          setError('Error al cargar videos');
         }
       } catch (error) {
-        console.error('Erro ao carregar vídeos:', error);
-        setError('Erro de conexão');
+        console.error('Error al cargar videos:', error);
+        setError('Error de conexión');
       } finally {
         setIsLoading(false);
       }
@@ -208,7 +208,7 @@ export default function DeportesPage() {
   const pre = (preRaw ?? "").trim();
   const post = (postRaw ?? "").trim();
 
-  // Função para navegar para o vídeo
+  // Función para navegar al video
   const handlePlayVideo = (video: Video) => {
     // Extrair apenas o ID real (última parte após a última barra)
     const videoId = video.id.split('/').pop() || video.id;
@@ -352,7 +352,7 @@ export default function DeportesPage() {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="text-white">Carregando vídeos de deportes...</div>
+            <div className="text-white">Cargando videos de deportes...</div>
           </div>
         ) : error ? (
           <div className="text-center py-12">
@@ -434,7 +434,7 @@ export default function DeportesPage() {
         ) : (
           <div className="text-center py-12">
             <div className="text-white/60 mb-4">
-              Nenhum vídeo de deportes encontrado
+              Ningún video de deportes encontrado
             </div>
             <Link
               href="/catalogo"

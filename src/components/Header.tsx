@@ -47,7 +47,7 @@ export default function Header() {
     };
   }, []);
 
-  // Função de busca
+  // Función de búsqueda
   const handleSearch = async (term: string) => {
     if (term.length < 2) {
       setSearchResults([]);
@@ -67,7 +67,7 @@ export default function Header() {
         setSearchResults(filtered.slice(0, 5)); // Limitar a 5 resultados
       }
     } catch (error) {
-      console.error('Erro na busca:', error);
+      console.error('Error en la búsqueda:', error);
       setSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -378,7 +378,7 @@ export default function Header() {
                         </div>
                       ) : (
                         <div className="text-center py-4 text-white/60">
-                          Nenhum vídeo encontrado
+                          Ningún video encontrado
                         </div>
                       )}
                     </div>
@@ -457,8 +457,8 @@ export default function Header() {
                   <ByMark right="CLUB" />
                 </Link>
 
-                {/* ORIGEN — siempre visible */}
-                <Link
+                {/* ORIGEN — temporalmente deshabilitado */}
+                {/* <Link
                   href="/origen"
                   role="menuitem"
                   onClick={() => setOpen(false)}
@@ -468,7 +468,7 @@ export default function Header() {
                     <path d="M12 2l4 7-4 13-4-13 4-7z" strokeWidth="2" />
                   </svg>
                   ORIGEN
-                </Link>
+                </Link> */}
 
                 {/* DASHBOARD */}
                 <Link
@@ -486,21 +486,19 @@ export default function Header() {
                   DASHBOARD
                 </Link>
 
-                {/* QUIÉNES SOMOS (externo) */}
-                <a
-                  href="https://www.byuplay.com/"
+                {/* QUIÉNES SOMOS */}
+                <Link
+                  href="/quienes-somos"
                   role="menuitem"
                   onClick={() => setOpen(false)}
                   className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <circle cx="12" cy="12" r="10" />
                     <path d="M12 16v-4M12 8h.01" />
                   </svg>
                   QUIÉNES SOMOS
-                </a>
+                </Link>
 
                 {/* CATEGORÍAS DE STREAMING */}
                 <div className="border-t border-white/10 my-2 pt-2">
