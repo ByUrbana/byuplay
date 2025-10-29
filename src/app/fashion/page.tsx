@@ -295,13 +295,11 @@ export default function FashionTourPage() {
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,.55),rgba(0,0,0,.15)_40%,rgba(0,0,0,.55))]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_70%_at_50%_0%,rgba(0,0,0,.18),transparent_60%)]" />
 
-        <div className="relative z-10 h-full grid place-items-center text-center px-6">
-          <div key={idx} className="max-w-5xl mx-auto animate-fadeSlide">
+        <div className="relative z-10 h-full grid place-items-center text-center px-4 sm:px-6 md:px-8">
+          <div key={idx} className="max-w-5xl mx-auto animate-fadeSlide w-full">
             {/* Texto principal */}
             <p
-              // className="mt-4 md:mt-5 text-white/95 text-2xl sm:text-3xl md:text-5xl leading-tight"
-              // style={{ textShadow: "0 2px 12px rgba(0,0,0,.45)" }}
-              className="mt-4 md:mt-5 text-white/95 text-2xl sm:text-3xl md:text-5xl"
+              className="mt-4 md:mt-5 text-white/95 text-3xl sm:text-3xl md:text-5xl"
               style={{
                 textShadow: "0 2px 12px rgba(0,0,0,.45)",
                 lineHeight: "1.4",
@@ -316,9 +314,9 @@ export default function FashionTourPage() {
                 <Link
                   href="/contacto"
                   aria-label={post}
-                  className="inline-flex max-w-full items-center justify-center rounded-full border border-white/35 bg-black/30 px-5 py-2.5 text-white font-black tracking-wide text-xl sm:text-2xl md:text-3xl leading-none hover:bg-black/45 hover:border-white/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 shadow-[0_10px_30px_rgba(0,0,0,.25)]"
+                  className="inline-flex max-w-full items-center justify-center rounded-full border border-white/35 bg-black/30 px-4 sm:px-5 py-2 sm:py-2.5 text-white font-black tracking-wide text-xl sm:text-2xl md:text-3xl leading-none hover:bg-black/45 hover:border-white/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 shadow-[0_10px_30px_rgba(0,0,0,.25)]"
                 >
-                  <span className="truncate">{highlightBody(post, [])}</span>
+                  <span className="text-center">{highlightBody(post, [])}</span>
                 </Link>
               </div>
             )}

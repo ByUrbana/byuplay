@@ -108,8 +108,14 @@ export default function PeliculasPage() {
         {/* Texto encima */}
         <div className="absolute inset-0 flex items-center">
           <div className="max-w-xl px-8">
-            <h1 className="mb-4 text-3xl font-extrabold leading-tight md:text-4xl lg:text-5xl text-white">
-              BY)))U PELÍCULAS
+            <h1 className="mb-4 text-5xl font-extrabold leading-tight md:text-6xl text-white">
+              <Image
+                src="/flyer/byupeliculas.png"
+                alt="BY)))U PELÍCULAS"
+                width={430}
+                height={150}
+                className="h-20 pb-2 md:h-24 object-contain"
+              />
             </h1>
 
             {/* Fecha / país */}
