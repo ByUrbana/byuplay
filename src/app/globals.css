@@ -162,10 +162,9 @@ body{
   box-shadow: 0 40px 100px rgba(0,0,0,.45), inset 0 1px 0 rgb(var(--highlight-2) / .10);
   transition: transform .25s ease, box-shadow .25s ease;
   /* Fix para Safari - força renderização correta */
-  backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  transform: translateZ(0.01px);
-  -webkit-transform: translateZ(0.01px);
+  backface-visibility: hidden;
+  transform: translateZ(0); /* força repaint no Safari */
   z-index: 2;
   will-change: transform;
   transform-style: preserve-3d;
@@ -201,10 +200,8 @@ body{
   position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
   filter: saturate(1.05) contrast(1.02) brightness(.95);
   /* Fix para Safari - força renderização correta das imagens */
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
   will-change: transform;
 }
 

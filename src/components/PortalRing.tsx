@@ -87,6 +87,11 @@ export default function PortalRing() {
     startX: 0,
   });
 
+  // Detectar Safari para corrigir bug de renderização com next/image em transformações 3D
+  const isSafari =
+    typeof navigator !== "undefined" &&
+    /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
   useEffect(() => {
     const apply = () => setVw(window.innerWidth);
     apply();
@@ -266,16 +271,25 @@ export default function PortalRing() {
               }}
             >
               <div className="ring-panel portal-card">
-                <Image
-                  src={panel.img}
-                  alt={panel.title}
-                  className="ring-img portal-arch"
-                  fill
-                  loading="eager"
-                  priority={i === Math.floor(VISIBLE / 2) || i <= 2}
-                  fetchPriority={i === Math.floor(VISIBLE / 2) ? "high" : "auto"}
-                  sizes="(max-width: 640px) 200px, (max-width: 768px) 240px, 320px"
-                />
+                {(() => {
+                  const isCenter = i === Math.floor(VISIBLE / 2);
+                  const shouldEagerLoad = isSafari || isCenter; // no Safari, todos eager
+                  
+                  return (
+                    <Image
+                      key={panel.img} // força o Next a tratar cada imagem como única
+                      src={panel.img}
+                      alt={panel.title}
+                      className="ring-img portal-arch"
+                      fill
+                      sizes="(max-width: 640px) 200px, (max-width: 768px) 240px, 320px"
+                      priority={shouldEagerLoad}
+                      loading={shouldEagerLoad ? "eager" : "lazy"}
+                      fetchPriority={shouldEagerLoad ? "high" : "auto"}
+                      unoptimized={isSafari} // evita pipeline de otimização/lazy do Next no Safari
+                    />
+                  );
+                })()}
                 <span className="ring-topLabel">{panel.topLabel}</span>
               </div>
               <div className="ring-label" aria-hidden="true">
