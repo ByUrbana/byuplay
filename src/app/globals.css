@@ -139,24 +139,21 @@ body{
   position: absolute; left:50%; bottom: var(--lift, 1px); transform-origin: 50% 100%;
   transform: translate3d(-50%, 0, 0) rotateY(var(--angle)) translateZ(calc(-1 * var(--radius))) scale(calc(var(--scale,1) * var(--hover,1)));
   z-index: var(--z,1);
-  /* will-change removido para melhor performance */
+  will-change: transform;
   transition: transform .18s ease;
-  /* filter removido para performance */
   isolation: isolate;
   width: var(--w);
   height: var(--h);
+  /* Fix para Safari - força aceleração de hardware */
+  -webkit-transform: translate3d(-50%, 0, 0) rotateY(var(--angle)) translateZ(calc(-1 * var(--radius))) scale(calc(var(--scale,1) * var(--hover,1)));
+  transform-style: preserve-3d;
 }
 .ring-panel{
-  backface-visibility: hidden;
-  transform: translateZ(0.01px);
-  z-index: 2;
-}
-.ring-item:hover{ --hover: 1.06; }
-.ring-item:focus-visible{ --hover: 1.06; outline: none; }
-
-.ring-panel{
-  position: relative; width: var(--w,300px); height: var(--h,460px);
-  border-radius: 28px; overflow: hidden;
+  position: relative; 
+  width: var(--w,300px); 
+  height: var(--h,460px);
+  border-radius: 28px; 
+  overflow: hidden;
   background:
     linear-gradient(to bottom, rgb(var(--highlight-2) / .06), rgb(var(--bg) / .70)),
     radial-gradient(120% 90% at 50% 0%, rgb(var(--brand) / .35) 0%, transparent 65%),
@@ -164,12 +161,51 @@ body{
   border: 1px solid rgb(var(--highlight-1) / .18);
   box-shadow: 0 40px 100px rgba(0,0,0,.45), inset 0 1px 0 rgb(var(--highlight-2) / .10);
   transition: transform .25s ease, box-shadow .25s ease;
+  /* Fix para Safari - força renderização correta */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0.01px);
+  -webkit-transform: translateZ(0.01px);
+  z-index: 2;
+  will-change: transform;
+  transform-style: preserve-3d;
 }
-.ring-panel .portal-arch{ position:absolute; inset:0; }
+.ring-item:hover{ --hover: 1.06; }
+.ring-item:focus-visible{ --hover: 1.06; outline: none; }
+.ring-panel .portal-arch{ 
+  position:absolute; 
+  inset:0; 
+  /* Fix para Safari - força renderização correta */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Fix específico para Safari - força renderização de todas as imagens visíveis */
+@supports (-webkit-appearance: none) {
+  .ring-item .ring-img {
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  /* Garante que todas as imagens visíveis sejam renderizadas no Safari */
+  .ring-item[style*="--z"] .ring-img {
+    display: block !important;
+    content-visibility: auto;
+  }
+}
 
 .ring-img{
   position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
   filter: saturate(1.05) contrast(1.02) brightness(.95);
+  /* Fix para Safari - força renderização correta das imagens */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform;
 }
 
 /* Halo interior */

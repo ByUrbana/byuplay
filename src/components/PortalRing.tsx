@@ -123,6 +123,16 @@ export default function PortalRing() {
       return { VISIBLE, ARC, RADIUS, W, H, DRAG_THRESHOLD, isMobile: isSm };
     }, [vw]);
 
+  // Pré-carregar imagens visíveis para Safari
+  useEffect(() => {
+    if (vw === null || typeof window === 'undefined') return;
+    const visiblePanels = PANELS.slice(offset, offset + VISIBLE);
+    visiblePanels.forEach((panel) => {
+      const img = new window.Image();
+      img.src = panel.img;
+    });
+  }, [offset, VISIBLE, vw]);
+
   if (vw === null) return null;
 
   const START = -ARC / 2;
@@ -261,7 +271,9 @@ export default function PortalRing() {
                   alt={panel.title}
                   className="ring-img portal-arch"
                   fill
-                  loading="lazy"
+                  loading="eager"
+                  priority={i === Math.floor(VISIBLE / 2) || i <= 2}
+                  fetchPriority={i === Math.floor(VISIBLE / 2) ? "high" : "auto"}
                   sizes="(max-width: 640px) 200px, (max-width: 768px) 240px, 320px"
                 />
                 <span className="ring-topLabel">{panel.topLabel}</span>
