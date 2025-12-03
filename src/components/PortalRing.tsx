@@ -128,15 +128,39 @@ export default function PortalRing() {
       return { VISIBLE, ARC, RADIUS, W, H, DRAG_THRESHOLD, isMobile: isSm };
     }, [vw]);
 
-  // Pré-carregar imagens visíveis para Safari
+  // Pré-carregar imagens visíveis para Safari de forma mais agressiva
   useEffect(() => {
-    if (vw === null || typeof window === 'undefined') return;
+    if (vw === null || typeof window === 'undefined' || !isSafari) return;
+    
+    // No Safari, pré-carrega todas as imagens visíveis de forma explícita
     const visiblePanels = PANELS.slice(offset, offset + VISIBLE);
+    const imagePromises: Promise<void>[] = [];
+    
     visiblePanels.forEach((panel) => {
       const img = new window.Image();
-      img.src = panel.img;
+      const promise = new Promise<void>((resolve) => {
+        img.onload = () => resolve();
+        img.onerror = () => resolve(); // Resolve mesmo em erro para não travar
+        img.src = panel.img;
+      });
+      imagePromises.push(promise);
     });
-  }, [offset, VISIBLE, vw]);
+    
+    // Após todas carregarem, força um re-render
+    Promise.all(imagePromises).then(() => {
+      // Força o Safari a recalcular o layout
+      requestAnimationFrame(() => {
+        const items = document.querySelectorAll('.ring-item');
+        items.forEach((item) => {
+          const img = item.querySelector('img');
+          if (img) {
+            // Força reflow
+            void img.offsetHeight;
+          }
+        });
+      });
+    });
+  }, [offset, VISIBLE, vw, isSafari]);
 
   if (vw === null) return null;
 
@@ -271,25 +295,44 @@ export default function PortalRing() {
               }}
             >
               <div className="ring-panel portal-card">
-                {(() => {
-                  const isCenter = i === Math.floor(VISIBLE / 2);
-                  const shouldEagerLoad = isSafari || isCenter; // no Safari, todos eager
-                  
-                  return (
-                    <Image
-                      key={panel.img} // força o Next a tratar cada imagem como única
-                      src={panel.img}
-                      alt={panel.title}
-                      className="ring-img portal-arch"
-                      fill
-                      sizes="(max-width: 640px) 200px, (max-width: 768px) 240px, 320px"
-                      priority={shouldEagerLoad}
-                      loading={shouldEagerLoad ? "eager" : "lazy"}
-                      fetchPriority={shouldEagerLoad ? "high" : "auto"}
-                      unoptimized={isSafari} // evita pipeline de otimização/lazy do Next no Safari
-                    />
-                  );
-                })()}
+                {isSafari ? (
+                  // No Safari, usa img nativo para evitar problemas com next/image em transformações 3D
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={`${panel.img}-${offset}-${i}`}
+                    src={panel.img}
+                    alt={panel.title}
+                    className="ring-img portal-arch"
+                    loading="eager"
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      display: 'block',
+                      opacity: 1,
+                    }}
+                  />
+                ) : (
+                  // Em outros navegadores, usa next/image normalmente
+                  (() => {
+                    const isCenter = i === Math.floor(VISIBLE / 2);
+                    return (
+                      <Image
+                        key={panel.img}
+                        src={panel.img}
+                        alt={panel.title}
+                        className="ring-img portal-arch"
+                        fill
+                        sizes="(max-width: 640px) 200px, (max-width: 768px) 240px, 320px"
+                        priority={isCenter}
+                        loading={isCenter ? "eager" : "lazy"}
+                        fetchPriority={isCenter ? "high" : "auto"}
+                      />
+                    );
+                  })()
+                )}
                 <span className="ring-topLabel">{panel.topLabel}</span>
               </div>
               <div className="ring-label" aria-hidden="true">

@@ -182,17 +182,30 @@ body{
 
 /* Fix específico para Safari - força renderização de todas as imagens visíveis */
 @supports (-webkit-appearance: none) {
+  /* Força renderização de TODAS as imagens, não apenas as centrais */
   .ring-item .ring-img {
     -webkit-transform: translateZ(0) !important;
     transform: translateZ(0) !important;
     opacity: 1 !important;
     visibility: visible !important;
+    display: block !important;
+    /* Força o Safari a renderizar mesmo elementos transformados */
+    content-visibility: visible !important;
+    contain: none !important;
   }
   
-  /* Garante que todas as imagens visíveis sejam renderizadas no Safari */
-  .ring-item[style*="--z"] .ring-img {
+  /* Garante que o container também force renderização */
+  .ring-panel {
+    contain: none !important;
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+  }
+  
+  /* Força renderização de todas as imagens visíveis */
+  .ring-item:nth-child(n) .ring-img {
     display: block !important;
-    content-visibility: auto;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 }
 
