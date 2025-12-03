@@ -238,7 +238,7 @@ export default function GerenciarVideosPage() {
                   <option value="">Todos los géneros</option>
                   <option value="fashion">Fashion</option>
                   <option value="musica">Música</option>
-                  <option value="podcast">Podcast</option>
+                  <option value="streaming">Streaming</option>
                   <option value="deportes">Deportes</option>
                   <option value="series">Series</option>
                   <option value="peliculas">Películas</option>

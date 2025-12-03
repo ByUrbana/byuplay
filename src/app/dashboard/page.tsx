@@ -36,7 +36,7 @@ export default function DashboardPage() {
   const topVideos = [
     { title: "Fashion Tour 2024 - Desfile Completo", views: 89234, genre: "Fashion" },
     { title: "Música en Vivo - Concierto Especial", views: 67891, genre: "Música" },
-    { title: "Podcast: Entrevista Exclusiva", views: 45678, genre: "Podcast" },
+    { title: "Streaming: Transmisión en Vivo", views: 45678, genre: "Streaming" },
     { title: "Deportes: Partido Histórico", views: 34567, genre: "Deportes" },
     { title: "Serie: Capítulo Final", views: 28934, genre: "Series" }
   ];
@@ -46,7 +46,7 @@ export default function DashboardPage() {
     { genre: "Música", percentage: 28, videos: 349 },
     { genre: "Series", percentage: 18, videos: 224 },
     { genre: "Deportes", percentage: 12, videos: 150 },
-    { genre: "Podcast", percentage: 7, videos: 87 }
+    { genre: "Streaming", percentage: 7, videos: 87 }
   ];
 
   const recentActivity = [

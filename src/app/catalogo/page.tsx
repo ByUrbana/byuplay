@@ -270,9 +270,9 @@ export default function CatalogoPage() {
                     color: "from-white to-gray-300",
                   },
                   {
-                    href: "/podcast",
-                    title: "PODCAST",
-                    subtitle: "Conversaciones y debates",
+                    href: "/streaming",
+                    title: "STREAMING",
+                    subtitle: "Transmisiones en vivo",
                     img: "/flyer/podcast.jpeg",
                     color: "from-violet-500 to-purple-500",
                   },
@@ -631,7 +631,7 @@ export default function CatalogoPage() {
                   <option value="">Todos los géneros</option>
                   <option value="fashion">Fashion</option>
                   <option value="musica">Música</option>
-                  <option value="podcast">Podcast</option>
+                  <option value="streaming">Streaming</option>
                   <option value="deportes">Deportes</option>
                   <option value="series">Series</option>
                   <option value="peliculas">Películas</option>

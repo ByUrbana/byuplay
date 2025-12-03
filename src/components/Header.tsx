@@ -152,14 +152,14 @@ export default function Header() {
             INFANTIL
           </Link>
           <Link
-            href="/podcast"
+            href="/streaming"
             className={`text-xs font-medium transition-all duration-200 px-2 py-1 rounded-md ${
-              pathname === "/podcast"
+              pathname === "/streaming"
                 ? "bg-purple-500/20 text-purple-300 border border-purple-400/30"
                 : "hover:text-purple-400"
             }`}
           >
-            PODCAST
+            STREAMING
           </Link>
           <Link
             href="/deportes"
@@ -236,14 +236,14 @@ export default function Header() {
             INFANTIL
           </Link>
           <Link
-            href="/podcast"
+            href="/streaming"
             className={`text-xs font-medium transition-all duration-200 px-2 py-1 rounded-md ${
-              pathname === "/podcast"
+              pathname === "/streaming"
                 ? "bg-purple-500/20 text-purple-300 border border-purple-400/30"
                 : "hover:text-purple-400"
             }`}
           >
-            PODCAST
+            STREAMING
           </Link>
           <Link
             href="/deportes"
@@ -548,7 +548,7 @@ export default function Header() {
                   </Link>
 
                   <Link
-                    href="/podcast"
+                    href="/streaming"
                     role="menuitem"
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
@@ -559,7 +559,7 @@ export default function Header() {
                       <line x1="12" y1="19" x2="12" y2="23" strokeWidth="2" />
                       <line x1="8" y1="23" x2="16" y2="23" strokeWidth="2" />
                     </svg>
-                    PODCAST
+                    STREAMING
                   </Link>
 
                   <Link

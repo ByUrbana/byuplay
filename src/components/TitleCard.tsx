@@ -58,10 +58,10 @@ export default function TitleCard({
                   height={150}
                   className="h-20 md:h-24 object-contain"
                 />
-              ) : customTitle === "BY)))U PODCAST" ? (
+              ) : customTitle === "BY)))U STREAMING" ? (
                 <Image
-                  src="/flyer/byupodcast.png"
-                  alt="BY)))U PODCAST"
+                  src="/flyer/byustreaming.png"
+                  alt="BY)))U STREAMING"
                   width={390}
                   height={150}
                   className="h-20 md:h-24 object-contain"

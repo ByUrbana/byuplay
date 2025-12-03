@@ -12,7 +12,7 @@ export default function Navbar() {
           <Link href="/series" className="hover:text-white">SERIES</Link>
           <Link href="/peliculas" className="hover:text-white">PELÍCULAS</Link>
           <Link href="/infantil" className="hover:text-white">INFANTIL</Link>
-          <Link href="/podcast" className="hover:text-white">PODCAST</Link>
+          <Link href="/streaming" className="hover:text-white">STREAMING</Link>
           <Link href="/deportes" className="hover:text-white">DEPORTES</Link>
           <Link href="/musica" className="hover:text-white">MÚSICA</Link>
           <Link href="/fashion" className="hover:text-white">FASHION</Link>

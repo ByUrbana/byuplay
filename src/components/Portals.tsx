@@ -33,15 +33,15 @@ export default function Portals() {
           </article>
         </a>
 
-        {/* Podcast */}
-        <a href="/podcast" className="block group">
+        {/* Streaming */}
+        <a href="/streaming" className="block group">
           <article
             className="portal-card portal-arch portal-panel"
             style={{ ['--ring' as any]: '#fde68a' }}
           >
             <footer className="portal-footer">
-              <h3 className="portal-title">Podcast</h3>
-              <p className="portal-sub">Charlas y shows</p>
+              <h3 className="portal-title">Streaming</h3>
+              <p className="portal-sub">Transmisiones en vivo</p>
             </footer>
           </article>
         </a>

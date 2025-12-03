@@ -27,12 +27,12 @@ interface Video {
   contextData?: any;
 }
 
-export default function PodcastPage() {
+export default function StreamingPage() {
   const [videos, setVideos] = useState<Video[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Cargar videos del género podcast
+  // Cargar videos del género streaming
   useEffect(() => {
     const loadVideos = async () => {
       setIsLoading(true);
@@ -46,12 +46,12 @@ export default function PodcastPage() {
         // Verificar si la respuesta tiene la estructura esperada
         const videos = data.videos || data;
         
-        // Filtrar apenas vídeos de podcast
-        const podcastVideos = videos.filter((video: Video) => 
-          video.genre.toLowerCase() === 'podcast'
+        // Filtrar apenas vídeos de streaming
+        const streamingVideos = videos.filter((video: Video) => 
+          video.genre.toLowerCase() === 'streaming'
         );
         
-        setVideos(podcastVideos);
+        setVideos(streamingVideos);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Error desconocido');
       } finally {
@@ -87,14 +87,14 @@ export default function PodcastPage() {
   };
 
   return (
-    <main className="podcast-skin min-h-screen pb-24">
+    <main className="streaming-skin min-h-screen pb-24">
       <Header />
       <TitleCard 
         t={hero} 
         customImage="/flyer/podcast-bg.webp"
-        customTitle="BY)))U PODCAST"
+        customTitle="BY)))U STREAMING"
         customYear="2024"
-        customDescription="Escuchá las mejores conversaciones con BY)))U PODCAST. Desde entrevistas exclusivas hasta charlas que te inspiran. Sumergite en el audio y descubrí nuevas perspectivas."
+        customDescription="Descubrí el mejor contenido en streaming con BY)))U STREAMING. Desde transmisiones en vivo hasta contenido exclusivo. Sumergite en una experiencia única de entretenimiento."
       />
 
       <section className="relative">
@@ -102,10 +102,10 @@ export default function PodcastPage() {
         <div className="pointer-events-none absolute bottom-0 right-0 h-72 w-72 rounded-full bg-pink-500/10 blur-3xl" />
 
         <div className="relative mx-auto px-4 md:px-8 py-12 md:py-16">
-          {/* ===== VÍDEOS DE PODCAST ===== */}
+          {/* ===== VÍDEOS DE STREAMING ===== */}
           <section className="mx-auto max-w-6xl px-4 md:px-0">
             <h2 className="text-lg md:text-xl font-semibold mb-4 text-white">
-              Vídeos de Podcast
+              Vídeos de Streaming
             </h2>
 
             {isLoading ? (
@@ -143,7 +143,7 @@ export default function PodcastPage() {
                         />
                       ) : (
                         <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                          <span className="text-white font-bold text-2xl">🎙️</span>
+                          <span className="text-white font-bold text-2xl">📺</span>
                         </div>
                       )}
 
@@ -204,7 +204,7 @@ export default function PodcastPage() {
             ) : (
               <div className="text-center py-12">
                 <div className="text-white/60 mb-4">
-                  Ningún video de podcast encontrado
+                  Ningún video de streaming encontrado
                 </div>
                 <Link
                   href="/catalogo"
@@ -224,3 +224,4 @@ export default function PodcastPage() {
     </main>
   );
 }
+

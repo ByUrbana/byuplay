@@ -49,9 +49,9 @@ const PANELS: Panel[] = [
     // videoMp4 removido - só carrega quando acessar /fashion
   },
   {
-    href: "/podcast",
+    href: "/streaming",
     topLabel: "VIOLET DAWN",
-    title: "PODCAST",
+    title: "STREAMING",
     subtitle: "",
     hue: 265,
     img: "/flyer/podcast.jpeg",
