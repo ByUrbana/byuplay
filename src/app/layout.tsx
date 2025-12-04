@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Urbana Play",
-  description: "Clon educativo de la interfaz de Urbana Play",
+  title: "ByU play",
+  description: "ByU Play - Plataforma de streaming premium con contenido exclusivo. Mirá series, películas y documentales en alta calidad. Tu nueva experiencia de entretenimiento digital.",
 };
 
 export default function RootLayout({
