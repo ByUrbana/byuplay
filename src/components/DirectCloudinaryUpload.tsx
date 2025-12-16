@@ -116,8 +116,7 @@ export default function DirectCloudinaryUpload({
             tags: tagsFromForm,
             // arquivos grandes
             maxFileSize: 4_000_000_000, // 4GB
-            chunkSize: 6_000_000, // 6MB
-            chunkUpload: true,
+            maxChunkSize: 6_000_000, // 6MB - nome correto para o widget
             // UI
             showAdvancedOptions: false,
             showPoweredBy: false,
