@@ -115,7 +115,7 @@ export default function DirectCloudinaryUpload({
             context: contextFromForm,
             tags: tagsFromForm,
             // arquivos grandes
-            maxFileSize: 2_000_000_000, // 2GB
+            maxFileSize: 4_000_000_000, // 4GB
             chunkSize: 6_000_000, // 6MB
             chunkUpload: true,
             // UI
