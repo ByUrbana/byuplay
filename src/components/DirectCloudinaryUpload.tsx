@@ -97,8 +97,8 @@ export default function DirectCloudinaryUpload({
         genre: formData.genre,
         rating: formData.rating,
         releaseDate: formData.releaseDate,
-        // duração em segundos (se informada)
-        duration: formData.duration ? String(parseInt(formData.duration) * 60) : "",
+        // duração em minutos (salva como está, será convertida nas APIs)
+        duration: formData.duration || "",
         language: formData.language || "",
         contentType: formData.contentType || "",
       };

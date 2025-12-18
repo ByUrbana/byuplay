@@ -159,7 +159,7 @@ export default function Header() {
                 : "hover:text-purple-400"
             }`}
           >
-            STREAMING
+            MAMITA STREAM
           </Link>
           <Link
             href="/deportes"
@@ -243,7 +243,7 @@ export default function Header() {
                 : "hover:text-purple-400"
             }`}
           >
-            STREAMING
+            MAMITA STREAM
           </Link>
           <Link
             href="/deportes"
@@ -559,7 +559,7 @@ export default function Header() {
                       <line x1="12" y1="19" x2="12" y2="23" strokeWidth="2" />
                       <line x1="8" y1="23" x2="16" y2="23" strokeWidth="2" />
                     </svg>
-                    STREAMING
+                    MAMITA STREAM
                   </Link>
 
                   <Link

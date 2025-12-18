@@ -75,15 +75,14 @@ export default function StreamingPage() {
 
   // Función para formatear duración
   const formatDuration = (seconds: number): string => {
-    if (seconds === 0) return "0:00";
-    const minutes = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    if (minutes >= 60) {
-      const hours = Math.floor(minutes / 60);
-      const mins = minutes % 60;
-      return `${hours}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-    }
-    return `${minutes}:${secs.toString().padStart(2, "0")}`;
+    if (!seconds || seconds === 0) return "00:00:00";
+    
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    
+    // Sempre retorna no formato HH:MM:SS
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
   return (
@@ -91,7 +90,7 @@ export default function StreamingPage() {
       <Header />
       <TitleCard 
         t={hero} 
-        customImage="/flyer/podcast-bg.webp"
+        customImage="/flyer/podcast-bg.png"
         customTitle="BY)))U STREAMING"
         customYear="2024"
         customDescription="Descubrí el mejor contenido en streaming con BY)))U STREAMING. Desde transmisiones en vivo hasta contenido exclusivo. Sumergite en una experiencia única de entretenimiento."

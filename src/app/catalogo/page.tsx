@@ -154,18 +154,14 @@ export default function CatalogoPage() {
   };
 
   const formatDuration = (seconds: number) => {
-    if (!seconds || seconds === 0) return "0:00";
+    if (!seconds || seconds === 0) return "00:00:00";
 
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = Math.floor(seconds % 60);
 
-    if (hours > 0) {
-      return `${hours}:${minutes.toString().padStart(2, "0")}:${secs
-        .toString()
-        .padStart(2, "0")}`;
-    }
-    return `${minutes}:${secs.toString().padStart(2, "0")}`;
+    // Sempre retorna no formato HH:MM:SS
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
   const hero = TITLES[0];
@@ -271,7 +267,7 @@ export default function CatalogoPage() {
                   },
                   {
                     href: "/streaming",
-                    title: "STREAMING",
+                    title: "MAMITA STREAM",
                     subtitle: "Transmisiones en vivo",
                     img: "/flyer/podcast.jpeg",
                     color: "from-violet-500 to-purple-500",

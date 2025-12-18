@@ -5,16 +5,14 @@ import cloudinary from '@/lib/cloudinary';
 
 // Função para formatar duração
 function formatDuration(seconds: number): string {
-  if (!seconds || seconds === 0) return '0:00';
+  if (!seconds || seconds === 0) return '00:00:00';
   
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const secs = Math.floor(seconds % 60);
   
-  if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  }
-  return `${minutes}:${secs.toString().padStart(2, '0')}`;
+  // Sempre retorna no formato HH:MM:SS
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
 
@@ -68,7 +66,10 @@ export async function GET(request: NextRequest) {
       const fileName = resource.public_id.split('/').pop()?.replace(/_/g, ' ') || `Vídeo ${index + 1}`;
       
       // Converter duração de minutos para segundos se disponível
-      const durationInSeconds = contextDuration ? parseInt(contextDuration) * 60 : (resource.duration || 0);
+      // Se contextDuration existe, está em minutos; senão, usa a duração do Cloudinary (já em segundos)
+      const durationInSeconds = contextDuration 
+        ? parseInt(contextDuration) * 60 
+        : (resource.duration ? Math.floor(resource.duration) : 0);
       
       return {
         id: resource.public_id,

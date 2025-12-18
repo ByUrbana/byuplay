@@ -51,7 +51,7 @@ const PANELS: Panel[] = [
   {
     href: "/streaming",
     topLabel: "VIOLET DAWN",
-    title: "STREAMING",
+    title: "MAMITA STREAM",
     subtitle: "",
     hue: 265,
     img: "/flyer/podcast.jpeg",
