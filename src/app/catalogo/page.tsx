@@ -269,7 +269,7 @@ export default function CatalogoPage() {
                     href: "/streaming",
                     title: "MAMITA STREAM",
                     subtitle: "Transmisiones en vivo",
-                    img: "/flyer/podcast.jpeg",
+                    img: "/flyer/podcast1.png",
                     color: "from-violet-500 to-purple-500",
                   },
                   {

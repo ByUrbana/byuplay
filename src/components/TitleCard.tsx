@@ -60,11 +60,11 @@ export default function TitleCard({
                 />
               ) : customTitle === "BY)))U STREAMING" ? (
                 <Image
-                  src="/flyer/byustreaming.png"
+                  src="/flyer/byupodcast.png"
                   alt="BY)))U STREAMING"
-                  width={390}
-                  height={150}
-                  className="h-20 md:h-24 object-contain"
+                  width={600}
+                  height={400}
+                  className="h-15 md:h-34 object-contain"
                 />
               ) : customTitle === "BY)))U SERIES" ? (
                 <Image
