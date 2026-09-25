@@ -449,7 +449,7 @@ export default function Header() {
 
                 {/* BY ))) U CLUB */}
                 <Link
-                  href="/byuclub"
+                  href="https://byuclub.com/es"
                   role="menuitem"
                   onClick={() => setOpen(false)}
                   className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/10"
@@ -622,7 +622,3 @@ export default function Header() {
     </header>
   );
 }
-
-
-
-
